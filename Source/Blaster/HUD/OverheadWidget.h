@@ -17,4 +17,10 @@ class BLASTER_API UOverheadWidget : public UUserWidget
 public:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* DisplayText;
+
+    void SetDisplayText(const FString TextToDisplay) const;
+    void ShowPlayerNetRole(const APawn* InPawn) const;
+
+protected:
+    virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 };
