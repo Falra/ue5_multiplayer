@@ -4,6 +4,7 @@
 #include "OverheadWidget.h"
 
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
 void UOverheadWidget::SetDisplayText(const FString TextToDisplay) const
 {
@@ -31,6 +32,13 @@ void UOverheadWidget::ShowPlayerNetRole(const APawn* InPawn) const
     }
     const FString LocalRoleString = FString::Printf(TEXT("Local role: %s"), *Role);
     SetDisplayText(LocalRoleString);
+}
+
+void UOverheadWidget::ShowPlayerName(const APawn* InPawn) const
+{
+    const auto PS = InPawn->GetPlayerState();
+    const FString PlayerName = PS ? PS->GetPlayerName() : "";
+    SetDisplayText(PlayerName);
 }
 
 void UOverheadWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)

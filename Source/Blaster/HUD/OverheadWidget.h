@@ -23,6 +23,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void ShowPlayerNetRole(const APawn* InPawn) const;
 
+    UFUNCTION(BlueprintCallable)
+    void ShowPlayerName(const APawn* InPawn) const;
+
 protected:
     virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 };
