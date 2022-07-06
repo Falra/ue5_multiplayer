@@ -19,6 +19,8 @@ public:
     class UTextBlock* DisplayText;
 
     void SetDisplayText(const FString TextToDisplay) const;
+
+    UFUNCTION(BlueprintCallable)
     void ShowPlayerNetRole(const APawn* InPawn) const;
 
 protected:
