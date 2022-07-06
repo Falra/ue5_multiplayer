@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Blaster Game. All Rights Reserved
 
 #include "LobbyGameMode.h"
 
