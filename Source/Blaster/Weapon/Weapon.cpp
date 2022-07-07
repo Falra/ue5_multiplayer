@@ -4,6 +4,7 @@
 #include "Weapon.h"
 
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
 
 AWeapon::AWeapon()
 {
@@ -20,6 +21,9 @@ AWeapon::AWeapon()
     AreaSphere->SetupAttachment(GetRootComponent());
     AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    PickupWidget = CreateDefaultSubobject<UWidgetComponent>("PickupWidget");
+    PickupWidget->SetupAttachment(GetRootComponent());
    
 }
 
