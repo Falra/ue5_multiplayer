@@ -14,7 +14,16 @@ class BLASTER_API UCombatComponent : public UActorComponent
 
 public:
     UCombatComponent();
-
+    friend class ABlasterCharacter;
+    void EquipWeapon(class AWeapon* WeaponToEquip);
+    
+private:
+    UPROPERTY()
+    class ABlasterCharacter* Character;
+    
+    UPROPERTY()
+    AWeapon* EquippedWeapon;
+    
 protected:
     virtual void BeginPlay() override;
 

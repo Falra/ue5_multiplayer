@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PacketHandlers/StatelessConnectHandlerComponent.h"
 #include "Weapon.generated.h"
 
 UENUM(BlueprintType)
@@ -22,6 +23,7 @@ class BLASTER_API AWeapon : public AActor
 public:
     AWeapon();
     void ShowPickupWidget(const bool bShowWidget) const;
+    FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
     
 protected:
     UFUNCTION()
