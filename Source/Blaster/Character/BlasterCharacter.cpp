@@ -54,7 +54,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void ABlasterCharacter::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
-    if(CombatComponent)
+    if (CombatComponent)
     {
         CombatComponent->Character = this;
     }
@@ -62,7 +62,7 @@ void ABlasterCharacter::PostInitializeComponents()
 
 void ABlasterCharacter::MoveForward(float Value)
 {
-    if(!Controller || Value == 0.0f) return;
+    if (!Controller || Value == 0.0f) return;
     const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
     const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
     AddMovementInput(Direction, Value);
@@ -70,7 +70,7 @@ void ABlasterCharacter::MoveForward(float Value)
 
 void ABlasterCharacter::MoveRight(float Value)
 {
-    if(!Controller || Value == 0.0f) return;
+    if (!Controller || Value == 0.0f) return;
     const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
     const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
     AddMovementInput(Direction, Value);
@@ -88,34 +88,49 @@ void ABlasterCharacter::LookUp(float Value)
 
 void ABlasterCharacter::EquipButtonPressed()
 {
-    if(CombatComponent && HasAuthority())
+    if (CombatComponent)
     {
-        CombatComponent->EquipWeapon(OverlappingWeapon);
+        if (HasAuthority())
+        {
+            CombatComponent->EquipWeapon(OverlappingWeapon);
+        }
+        else
+        {
+            ServerEquipButtonPressed();
+        }
     }
 }
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
-    if(LastWeapon)
+    if (LastWeapon)
     {
         LastWeapon->ShowPickupWidget(false);
     }
-    
-    if(OverlappingWeapon)
+
+    if (OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(true);
     }
 }
 
+void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
+{
+    if (CombatComponent)
+    {
+        CombatComponent->EquipWeapon(OverlappingWeapon);
+    }
+}
+
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
-    if(OverlappingWeapon)
+    if (OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(false);
     }
-    
+
     OverlappingWeapon = Weapon;
-    if(IsLocallyControlled() && OverlappingWeapon)
+    if (IsLocallyControlled() && OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(true);
     }
