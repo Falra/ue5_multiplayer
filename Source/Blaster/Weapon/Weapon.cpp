@@ -6,6 +6,7 @@
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AWeapon::AWeapon()
 {
@@ -17,7 +18,7 @@ AWeapon::AWeapon()
     WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
     WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    
+
     AreaSphere = CreateDefaultSubobject<USphereComponent>("AreaSphere");
     AreaSphere->SetupAttachment(GetRootComponent());
     AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -25,12 +26,11 @@ AWeapon::AWeapon()
 
     PickupWidget = CreateDefaultSubobject<UWidgetComponent>("PickupWidget");
     PickupWidget->SetupAttachment(GetRootComponent());
-   
 }
 
 void AWeapon::ShowPickupWidget(const bool bShowWidget) const
 {
-    if(PickupWidget)
+    if (PickupWidget)
     {
         PickupWidget->SetVisibility(bShowWidget);
     }
@@ -41,8 +41,8 @@ void AWeapon::BeginPlay()
     Super::BeginPlay();
 
     ShowPickupWidget(false);
-    
-    if(HasAuthority())
+
+    if (HasAuthority())
     {
         AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -51,10 +51,11 @@ void AWeapon::BeginPlay()
     }
 }
 
-void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-    if(BlasterCharacter)
+    if (BlasterCharacter)
     {
         BlasterCharacter->SetOverlappingWeapon(this);
     }
@@ -64,8 +65,25 @@ void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActo
     int32 OtherBodyIndex)
 {
     ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-    if(BlasterCharacter)
+    if (BlasterCharacter)
     {
         BlasterCharacter->SetOverlappingWeapon(nullptr);
     }
+}
+
+void AWeapon::OnRep_WeaponState()
+{
+    switch (WeaponState)
+    {
+        case EWeaponState::EWS_Equipped: ShowPickupWidget(false);
+            AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            break;
+    }
+}
+
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AWeapon, WeaponState);
 }
