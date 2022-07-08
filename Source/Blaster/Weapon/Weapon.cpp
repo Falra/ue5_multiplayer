@@ -28,14 +28,19 @@ AWeapon::AWeapon()
    
 }
 
+void AWeapon::ShowPickupWidget(const bool bShowWidget) const
+{
+    if(PickupWidget)
+    {
+        PickupWidget->SetVisibility(bShowWidget);
+    }
+}
+
 void AWeapon::BeginPlay()
 {
     Super::BeginPlay();
 
-    if(PickupWidget)
-    {
-        PickupWidget->SetVisibility(false);
-    }
+    ShowPickupWidget(false);
     
     if(HasAuthority())
     {
@@ -47,9 +52,9 @@ void AWeapon::BeginPlay()
 
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-    if(BlasterCharacter && PickupWidget)
+    ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
+    if(BlasterCharacter)
     {
-        PickupWidget->SetVisibility(true);
+        BlasterCharacter->SetOverlappingWeapon(this);
     }
 }

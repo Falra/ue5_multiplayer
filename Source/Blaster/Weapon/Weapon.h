@@ -21,7 +21,8 @@ class BLASTER_API AWeapon : public AActor
 
 public:
     AWeapon();
-
+    void ShowPickupWidget(const bool bShowWidget) const;
+    
 protected:
     virtual void BeginPlay() override;
 

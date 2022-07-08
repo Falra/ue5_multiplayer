@@ -2,10 +2,12 @@
 
 #include "BlasterCharacter.h"
 
+#include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -73,4 +75,16 @@ void ABlasterCharacter::LookUp(float Value)
 void ABlasterCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if(OverlappingWeapon)
+    {
+        OverlappingWeapon->ShowPickupWidget(true);
+    }
+}
+
+void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
 }

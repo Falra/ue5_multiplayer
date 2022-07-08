@@ -15,7 +15,7 @@ public:
     ABlasterCharacter();
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+    
 protected:
     virtual void BeginPlay() override;
 
@@ -33,4 +33,10 @@ private:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UWidgetComponent* OverheadWidget;
+    
+    UPROPERTY(Replicated)
+    class AWeapon* OverlappingWeapon;
+
+public:
+    FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
 };
