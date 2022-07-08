@@ -72,8 +72,13 @@ void ABlasterCharacter::LookUp(float Value)
     AddControllerPitchInput(Value);
 }
 
-void ABlasterCharacter::OnRep_OverlappingWeapon()
+void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
+    if(LastWeapon)
+    {
+        LastWeapon->ShowPickupWidget(false);
+    }
+    
     if(OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(true);
@@ -82,6 +87,11 @@ void ABlasterCharacter::OnRep_OverlappingWeapon()
 
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
+    if(OverlappingWeapon)
+    {
+        OverlappingWeapon->ShowPickupWidget(false);
+    }
+    
     OverlappingWeapon = Weapon;
     if(IsLocallyControlled() && OverlappingWeapon)
     {
