@@ -72,14 +72,26 @@ void ABlasterCharacter::LookUp(float Value)
     AddControllerPitchInput(Value);
 }
 
-void ABlasterCharacter::Tick(float DeltaTime)
+void ABlasterCharacter::OnRep_OverlappingWeapon()
 {
-    Super::Tick(DeltaTime);
-
     if(OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(true);
     }
+}
+
+void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
+{
+    OverlappingWeapon = Weapon;
+    if(IsLocallyControlled() && OverlappingWeapon)
+    {
+        OverlappingWeapon->ShowPickupWidget(true);
+    }
+}
+
+void ABlasterCharacter::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
