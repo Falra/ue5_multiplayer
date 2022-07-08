@@ -37,6 +37,7 @@ protected:
         const FHitResult& SweepResult
         );
 
+    UFUNCTION()
     void OnSphereEndOverlap(
         UPrimitiveComponent* OverlappedComponent,
         AActor* OtherActor,
