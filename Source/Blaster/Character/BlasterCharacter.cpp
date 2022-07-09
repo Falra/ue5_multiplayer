@@ -50,6 +50,8 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
     PlayerInputComponent->BindAxis("Turn", this, &ABlasterCharacter::Turn);
     PlayerInputComponent->BindAxis("LookUp", this, &ABlasterCharacter::LookUp);
+
+    GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 void ABlasterCharacter::PostInitializeComponents()
@@ -112,7 +114,7 @@ void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
 
 void ABlasterCharacter::CrouchButtonPressed()
 {
-    Crouch();
+    bIsCrouched ? UnCrouch() : Crouch();
 }
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
