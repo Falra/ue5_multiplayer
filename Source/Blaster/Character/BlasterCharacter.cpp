@@ -136,6 +136,11 @@ void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
     }
 }
 
+bool ABlasterCharacter::IsWeaponEquipped() const
+{
+    return (CombatComponent && CombatComponent->EquippedWeapon);
+}
+
 void ABlasterCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);

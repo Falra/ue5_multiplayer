@@ -16,12 +16,12 @@ public:
     UCombatComponent();
     friend class ABlasterCharacter;
     void EquipWeapon(class AWeapon* WeaponToEquip);
-    
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
     
-    UPROPERTY()
+    UPROPERTY(Replicated)
     AWeapon* EquippedWeapon;
     
 protected:
