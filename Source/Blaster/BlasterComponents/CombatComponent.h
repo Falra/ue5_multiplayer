@@ -23,6 +23,8 @@ private:
     
     UPROPERTY(Replicated)
     AWeapon* EquippedWeapon;
+
+    bool bIsAiming;
     
 protected:
     virtual void BeginPlay() override;
