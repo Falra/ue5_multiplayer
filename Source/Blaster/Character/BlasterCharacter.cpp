@@ -44,6 +44,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
     PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABlasterCharacter::EquipButtonPressed);
+    PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ABlasterCharacter::CrouchButtonPressed);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABlasterCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
@@ -101,6 +102,19 @@ void ABlasterCharacter::EquipButtonPressed()
     }
 }
 
+void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
+{
+    if (CombatComponent)
+    {
+        CombatComponent->EquipWeapon(OverlappingWeapon);
+    }
+}
+
+void ABlasterCharacter::CrouchButtonPressed()
+{
+    Crouch();
+}
+
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {
     if (LastWeapon)
@@ -111,14 +125,6 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
     if (OverlappingWeapon)
     {
         OverlappingWeapon->ShowPickupWidget(true);
-    }
-}
-
-void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
-{
-    if (CombatComponent)
-    {
-        CombatComponent->EquipWeapon(OverlappingWeapon);
     }
 }
 
