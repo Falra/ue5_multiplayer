@@ -19,13 +19,24 @@ void UCombatComponent::BeginPlay()
     Super::BeginPlay();
 }
 
+void UCombatComponent::SetAiming(bool IsAiming)
+{
+    bIsAiming = IsAiming;
+    ServerSetAiming(IsAiming);
+}
+
+void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
+{
+    bIsAiming = IsAiming;
+}
+
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
-    if(!Character || !WeaponToEquip) return;
+    if (!Character || !WeaponToEquip) return;
 
     EquippedWeapon = WeaponToEquip;
     EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-    if(const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket")))
+    if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket")))
     {
         WeaponSocket->AttachActor(EquippedWeapon, Character->GetMesh());
     }
@@ -36,4 +47,5 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(UCombatComponent, EquippedWeapon);
+    DOREPLIFETIME(UCombatComponent, bIsAiming);
 }

@@ -121,17 +121,17 @@ void ABlasterCharacter::CrouchButtonPressed()
 
 void ABlasterCharacter::AimButtonPressed()
 {
-    if(CombatComponent)
+    if (CombatComponent)
     {
-        CombatComponent->bIsAiming = true;
+        CombatComponent->SetAiming(true);
     }
 }
 
 void ABlasterCharacter::AimButtonReleased()
 {
-    if(CombatComponent)
+    if (CombatComponent)
     {
-        CombatComponent->bIsAiming = false;
+        CombatComponent->SetAiming(false);
     }
 }
 

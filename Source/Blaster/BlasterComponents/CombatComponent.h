@@ -24,9 +24,14 @@ private:
     UPROPERTY(Replicated)
     AWeapon* EquippedWeapon;
 
+    UPROPERTY(Replicated)
     bool bIsAiming;
     
 protected:
     virtual void BeginPlay() override;
+    void SetAiming(bool IsAiming);
+
+    UFUNCTION(Server, Reliable)
+    void ServerSetAiming(bool IsAiming);
 
 };
