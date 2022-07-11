@@ -7,6 +7,7 @@
 #include "Blaster/Weapon/Weapon.h"
 #include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
 UCombatComponent::UCombatComponent()
@@ -41,6 +42,9 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
         WeaponSocket->AttachActor(EquippedWeapon, Character->GetMesh());
     }
     EquippedWeapon->SetOwner(Character);
+    
+    Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+    Character->bUseControllerRotationYaw = true;
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
