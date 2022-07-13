@@ -18,17 +18,30 @@ UCombatComponent::UCombatComponent()
 void UCombatComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (Character)
+    {
+        Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+    }
 }
 
 void UCombatComponent::SetAiming(bool IsAiming)
 {
     bIsAiming = IsAiming;
     ServerSetAiming(IsAiming);
+    if (Character)
+    {
+        Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+    }
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
 {
     bIsAiming = IsAiming;
+    if (Character)
+    {
+        Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+    }
 }
 
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
@@ -42,14 +55,14 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
         WeaponSocket->AttachActor(EquippedWeapon, Character->GetMesh());
     }
     EquippedWeapon->SetOwner(Character);
-    
+
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
 {
-    if(EquippedWeapon && Character)
+    if (EquippedWeapon && Character)
     {
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;

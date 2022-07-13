@@ -20,13 +20,19 @@ public:
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
-    
+
     UPROPERTY(ReplicatedUsing = "OnRep_EquippedWeapon")
     AWeapon* EquippedWeapon;
 
     UPROPERTY(Replicated)
     bool bIsAiming;
-    
+
+    UPROPERTY(EditAnywhere, Category = "Movement")
+    float BaseWalkSpeed = 600.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Movement")
+    float AimWalkSpeed = 450.0f;
+
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
@@ -36,5 +42,4 @@ protected:
 
     UFUNCTION()
     void OnRep_EquippedWeapon();
-
 };
