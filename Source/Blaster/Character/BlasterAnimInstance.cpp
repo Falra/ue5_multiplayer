@@ -45,5 +45,6 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
     // Aim offset
     AO_Yaw = BlasterCharacter->GetAO_Yaw();
+    AO_Pitch = BlasterCharacter->GetAO_Pitch();
     
 }

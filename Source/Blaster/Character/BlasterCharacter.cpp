@@ -160,7 +160,7 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
     if (!bIsMoving && !bIsInAir)
     {
         const auto CurrentAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
-        const auto DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(StartingAimRotation, CurrentAimRotation);
+        const auto DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
         AO_Yaw = DeltaAimRotation.Yaw;
         bUseControllerRotationYaw = false;
     }
@@ -170,6 +170,8 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         AO_Yaw = 0.0f;
         bUseControllerRotationYaw = true;
     }
+
+    AO_Pitch = GetBaseAimRotation().Pitch;
 }
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
