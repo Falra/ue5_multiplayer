@@ -218,6 +218,12 @@ bool ABlasterCharacter::IsAiming() const
     return (CombatComponent && CombatComponent->bIsAiming);
 }
 
+AWeapon* ABlasterCharacter::GetEquippedWeapon() const
+{
+    if (!CombatComponent) return nullptr;
+    return CombatComponent->EquippedWeapon;
+}
+
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);

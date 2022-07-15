@@ -52,6 +52,12 @@ private:
     UPROPERTY(BlueprintReadOnly, Category = "AimOffset", meta = (AllowPrivateAccess = true))
     float AO_Pitch;
 
+    UPROPERTY(BlueprintReadOnly, Category = "IK", meta = (AllowPrivateAccess = true))
+    FTransform LeftHandTransform;
+
+    UPROPERTY(BlueprintReadOnly, Category = "IK", meta = (AllowPrivateAccess = true))
+    class AWeapon* EquippedWeapon;
+
     FRotator CharacterRotationLastFrame;
     FRotator CharacterRotation;
     FRotator DeltaRotation;
