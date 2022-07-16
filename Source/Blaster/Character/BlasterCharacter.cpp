@@ -37,6 +37,8 @@ ABlasterCharacter::ABlasterCharacter()
     // Ignore other players when trace from Camera
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
     GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+    TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 }
 
 void ABlasterCharacter::BeginPlay()
@@ -163,12 +165,14 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         const auto DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
         AO_Yaw = DeltaAimRotation.Yaw;
         bUseControllerRotationYaw = false;
+        TurnInPlace(DeltaTime);
     }
     if (bIsMoving || bIsInAir)
     {
         StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
         AO_Yaw = 0.0f;
         bUseControllerRotationYaw = true;
+        TurningInPlace = ETurningInPlace::ETIP_NotTurning;
     }
 
     AO_Pitch = GetBaseAimRotation().Pitch;
@@ -178,6 +182,18 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         const FVector2D InRange(270.0f, 360.0f);
         const FVector2D OutRange(-90.0f, 0.0f);
         AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
+    }
+}
+
+void ABlasterCharacter::TurnInPlace(float DeltaTime)
+{
+    if (AO_Yaw > 90.0f)
+    {
+        TurningInPlace = ETurningInPlace::ETIP_Right;
+    }
+    else if (AO_Yaw < - 90.0f)
+    {
+        TurningInPlace = ETurningInPlace::ETIP_Left;
     }
 }
 
