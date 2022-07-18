@@ -62,7 +62,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABlasterCharacter::Jump);
     PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABlasterCharacter::EquipButtonPressed);
     PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ABlasterCharacter::CrouchButtonPressed);
     PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ABlasterCharacter::AimButtonPressed);
@@ -192,6 +192,19 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         const FVector2D OutRange(-90.0f, 0.0f);
         AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
     }
+}
+
+void ABlasterCharacter::Jump()
+{
+    if (bIsCrouched)
+    {
+        UnCrouch();
+    }
+    else
+    {
+        Super::Jump();
+    }
+    
 }
 
 void ABlasterCharacter::TurnInPlace(float DeltaTime)
