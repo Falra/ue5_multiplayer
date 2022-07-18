@@ -42,6 +42,8 @@ ABlasterCharacter::ABlasterCharacter()
 
     NetUpdateFrequency = 66.0f;
     MinNetUpdateFrequency = 33.0f;
+
+    GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 720.0f);
 }
 
 void ABlasterCharacter::BeginPlay()
