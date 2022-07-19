@@ -17,6 +17,7 @@ public:
     friend class ABlasterCharacter;
     void EquipWeapon(class AWeapon* WeaponToEquip);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
@@ -34,7 +35,10 @@ private:
     float AimWalkSpeed = 450.0f;
 
     bool bFireButtonPressed;
-    
+
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    float CrosshairTraceLenght = 80000.0f;
+
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
@@ -52,4 +56,6 @@ protected:
 
     UFUNCTION(NetMulticast, Reliable)
     void MulticastFire();
+
+    void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 };

@@ -7,11 +7,12 @@
 #include "Blaster/Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 UCombatComponent::UCombatComponent()
 {
-    PrimaryComponentTick.bCanEverTick = false;
+    PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UCombatComponent::BeginPlay()
@@ -93,9 +94,47 @@ void UCombatComponent::MulticastFire_Implementation()
     }
 }
 
+void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
+{
+    if (!GEngine || !GEngine->GameViewport) return;
+
+    FVector2D ViewportSize;
+    GEngine->GameViewport->GetViewportSize(ViewportSize);
+    const FVector2D CrosshairLocation(ViewportSize.X / 2.0f, ViewportSize.Y / 2.0f);
+    FVector CrosshairWorldPosition;
+    FVector CrosshairWorldDirection;
+    const bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(
+        UGameplayStatics::GetPlayerController(this, 0),
+        CrosshairLocation,
+        CrosshairWorldPosition,
+        CrosshairWorldDirection
+        );
+
+    if (!bScreenToWorld) return;
+    const FVector Start = CrosshairWorldPosition;
+    const FVector End = Start + CrosshairWorldDirection * CrosshairTraceLenght;
+    GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility);
+
+    if (!TraceHitResult.bBlockingHit)
+    {
+        TraceHitResult.ImpactPoint = End;
+    }
+    else
+    {
+        DrawDebugSphere(GetWorld(), TraceHitResult.ImpactPoint, 12.0f,12, FColor::Red);
+    }
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(UCombatComponent, EquippedWeapon);
     DOREPLIFETIME(UCombatComponent, bIsAiming);
+}
+
+void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    FHitResult HitResult;
+    TraceUnderCrosshairs(HitResult);
 }
