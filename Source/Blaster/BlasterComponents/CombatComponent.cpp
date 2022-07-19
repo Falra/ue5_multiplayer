@@ -69,6 +69,11 @@ void UCombatComponent::OnRep_EquippedWeapon()
     }
 }
 
+void UCombatComponent::FireButtonPressed(bool bPressed)
+{
+    bFireButtonPressed = bPressed;
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
