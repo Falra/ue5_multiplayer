@@ -296,3 +296,14 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
     DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
 }
+
+void ABlasterCharacter::PlayFireMontage(bool bAiming)
+{
+    if (!CombatComponent || !FireWeaponMontage || !CombatComponent->EquippedWeapon) return;
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(FireWeaponMontage);
+    const FName SectionName = bAiming ? FName("RifleName") : FName("RifleHip");
+    AnimInstance->Montage_JumpToSection(SectionName);
+}

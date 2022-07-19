@@ -18,6 +18,8 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    void PlayFireMontage(bool bAiming);
+    
 protected:
     virtual void BeginPlay() override;
 
@@ -63,6 +65,10 @@ private:
 
     ETurningInPlace TurningInPlace;
     void TurnInPlace(float DeltaTime);
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    class UAnimMontage* FireWeaponMontage;
+    
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;
