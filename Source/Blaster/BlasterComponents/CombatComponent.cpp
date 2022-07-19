@@ -5,7 +5,6 @@
 
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/Weapon/Weapon.h"
-#include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -80,19 +79,17 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 void UCombatComponent::ServerFire_Implementation()
 {
-    MulticastFire_Implementation();
+    MulticastFire();
 }
 
 void UCombatComponent::MulticastFire_Implementation()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Role 1st %s"), Character->HasAuthority() ? "1" : "0");
     if (!EquippedWeapon) return;
 
     if (Character)
     {
         Character->PlayFireMontage(bIsAiming);
         EquippedWeapon->Fire();
-        UE_LOG(LogTemp, Warning, TEXT("Role 2nd %s"), Character->HasAuthority() ? "1" : "0");
     }
 }
 
