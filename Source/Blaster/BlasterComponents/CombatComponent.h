@@ -39,6 +39,7 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon")
     float CrosshairTraceLenght = 80000.0f;
 
+    FVector HitTarget;
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
