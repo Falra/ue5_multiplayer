@@ -10,7 +10,7 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 {
     Super::Fire(HitTarget);
 
-    if (!ProjectileClass) return;
+    if (!ProjectileClass || !HasAuthority()) return;
     
     const auto MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
     if (!MuzzleFlashSocket) return;
