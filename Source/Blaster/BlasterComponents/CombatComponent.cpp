@@ -12,7 +12,7 @@
 
 UCombatComponent::UCombatComponent()
 {
-    PrimaryComponentTick.bCanEverTick = true;
+    PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UCombatComponent::BeginPlay()
@@ -74,6 +74,8 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
     bFireButtonPressed = bPressed;
     if (bFireButtonPressed)
     {
+        FHitResult HitResult;
+        TraceUnderCrosshairs(HitResult);
         ServerFire();
     }
 }
@@ -136,6 +138,4 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    FHitResult HitResult;
-    TraceUnderCrosshairs(HitResult);
 }
