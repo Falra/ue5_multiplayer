@@ -39,7 +39,6 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon")
     float CrosshairTraceLenght = 80000.0f;
 
-    FVector HitTarget;
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
@@ -53,10 +52,10 @@ protected:
     void FireButtonPressed(bool bPressed);
 
     UFUNCTION(Server, Reliable)
-    void ServerFire();
+    void ServerFire(const FVector_NetQuantize& TraceHitTarget);
 
     UFUNCTION(NetMulticast, Reliable)
-    void MulticastFire();
+    void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
     void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 };

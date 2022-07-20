@@ -76,23 +76,23 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
     {
         FHitResult HitResult;
         TraceUnderCrosshairs(HitResult);
-        ServerFire();
+        ServerFire(HitResult.ImpactPoint);
     }
 }
 
-void UCombatComponent::ServerFire_Implementation()
+void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
-    MulticastFire();
+    MulticastFire(TraceHitTarget);
 }
 
-void UCombatComponent::MulticastFire_Implementation()
+void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
     if (!EquippedWeapon) return;
 
     if (Character)
     {
         Character->PlayFireMontage(bIsAiming);
-        EquippedWeapon->Fire(HitTarget);
+        EquippedWeapon->Fire(TraceHitTarget);
     }
 }
 
@@ -121,11 +121,6 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
     {
         TraceHitResult.ImpactPoint = End;
     }
-    else
-    {
-        DrawDebugSphere(GetWorld(), TraceHitResult.ImpactPoint, 12.0f,12, FColor::Red);
-    }
-    HitTarget = TraceHitResult.ImpactPoint;
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
