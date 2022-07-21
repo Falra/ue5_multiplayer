@@ -6,6 +6,28 @@
 #include "GameFramework/HUD.h"
 #include "BlasterHUD.generated.h"
 
+USTRUCT(BlueprintType)
+struct FHUDPackage
+{
+    GENERATED_BODY()
+public:
+    
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsCenter;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsLeft;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsRight;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsTop;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsBottom;
+};
+
 /**
  * 
  */
@@ -15,4 +37,8 @@ class BLASTER_API ABlasterHUD : public AHUD
     GENERATED_BODY()
 public:
     virtual void DrawHUD() override;
+private:
+    FHUDPackage HUDPackage;
+public:
+    FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };

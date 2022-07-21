@@ -72,28 +72,27 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     FVector2D ShellOffset {-15.0f, 15.0f};
-
+    
+public:
     /*
      * Textures for crosshair
      */
-    class UTexture2D;
-
-    UPROPERTY(EditAnywhere, Category = "Crosshairs")
-    UTexture2D* CrosshairCenter;
-
-    UPROPERTY(EditAnywhere, Category = "Crosshairs")
-    UTexture2D* CrosshairLeft;
-
-    UPROPERTY(EditAnywhere, Category = "Crosshairs")
-    UTexture2D* CrosshairRight;
-
-    UPROPERTY(EditAnywhere, Category = "Crosshairs")
-    UTexture2D* CrosshairTop;
-
-    UPROPERTY(EditAnywhere, Category = "Crosshairs")
-    UTexture2D* CrosshairBottom;
     
-public:
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsCenter;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsLeft;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsRight;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsTop;
+
+    UPROPERTY(EditAnywhere, Category = "Crosshairs")
+    UTexture2D* CrosshairsBottom;
+    
     void SetWeaponState(EWeaponState State);
     FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
