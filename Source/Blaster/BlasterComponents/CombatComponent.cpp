@@ -25,6 +25,11 @@ void UCombatComponent::BeginPlay()
     if (Character)
     {
         Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+        Controller = Cast<ABlasterPlayerController>(Character->Controller);
+        if (Controller)
+        {
+            HUD = Cast<ABlasterHUD>(Controller->GetHUD());
+        }
     }
 }
 
@@ -51,11 +56,6 @@ void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
     if (Character)
     {
         Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
-        Controller = Cast<ABlasterPlayerController>(Character->Controller);
-        if (Controller)
-        {
-            HUD = Cast<ABlasterHUD>(Controller->GetHUD());
-        }
     }
 }
 
