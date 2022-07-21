@@ -159,6 +159,11 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
         HUDPackage.CrosshairsTop = nullptr;
         HUDPackage.CrosshairsBottom = nullptr;
     }
+    const FVector2D WalkSpeedRange(0.0f, Character->GetCharacterMovement()->MaxWalkSpeed);
+    const FVector2D VelocityMultiplierRange(0.0f, 1.0f);
+    FVector Velocity = Character->GetVelocity();
+    Velocity.Z = 0;
+    HUDPackage.CrosshairSpread = FMath::GetMappedRangeValueClamped(WalkSpeedRange, VelocityMultiplierRange, Velocity.Size());
     HUD->SetHUDPackage(HUDPackage);
 }
 
