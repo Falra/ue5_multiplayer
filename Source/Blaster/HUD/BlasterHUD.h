@@ -13,4 +13,6 @@ UCLASS()
 class BLASTER_API ABlasterHUD : public AHUD
 {
     GENERATED_BODY()
+public:
+    virtual void DrawHUD() override;
 };
