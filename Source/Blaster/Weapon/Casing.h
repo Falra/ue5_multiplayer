@@ -29,4 +29,7 @@ private:
 
     UPROPERTY(EditAnywhere)
     class USoundCue* ShellSound;
+
+    FTimerHandle DestroyTimer;
+    void DestroyAfterDelay();
 };

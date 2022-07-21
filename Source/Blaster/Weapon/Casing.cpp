@@ -33,5 +33,13 @@ void ACasing::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrim
         UGameplayStatics::PlaySoundAtLocation(this, ShellSound, GetActorLocation());
     }
 
+    if (!GetWorldTimerManager().IsTimerActive(DestroyTimer))
+    {
+        GetWorldTimerManager().SetTimer(DestroyTimer, this, &ACasing::DestroyAfterDelay, 0.5f);
+    }
+}
+
+void ACasing::DestroyAfterDelay()
+{
     Destroy();
 }
