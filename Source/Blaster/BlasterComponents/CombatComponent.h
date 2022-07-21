@@ -66,4 +66,7 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon")
     float CrosshairTraceLenght = 80000.0f;
+
+    float CrosshairVelocityFactor;
+    float CrosshairInAirFactor;
 };
