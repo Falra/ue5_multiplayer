@@ -69,6 +69,9 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     TSubclassOf<class ACasing> CasingClass;
+
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+    FVector2D ShellOffset {-15.0f, 15.0f};
 public:
     void SetWeaponState(EWeaponState State);
     FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }

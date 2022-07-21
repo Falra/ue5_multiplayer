@@ -114,6 +114,12 @@ void AWeapon::Fire(const FVector& HitTarget)
         const auto SocketTransform = AmmoSocket->GetSocketTransform(WeaponMesh);
         UWorld* World = GetWorld();
         if (!World) return;
-        World->SpawnActor<ACasing>(CasingClass, SocketTransform.GetLocation(), SocketTransform.GetRotation().Rotator());
+        FRotator ShellRotation = SocketTransform.GetRotation().Rotator();
+
+        ShellRotation.Pitch += FMath::RandRange(ShellOffset.X, ShellOffset.Y);
+        ShellRotation.Roll += FMath::RandRange(ShellOffset.X, ShellOffset.Y);
+        ShellRotation.Yaw += FMath::RandRange(ShellOffset.X, ShellOffset.Y);
+        
+        World->SpawnActor<ACasing>(CasingClass, SocketTransform.GetLocation(), ShellRotation);
     }
 }
