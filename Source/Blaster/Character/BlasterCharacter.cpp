@@ -290,6 +290,12 @@ AWeapon* ABlasterCharacter::GetEquippedWeapon() const
     return CombatComponent->EquippedWeapon;
 }
 
+FVector ABlasterCharacter::GetHitTarget() const
+{
+    if (!CombatComponent) return FVector();
+    return CombatComponent->HitTarget;
+}
+
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
