@@ -186,8 +186,19 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
     {
         CrosshairInAirFactor = FMath::FInterpTo(CrosshairInAirFactor, 0.0f, DeltaTime, 30.0f);
     }
+    if (bIsAiming)
+    {
+        CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.58f, DeltaTime, 30.0f);
+    }
+    else
+    {
+        CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.0f, DeltaTime, 30.0f);
+    }
 
-    HUDPackage.CrosshairSpread = CrosshairVelocityFactor + CrosshairInAirFactor;
+    HUDPackage.CrosshairSpread = 0.5f
+                                 + CrosshairVelocityFactor
+                                 + CrosshairInAirFactor
+                                 - CrosshairAimFactor;
 
     HUD->SetHUDPackage(HUDPackage);
 }

@@ -70,6 +70,7 @@ private:
 #pragma region Crosshair
     float CrosshairVelocityFactor;
     float CrosshairInAirFactor;
+    float CrosshairAimFactor;
 
     FVector HitTarget;
 #pragma endregion
