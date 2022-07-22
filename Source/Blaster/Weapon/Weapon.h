@@ -74,9 +74,8 @@ private:
     FVector2D ShellOffset {-15.0f, 15.0f};
     
 public:
-    /*
-     * Textures for crosshair
-     */
+
+#pragma region Crosshair
     
     UPROPERTY(EditAnywhere, Category = "Crosshairs")
     UTexture2D* CrosshairsCenter;
@@ -92,9 +91,22 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Crosshairs")
     UTexture2D* CrosshairsBottom;
+
+#pragma endregion
+
+#pragma region FOV
+
+    UPROPERTY(EditAnywhere, Category = "Zoom FOV")
+    float ZoomedFOV = 30.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Zoom FOV")
+    float ZoomedInterpSpeed = 20.0f;
+
+#pragma endregion
     
     void SetWeaponState(EWeaponState State);
     FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
-    
+    FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+    FORCEINLINE float GetZoomedInterpSpeed() const { return ZoomedInterpSpeed; }
 };

@@ -67,8 +67,24 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon")
     float CrosshairTraceLenght = 80000.0f;
 
+#pragma region Crosshair
     float CrosshairVelocityFactor;
     float CrosshairInAirFactor;
 
     FVector HitTarget;
+#pragma endregion
+
+#pragma region FOV
+    float DefaultFOV;
+
+    float CurrentFOV;
+
+    UPROPERTY(EditAnywhere, Category = "Zoom FOV")
+    float ZoomedFOV = 30.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Zoom FOV")
+    float ZoomedInterpSpeed = 20.0f;
+
+    void InterpFOV(float DeltaTime);
+#pragma endregion
 };
