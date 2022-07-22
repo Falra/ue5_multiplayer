@@ -153,13 +153,21 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
     {
         TraceHitResult.ImpactPoint = End;
     }
+
+    if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>())
+    {
+        HUDPackage.CrosshairsColor = FLinearColor::Red;
+    }
+    else
+    {
+        HUDPackage.CrosshairsColor = FLinearColor::White;
+    }
 }
 
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 {
     if (!Character || !Controller || !HUD) return;
 
-    FHUDPackage HUDPackage;
     if (EquippedWeapon)
     {
         HUDPackage.CrosshairsCenter = EquippedWeapon->CrosshairsCenter;

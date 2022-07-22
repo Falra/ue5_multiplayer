@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/HUD/BlasterHUD.h"
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
@@ -66,6 +67,8 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon")
     float CrosshairTraceLenght = 80000.0f;
+
+    FHUDPackage HUDPackage;
 
 #pragma region Crosshair
     float CrosshairVelocityFactor;
