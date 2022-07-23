@@ -20,6 +20,7 @@ public:
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
+    void PlayHitReactMontage() const;
     
 protected:
     virtual void BeginPlay() override;
@@ -70,6 +71,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "Montage")
     class UAnimMontage* FireWeaponMontage;
 
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    UAnimMontage* HitReactMontage;
+    
     void HideCameraIfCharacterClose();
 
     UPROPERTY(EditAnywhere, Category = "Camera")

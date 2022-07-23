@@ -337,3 +337,14 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
     const FName SectionName = bAiming ? FName("RifleName") : FName("RifleHip");
     AnimInstance->Montage_JumpToSection(SectionName);
 }
+
+void ABlasterCharacter::PlayHitReactMontage() const
+{
+    if (!CombatComponent || !HitReactMontage || !CombatComponent->EquippedWeapon) return;
+    
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(HitReactMontage);
+    const FName SectionName("FromFront");
+    AnimInstance->Montage_JumpToSection(SectionName);
+}
