@@ -30,6 +30,7 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bIsCrouched = BlasterCharacter->bIsCrouched;
     bIsAiming = BlasterCharacter->IsAiming();
     TurningInPlace = BlasterCharacter->GetTurningInPlace();
+    bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
 
     // Yaw offset for strafing
     const auto AimRotation = BlasterCharacter->GetBaseAimRotation();

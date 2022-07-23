@@ -35,6 +35,7 @@ protected:
     void AimButtonPressed();
     void AimButtonReleased();
     void AimOffset(float DeltaTime);
+    void SimProxiesTurn();
     virtual void Jump() override;
     void FireButtonPressed();
     void FireButtonReleased();
@@ -80,6 +81,8 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Camera")
     float CameraThreshold = 200.0f;
+
+    bool bRotateRootBone;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;
@@ -90,4 +93,5 @@ public:
     FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
     FVector GetHitTarget() const;
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+    FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 };

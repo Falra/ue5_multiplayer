@@ -58,7 +58,14 @@ void ABlasterCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    AimOffset(DeltaTime);
+    if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy)
+    {
+        AimOffset(DeltaTime);
+    }
+    else
+    {
+        SimProxiesTurn();
+    }
 
     HideCameraIfCharacterClose();
 }
@@ -173,6 +180,7 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
     
     if (!bIsMoving && !bIsInAir)
     {
+        bRotateRootBone = true;
         const auto CurrentAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
         const auto DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
         AO_Yaw = DeltaAimRotation.Yaw;
@@ -185,6 +193,7 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
     }
     if (bIsMoving || bIsInAir)
     {
+        bRotateRootBone = false;
         StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
         AO_Yaw = 0.0f;
         bUseControllerRotationYaw = true;
@@ -199,6 +208,13 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         const FVector2D OutRange(-90.0f, 0.0f);
         AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
     }
+}
+
+void ABlasterCharacter::SimProxiesTurn()
+{
+    if(!CombatComponent || !CombatComponent->EquippedWeapon) return;
+    
+    bRotateRootBone = false;
 }
 
 void ABlasterCharacter::Jump()
