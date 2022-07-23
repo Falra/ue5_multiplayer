@@ -48,7 +48,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 {
     if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
     {
-        BlasterCharacter->PlayHitReactMontage();
+        BlasterCharacter->MulticastHit();
     }
     Destroy();
 }

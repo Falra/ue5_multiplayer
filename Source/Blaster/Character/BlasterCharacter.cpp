@@ -348,3 +348,8 @@ void ABlasterCharacter::PlayHitReactMontage() const
     const FName SectionName("FromFront");
     AnimInstance->Montage_JumpToSection(SectionName);
 }
+
+void ABlasterCharacter::MulticastHit_Implementation() const
+{
+    PlayHitReactMontage();
+}

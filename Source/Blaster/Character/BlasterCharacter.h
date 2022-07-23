@@ -20,8 +20,9 @@ public:
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
-    void PlayHitReactMontage() const;
-    
+
+    UFUNCTION(NetMulticast, Unreliable)
+    void MulticastHit() const;
 protected:
     virtual void BeginPlay() override;
 
@@ -37,7 +38,8 @@ protected:
     virtual void Jump() override;
     void FireButtonPressed();
     void FireButtonReleased();
-
+    void PlayHitReactMontage() const;
+    
 private:
     UPROPERTY(VisibleAnywhere, Category = "Camera")
     class USpringArmComponent* CameraBoom;
@@ -73,7 +75,7 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* HitReactMontage;
-    
+
     void HideCameraIfCharacterClose();
 
     UPROPERTY(EditAnywhere, Category = "Camera")
