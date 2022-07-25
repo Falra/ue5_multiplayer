@@ -87,6 +87,9 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
+
+    bAutomatic = EquippedWeapon->bAutomatic;
+    FireDelay = EquippedWeapon->FireDelay;
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -100,7 +103,8 @@ void UCombatComponent::OnRep_EquippedWeapon()
 
 void UCombatComponent::Fire()
 {
-    if (!EquippedWeapon) return;
+    if (!EquippedWeapon || !bCanFire) return;
+    bCanFire = false;
     ServerFire(HitTarget);
     CrosshairShootingFactor = 0.75f;
     StartFireTimer();
@@ -238,13 +242,15 @@ void UCombatComponent::InterpFOV(float DeltaTime)
 
 void UCombatComponent::StartFireTimer()
 {
-    if (EquippedWeapon || !Character) return;
+    if (!EquippedWeapon || !Character) return;
     Character->GetWorldTimerManager().SetTimer(FireTimer, this, &UCombatComponent::FireTimerFinished, FireDelay);
 }
 
 void UCombatComponent::FireTimerFinished()
 {
-    if (bFireButtonPressed)
+    bCanFire = true;
+    if (!EquippedWeapon) return;
+    if (bFireButtonPressed && bAutomatic)
     {
         Fire();
     }

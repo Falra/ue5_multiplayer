@@ -92,6 +92,11 @@ public:
     UPROPERTY(EditAnywhere, Category = "Crosshairs")
     UTexture2D* CrosshairsBottom;
 
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+    float FireDelay = 0.15f;
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+    bool bAutomatic = true;
+
 #pragma endregion
 
 #pragma region FOV

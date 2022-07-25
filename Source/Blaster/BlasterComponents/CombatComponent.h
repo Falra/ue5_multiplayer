@@ -100,9 +100,13 @@ private:
 #pragma region AutoFire
     FTimerHandle FireTimer;
 
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    float FireDelay;
+    UPROPERTY(VisibleAnywhere, Category = "Weapon")
+    float FireDelay = 0.15f;
+    UPROPERTY(VisibleAnywhere, Category = "Weapon")
+    bool bAutomatic = false;
 
+    bool bCanFire = true;
+    
     void StartFireTimer();
     void FireTimerFinished();
 #pragma endregion
