@@ -34,6 +34,7 @@ protected:
     void CrouchButtonPressed();
     void AimButtonPressed();
     void AimButtonReleased();
+    void CalculateAO_Pitch();
     void AimOffset(float DeltaTime);
     void SimProxiesTurn();
     virtual void Jump() override;

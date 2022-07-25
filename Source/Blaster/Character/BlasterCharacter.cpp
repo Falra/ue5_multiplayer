@@ -169,6 +169,18 @@ void ABlasterCharacter::AimButtonReleased()
     }
 }
 
+void ABlasterCharacter::CalculateAO_Pitch()
+{
+    AO_Pitch = GetBaseAimRotation().Pitch;
+    if (AO_Pitch > 90.0f && !IsLocallyControlled())
+    {
+        // map Pitch form [270, 360) to [-90, 0)
+        const FVector2D InRange(270.0f, 360.0f);
+        const FVector2D OutRange(-90.0f, 0.0f);
+        AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
+    }
+}
+
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
     if(!CombatComponent || !CombatComponent->EquippedWeapon) return;
@@ -200,14 +212,7 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
         TurningInPlace = ETurningInPlace::ETIP_NotTurning;
     }
 
-    AO_Pitch = GetBaseAimRotation().Pitch;
-    if (AO_Pitch > 90.0f && !IsLocallyControlled())
-    {
-        // map Pitch form [270, 360) to [-90, 0)
-        const FVector2D InRange(270.0f, 360.0f);
-        const FVector2D OutRange(-90.0f, 0.0f);
-        AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
-    }
+    CalculateAO_Pitch();
 }
 
 void ABlasterCharacter::SimProxiesTurn()
@@ -215,6 +220,7 @@ void ABlasterCharacter::SimProxiesTurn()
     if(!CombatComponent || !CombatComponent->EquippedWeapon) return;
     
     bRotateRootBone = false;
+    CalculateAO_Pitch();
 }
 
 void ABlasterCharacter::Jump()
