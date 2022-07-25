@@ -58,7 +58,7 @@ void ABlasterCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy)
+    if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
     {
         AimOffset(DeltaTime);
     }
@@ -69,6 +69,7 @@ void ABlasterCharacter::Tick(float DeltaTime)
         {
             OnRep_ReplicatedMovement();
         }
+        CalculateAO_Pitch();
     }
     HideCameraIfCharacterClose();
 }
@@ -221,8 +222,16 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
 void ABlasterCharacter::SimProxiesTurn()
 {
     if(!CombatComponent || !CombatComponent->EquippedWeapon) return;
-    
     bRotateRootBone = false;
+
+    FVector Velocity = GetVelocity();
+    Velocity.Z = 0.0f;
+    if (!Velocity.IsZero())
+    {
+        TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+        return;
+    }
+    
     CalculateAO_Pitch();
 
     ProxyRotationLastFrame = ProxyRotation;
@@ -380,11 +389,7 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 void ABlasterCharacter::OnRep_ReplicatedMovement()
 {
     Super::OnRep_ReplicatedMovement();
-
-    if (GetLocalRole() == ENetRole::ROLE_SimulatedProxy)
-    {
-        SimProxiesTurn();
-    }
+    SimProxiesTurn();
     TimeSinceLastMovementReplication = 0.0f;
 }
 
