@@ -28,6 +28,7 @@ protected:
 
     UFUNCTION()
     void OnRep_EquippedWeapon();
+    void Fire();
 
     void FireButtonPressed(bool bPressed);
 
@@ -95,4 +96,15 @@ private:
 
     void InterpFOV(float DeltaTime);
 #pragma endregion
+
+#pragma region AutoFire
+    FTimerHandle FireTimer;
+
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    float FireDelay;
+
+    void StartFireTimer();
+    void FireTimerFinished();
+#pragma endregion
+
 };

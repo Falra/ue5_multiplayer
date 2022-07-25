@@ -3,6 +3,7 @@
 
 #include "CombatComponent.h"
 
+#include "../../../Plugins/Developer/RiderLink/Source/RD/thirdparty/clsocket/src/StatTimer.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
@@ -97,18 +98,20 @@ void UCombatComponent::OnRep_EquippedWeapon()
     }
 }
 
+void UCombatComponent::Fire()
+{
+    if (!EquippedWeapon) return;
+    ServerFire(HitTarget);
+    CrosshairShootingFactor = 0.75f;
+    StartFireTimer();
+}
+
 void UCombatComponent::FireButtonPressed(bool bPressed)
 {
     bFireButtonPressed = bPressed;
     if (bFireButtonPressed)
     {
-        FHitResult HitResult;
-        TraceUnderCrosshairs(HitResult);
-        ServerFire(HitResult.ImpactPoint);
-        if (EquippedWeapon)
-        {
-            CrosshairShootingFactor = 0.75f;
-        }
+        Fire();
     }
 }
 
@@ -231,6 +234,20 @@ void UCombatComponent::InterpFOV(float DeltaTime)
         CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, ZoomedInterpSpeed);
     }
     Character->GetFollowCamera()->SetFieldOfView(CurrentFOV);
+}
+
+void UCombatComponent::StartFireTimer()
+{
+    if (EquippedWeapon || !Character) return;
+    Character->GetWorldTimerManager().SetTimer(FireTimer, this, &UCombatComponent::FireTimerFinished, FireDelay);
+}
+
+void UCombatComponent::FireTimerFinished()
+{
+    if (bFireButtonPressed)
+    {
+        Fire();
+    }
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
