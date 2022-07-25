@@ -20,6 +20,7 @@ public:
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
+    virtual void OnRep_ReplicatedMovement() override;
 
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastHit() const;
@@ -88,6 +89,7 @@ private:
     FRotator ProxyRotationLastFrame;
     FRotator ProxyRotation;
     float ProxyYaw;
+    float TimeSinceLastMovementReplication;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;

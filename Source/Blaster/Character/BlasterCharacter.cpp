@@ -64,9 +64,12 @@ void ABlasterCharacter::Tick(float DeltaTime)
     }
     else
     {
-        SimProxiesTurn();
+        TimeSinceLastMovementReplication += DeltaTime;
+        if (TimeSinceLastMovementReplication > 0.25f)
+        {
+            OnRep_ReplicatedMovement();
+        }
     }
-
     HideCameraIfCharacterClose();
 }
 
@@ -372,6 +375,17 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
     AnimInstance->Montage_Play(FireWeaponMontage);
     const FName SectionName = bAiming ? FName("RifleName") : FName("RifleHip");
     AnimInstance->Montage_JumpToSection(SectionName);
+}
+
+void ABlasterCharacter::OnRep_ReplicatedMovement()
+{
+    Super::OnRep_ReplicatedMovement();
+
+    if (GetLocalRole() == ENetRole::ROLE_SimulatedProxy)
+    {
+        SimProxiesTurn();
+    }
+    TimeSinceLastMovementReplication = 0.0f;
 }
 
 void ABlasterCharacter::PlayHitReactMontage() const
