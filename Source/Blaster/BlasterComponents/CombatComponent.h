@@ -70,11 +70,14 @@ private:
 
     FHUDPackage HUDPackage;
 
+    bool bIsAimingPlayer;
+
 #pragma region Crosshair
     float CrosshairVelocityFactor;
     float CrosshairInAirFactor;
     float CrosshairAimFactor;
     float CrosshairShootingFactor;
+    float CrosshairAimPlayerFactor;
 
     FVector HitTarget;
 #pragma endregion

@@ -159,14 +159,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
         TraceHitResult.ImpactPoint = End;
     }
 
-    if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>())
-    {
-        HUDPackage.CrosshairsColor = FLinearColor::Red;
-    }
-    else
-    {
-        HUDPackage.CrosshairsColor = FLinearColor::White;
-    }
+    bIsAimingPlayer = TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>();
 }
 
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
@@ -189,6 +182,9 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
         HUDPackage.CrosshairsTop = nullptr;
         HUDPackage.CrosshairsBottom = nullptr;
     }
+
+    HUDPackage.CrosshairsColor = bIsAimingPlayer ? FLinearColor::Red : FLinearColor::White;
+    
     const FVector2D WalkSpeedRange(0.0f, Character->GetCharacterMovement()->MaxWalkSpeed);
     const FVector2D VelocityMultiplierRange(0.0f, 1.0f);
     FVector Velocity = Character->GetVelocity();
@@ -203,22 +199,21 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
     {
         CrosshairInAirFactor = FMath::FInterpTo(CrosshairInAirFactor, 0.0f, DeltaTime, 30.0f);
     }
-    if (bIsAiming)
-    {
-        CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.58f, DeltaTime, 30.0f);
-    }
-    else
-    {
-        CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.0f, DeltaTime, 30.0f);
-    }
 
+    const float TargetAimFactor = bIsAiming ? 0.58f : 0.0f;
+    CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, TargetAimFactor, DeltaTime, 30.0f);
+    
     CrosshairShootingFactor = FMath::FInterpTo(CrosshairShootingFactor, 0.0f, DeltaTime, 40.0f);
+
+    const float TargetAimPlayerFactor = bIsAimingPlayer ? 0.58f : 0.0f;
+    CrosshairAimPlayerFactor = FMath::FInterpTo(CrosshairAimPlayerFactor, TargetAimPlayerFactor, DeltaTime, 30.0f);
     
     HUDPackage.CrosshairSpread = 0.5f
                                  + CrosshairVelocityFactor
                                  + CrosshairInAirFactor
                                  - CrosshairAimFactor
-                                 + CrosshairShootingFactor;
+                                 + CrosshairShootingFactor
+                                 - CrosshairAimPlayerFactor;
 
     HUD->SetHUDPackage(HUDPackage);
 }
