@@ -221,6 +221,18 @@ void ABlasterCharacter::SimProxiesTurn()
     
     bRotateRootBone = false;
     CalculateAO_Pitch();
+
+    ProxyRotationLastFrame = ProxyRotation;
+    ProxyRotation = GetActorRotation();
+    ProxyYaw = UKismetMathLibrary::NormalizedDeltaRotator(ProxyRotation, ProxyRotationLastFrame).Yaw;
+    if (FMath::Abs(ProxyYaw) > TurnThreshold)
+    {
+        TurningInPlace = ProxyYaw > TurnThreshold ? ETurningInPlace::ETIP_Right : ETurningInPlace::ETIP_Left;
+    }
+    else
+    {
+        TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+    }
 }
 
 void ABlasterCharacter::Jump()

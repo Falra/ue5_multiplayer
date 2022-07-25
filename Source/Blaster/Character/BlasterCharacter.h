@@ -84,6 +84,10 @@ private:
     float CameraThreshold = 200.0f;
 
     bool bRotateRootBone;
+    float TurnThreshold = 0.5f;
+    FRotator ProxyRotationLastFrame;
+    FRotator ProxyRotation;
+    float ProxyYaw;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;
