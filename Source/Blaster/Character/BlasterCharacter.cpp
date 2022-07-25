@@ -49,9 +49,18 @@ ABlasterCharacter::ABlasterCharacter()
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 720.0f);
 }
 
+void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
+    DOREPLIFETIME(ABlasterCharacter, Health);
+}
+
 void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    Health = MaxHealth;
 }
 
 void ABlasterCharacter::Tick(float DeltaTime)
@@ -332,6 +341,10 @@ void ABlasterCharacter::HideCameraIfCharacterClose()
     }
 }
 
+void ABlasterCharacter::OnRep_Health()
+{
+}
+
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
     if (OverlappingWeapon)
@@ -366,13 +379,6 @@ FVector ABlasterCharacter::GetHitTarget() const
 {
     if (!CombatComponent) return FVector();
     return CombatComponent->HitTarget;
-}
-
-void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
 }
 
 void ABlasterCharacter::PlayFireMontage(bool bAiming)

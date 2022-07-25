@@ -90,6 +90,16 @@ private:
     FRotator ProxyRotation;
     float ProxyYaw;
     float TimeSinceLastMovementReplication;
+
+    UPROPERTY(EditAnywhere, Category = "Player stats")
+    float MaxHealth = 100.0f;
+
+    UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
+    float Health;
+
+    UFUNCTION()
+    void OnRep_Health();
+    
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;
