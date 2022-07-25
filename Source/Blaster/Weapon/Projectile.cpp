@@ -50,6 +50,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
     if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
     {
         BlasterCharacter->MulticastHit();
+        bHitPlayer = true;
     }
     Destroy();
 }
@@ -63,7 +64,11 @@ void AProjectile::Destroyed()
 {
     Super::Destroyed();
 
-    if (ImpactParticles)
+    if (bHitPlayer && ImpactPlayerParticles)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactPlayerParticles, GetActorTransform());
+    }
+    else if (ImpactParticles)
     {
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
     }

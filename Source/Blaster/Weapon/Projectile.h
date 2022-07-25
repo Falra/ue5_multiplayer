@@ -39,7 +39,10 @@ private:
     UParticleSystem* ImpactParticles;
 
     UPROPERTY(EditAnywhere)
-    class USoundCue* ImpactSound;
+    UParticleSystem* ImpactPlayerParticles;
     
-public:
+    UPROPERTY(EditAnywhere)
+    class USoundCue* ImpactSound;
+
+    bool bHitPlayer = false;
 };
