@@ -447,6 +447,7 @@ void ABlasterCharacter::UpdateHUDHealth()
 
 void ABlasterCharacter::Eliminate()
 {
+    bEliminated = true;
     PlayEliminatedMontage();
 }
 

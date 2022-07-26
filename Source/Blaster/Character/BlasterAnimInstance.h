@@ -71,6 +71,9 @@ private:
     UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
     bool bRotateRootBone;
 
+    UPROPERTY(BlueprintReadOnly, Category = "Player stats", meta = (AllowPrivateAccess = true))
+    bool bEliminated;
+    
     FRotator CharacterRotationLastFrame;
     FRotator CharacterRotation;
     FRotator DeltaRotation;

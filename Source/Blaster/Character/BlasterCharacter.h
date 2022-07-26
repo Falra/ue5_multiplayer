@@ -101,6 +101,9 @@ private:
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
     float Health;
 
+    UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
+    bool bEliminated = false;
+    
     UFUNCTION()
     void OnRep_Health();
 
@@ -118,4 +121,5 @@ public:
     FVector GetHitTarget() const;
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
+    FORCEINLINE bool IsEliminated() const { return bEliminated; }
 };
