@@ -445,7 +445,7 @@ void ABlasterCharacter::UpdateHUDHealth()
     }
 }
 
-void ABlasterCharacter::Eliminate()
+void ABlasterCharacter::Eliminate_Implementation()
 {
     bEliminated = true;
     PlayEliminatedMontage();

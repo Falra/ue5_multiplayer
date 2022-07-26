@@ -21,6 +21,7 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
+    UFUNCTION(NetMulticast, Reliable)
     void Eliminate();
     void PlayEliminatedMontage();
 protected:
