@@ -4,6 +4,7 @@
 
 #include "Blaster/Blaster.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
+#include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
@@ -419,6 +420,15 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
     Health = FMath::ClampAngle(Health - Damage, 0.0f, MaxHealth);
     PlayHitReactMontage();
     UpdateHUDHealth();
+
+    if (Health == 0.0f)
+    {
+        if (auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+        {
+            const auto InstigatorController = Cast<ABlasterPlayerController>(InstigatedBy);
+            BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, InstigatorController);
+        }
+    }
 }
 
 void ABlasterCharacter::OnRep_Health()
@@ -433,4 +443,9 @@ void ABlasterCharacter::UpdateHUDHealth()
     {
         BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
     }
+}
+
+void ABlasterCharacter::Eliminate()
+{
+    
 }
