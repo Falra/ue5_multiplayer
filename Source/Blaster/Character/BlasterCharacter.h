@@ -22,7 +22,7 @@ public:
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
     void Eliminate();
-    
+    void PlayEliminatedMontage();
 protected:
     virtual void BeginPlay() override;
 
@@ -79,6 +79,9 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* HitReactMontage;
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    UAnimMontage* EliminatedMontage;
 
     void HideCameraIfCharacterClose();
 

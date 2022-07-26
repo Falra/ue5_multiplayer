@@ -447,5 +447,13 @@ void ABlasterCharacter::UpdateHUDHealth()
 
 void ABlasterCharacter::Eliminate()
 {
-    
+    PlayEliminatedMontage();
+}
+
+void ABlasterCharacter::PlayEliminatedMontage()
+{
+    if (!EliminatedMontage) return;
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(EliminatedMontage);
 }
