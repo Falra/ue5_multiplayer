@@ -4,6 +4,7 @@
 
 #include "Blaster/Blaster.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -61,6 +62,11 @@ void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
     Health = MaxHealth;
+    BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
+    if (BlasterPlayerController)
+    {
+        BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+    }
 }
 
 void ABlasterCharacter::Tick(float DeltaTime)

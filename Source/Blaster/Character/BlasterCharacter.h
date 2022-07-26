@@ -99,6 +99,9 @@ private:
 
     UFUNCTION()
     void OnRep_Health();
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterPlayerController* BlasterPlayerController;
     
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
