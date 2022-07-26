@@ -22,8 +22,6 @@ public:
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
 
-    UFUNCTION(NetMulticast, Unreliable)
-    void MulticastHit() const;
 protected:
     virtual void BeginPlay() override;
 
@@ -42,7 +40,9 @@ protected:
     void FireButtonPressed();
     void FireButtonReleased();
     void PlayHitReactMontage() const;
-    
+    void UpdateHUDHealth();
+    UFUNCTION()
+    void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
 private:
     UPROPERTY(VisibleAnywhere, Category = "Camera")
     class USpringArmComponent* CameraBoom;

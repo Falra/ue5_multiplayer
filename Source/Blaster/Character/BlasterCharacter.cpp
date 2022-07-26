@@ -63,9 +63,10 @@ void ABlasterCharacter::BeginPlay()
     Super::BeginPlay();
     Health = MaxHealth;
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
-    if (BlasterPlayerController)
+    UpdateHUDHealth();
+    if (HasAuthority())
     {
-        BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+        OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::OnReceiveDamage);
     }
 }
 
@@ -347,10 +348,6 @@ void ABlasterCharacter::HideCameraIfCharacterClose()
     }
 }
 
-void ABlasterCharacter::OnRep_Health()
-{
-}
-
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
     if (OverlappingWeapon)
@@ -416,7 +413,24 @@ void ABlasterCharacter::PlayHitReactMontage() const
     AnimInstance->Montage_JumpToSection(SectionName);
 }
 
-void ABlasterCharacter::MulticastHit_Implementation() const
+void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
+    AActor* DamageCauser)
+{
+    Health = FMath::ClampAngle(Health - Damage, 0.0f, MaxHealth);
+    PlayHitReactMontage();
+    UpdateHUDHealth();
+}
+
+void ABlasterCharacter::OnRep_Health()
 {
     PlayHitReactMontage();
+    UpdateHUDHealth();
+}
+
+void ABlasterCharacter::UpdateHUDHealth()
+{
+    if (BlasterPlayerController)
+    {
+        BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+    }
 }
