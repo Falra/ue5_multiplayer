@@ -25,7 +25,7 @@ public:
     void ShowPickupWidget(const bool bShowWidget) const;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     virtual void Fire(const FVector& HitTarget);
-    
+    virtual void DropWeapon();
 protected:
     UFUNCTION()
     virtual void BeginPlay() override;
