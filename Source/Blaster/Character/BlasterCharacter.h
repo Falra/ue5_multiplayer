@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
@@ -103,12 +104,12 @@ private:
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
     float Health;
 
-    UPROPERTY(VisibleAnywhere, Category = "Player stats")
+    UPROPERTY(VisibleAnywhere, Category = "Elimination")
     bool bEliminated = false;
 
     FTimerHandle EliminationTimer;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Player stats")
+    UPROPERTY(EditDefaultsOnly, Category = "Elimination")
     float EliminationDelay = 3.0f;
     
     void EliminationTimerFinished();
@@ -116,6 +117,29 @@ private:
     UFUNCTION()
     void OnRep_Health();
 
+#pragma region DissolveEffect
+    
+    UPROPERTY(VisibleAnywhere, Category = "Elimination")
+    UTimelineComponent* DissolveTimeline;
+    
+    FOnTimelineFloat DissolveTrack;
+
+    UPROPERTY(EditAnywhere, Category = "Elimination")
+    UCurveFloat* DissolveCurve;
+
+    UPROPERTY(EditAnywhere, Category = "Elimination")
+    UMaterialInstance* DissolveMaterialInstance;
+
+    UPROPERTY(VisibleAnywhere, Category = "Elimination")
+    UMaterialInstanceDynamic* DynamicDissolveMaterialInstance;
+
+    UFUNCTION()
+    void UpdateDissolveMaterial(float DissolveValue);
+
+    void StartDissolve();
+#pragma endregion 
+    
+    
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerController* BlasterPlayerController;
     
