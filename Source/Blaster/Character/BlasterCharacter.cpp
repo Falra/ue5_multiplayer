@@ -439,6 +439,7 @@ void ABlasterCharacter::OnRep_Health()
 
 void ABlasterCharacter::UpdateHUDHealth()
 {
+    BlasterPlayerController = !BlasterPlayerController ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
     if (BlasterPlayerController)
     {
         BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
