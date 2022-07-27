@@ -23,6 +23,7 @@ public:
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
     void Eliminate();
+    void StopMovementAndCollision();
     UFUNCTION(NetMulticast, Reliable)
     void MulticastEliminate();
     void PlayEliminatedMontage();

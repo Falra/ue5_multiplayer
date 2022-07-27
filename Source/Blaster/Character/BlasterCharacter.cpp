@@ -461,6 +461,8 @@ void ABlasterCharacter::MulticastEliminate_Implementation()
     bEliminated = true;
     PlayEliminatedMontage();
     StartDissolve();
+    StopMovementAndCollision();
+    
 }
 
 void ABlasterCharacter::EliminationTimerFinished()
@@ -500,6 +502,16 @@ void ABlasterCharacter::StartDissolve()
     DissolveTrack.BindDynamic(this, &ABlasterCharacter::UpdateDissolveMaterial);
     DissolveTimeline->AddInterpFloat(DissolveCurve, DissolveTrack);
     DissolveTimeline->Play();
+}
+
+void ABlasterCharacter::StopMovementAndCollision()
+{
+    GetCharacterMovement()->DisableMovement();
+    GetCharacterMovement()->StopMovementImmediately();
+    DisableInput(BlasterPlayerController);
+
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion 
