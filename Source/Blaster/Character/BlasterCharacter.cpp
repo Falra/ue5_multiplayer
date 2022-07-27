@@ -445,10 +445,26 @@ void ABlasterCharacter::UpdateHUDHealth()
     }
 }
 
-void ABlasterCharacter::Eliminate_Implementation()
+#pragma region Elimination
+
+void ABlasterCharacter::Eliminate()
+{
+    MulticastEliminate();
+    GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
+}
+
+void ABlasterCharacter::MulticastEliminate_Implementation()
 {
     bEliminated = true;
     PlayEliminatedMontage();
+}
+
+void ABlasterCharacter::EliminationTimerFinished()
+{
+    if (auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+    {
+        BlasterGameMode->RequestRespawn(this, Controller);
+    }
 }
 
 void ABlasterCharacter::PlayEliminatedMontage()
@@ -458,3 +474,5 @@ void ABlasterCharacter::PlayEliminatedMontage()
     if (!AnimInstance) return;
     AnimInstance->Montage_Play(EliminatedMontage);
 }
+
+#pragma endregion 

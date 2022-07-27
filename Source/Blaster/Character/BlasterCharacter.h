@@ -21,8 +21,9 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
-    UFUNCTION(NetMulticast, Reliable)
     void Eliminate();
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastEliminate();
     void PlayEliminatedMontage();
 protected:
     virtual void BeginPlay() override;
@@ -102,8 +103,15 @@ private:
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
     float Health;
 
-    UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
+    UPROPERTY(VisibleAnywhere, Category = "Player stats")
     bool bEliminated = false;
+
+    FTimerHandle EliminationTimer;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Player stats")
+    float EliminationDelay = 3.0f;
+    
+    void EliminationTimerFinished();
     
     UFUNCTION()
     void OnRep_Health();
