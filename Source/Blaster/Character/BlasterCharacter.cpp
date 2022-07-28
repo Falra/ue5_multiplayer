@@ -454,6 +454,10 @@ void ABlasterCharacter::Eliminate()
 {
     MulticastEliminate();
     GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
+    if (CombatComponent && CombatComponent->EquippedWeapon)
+    {
+        CombatComponent->EquippedWeapon->DropWeapon();
+    }
 }
 
 void ABlasterCharacter::MulticastEliminate_Implementation()
