@@ -151,6 +151,10 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Elimination")
     FVector EliminationBotOffset{0.0f, 0.0f, 200.0f};
+
+    UPROPERTY(EditAnywhere, Category = "Elimination")
+    class USoundCue* EliminationSound;
+
 #pragma endregion 
     
     UPROPERTY(VisibleAnywhere)

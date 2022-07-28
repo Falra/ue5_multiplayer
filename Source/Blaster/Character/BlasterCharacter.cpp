@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -526,4 +527,7 @@ void ABlasterCharacter::SpawnEliminationBot()
     if (!EliminationBotEffect) return;
     const FVector BotSpawnPoint(GetActorLocation() + EliminationBotOffset);
     EliminationBotComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EliminationBotEffect, BotSpawnPoint, GetActorRotation());
+
+    if (!EliminationSound) return;
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), EliminationSound, BotSpawnPoint);
 }
