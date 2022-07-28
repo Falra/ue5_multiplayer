@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 
 ABlasterCharacter::ABlasterCharacter()
@@ -93,6 +94,15 @@ void ABlasterCharacter::Tick(float DeltaTime)
         CalculateAO_Pitch();
     }
     HideCameraIfCharacterClose();
+}
+
+void ABlasterCharacter::Destroyed()
+{
+    Super::Destroyed();
+    if (EliminationBotComponent)
+    {
+        EliminationBotComponent->DestroyComponent();
+    }
 }
 
 void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

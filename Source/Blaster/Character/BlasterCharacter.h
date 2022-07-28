@@ -17,6 +17,7 @@ class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCro
 public:
     ABlasterCharacter();
     virtual void Tick(float DeltaTime) override;
+    virtual void Destroyed() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
