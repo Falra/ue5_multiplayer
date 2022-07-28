@@ -23,7 +23,6 @@ public:
     void PlayFireMontage(bool bAiming);
     virtual void OnRep_ReplicatedMovement() override;
     void Eliminate();
-    void StopMovementAndCollision();
     UFUNCTION(NetMulticast, Reliable)
     void MulticastEliminate();
     void PlayEliminatedMontage();
@@ -48,6 +47,8 @@ protected:
     void UpdateHUDHealth();
     UFUNCTION()
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
+    void StopMovementAndCollision();
+    void SpawnEliminationBot();
 private:
     UPROPERTY(VisibleAnywhere, Category = "Camera")
     class USpringArmComponent* CameraBoom;
@@ -139,7 +140,18 @@ private:
 
     void StartDissolve();
 #pragma endregion 
-    
+
+#pragma region EliminationBot
+
+    UPROPERTY(EditAnywhere, Category = "Elimination")
+    UParticleSystem* EliminationBotEffect;
+
+    UPROPERTY(VisibleAnywhere, Category = "Elimination")
+    UParticleSystemComponent* EliminationBotComponent;
+
+    UPROPERTY(EditAnywhere, Category = "Elimination")
+    FVector EliminationBotOffset{0.0f, 0.0f, 200.0f};
+#pragma endregion 
     
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerController* BlasterPlayerController;

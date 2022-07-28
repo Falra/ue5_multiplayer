@@ -12,6 +12,7 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -466,7 +467,7 @@ void ABlasterCharacter::MulticastEliminate_Implementation()
     PlayEliminatedMontage();
     StartDissolve();
     StopMovementAndCollision();
-    
+    SpawnEliminationBot();
 }
 
 void ABlasterCharacter::EliminationTimerFinished()
@@ -518,4 +519,11 @@ void ABlasterCharacter::StopMovementAndCollision()
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-#pragma endregion 
+#pragma endregion
+
+void ABlasterCharacter::SpawnEliminationBot()
+{
+    if (!EliminationBotEffect) return;
+    const FVector BotSpawnPoint(GetActorLocation() + EliminationBotOffset);
+    EliminationBotComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EliminationBotEffect, BotSpawnPoint, GetActorRotation());
+}
