@@ -47,7 +47,8 @@ protected:
         UPrimitiveComponent* OtherComp,
         int32 OtherBodyIndex
         );
-    
+
+    virtual void SetWeaponMeshState(bool bIsEnabled);
 private:
     UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
     USkeletalMeshComponent* WeaponMesh;

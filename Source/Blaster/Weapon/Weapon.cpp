@@ -82,18 +82,14 @@ void AWeapon::SetWeaponState(EWeaponState State)
         case EWeaponState::EWS_Equipped:
             ShowPickupWidget(false);
             AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-            WeaponMesh->SetSimulatePhysics(false);
-            WeaponMesh->SetEnableGravity(false);
-            WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            SetWeaponMeshState(false);
             break;
         case EWeaponState::EWS_Dropped:
             if (HasAuthority())
             {
                 AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
             }
-            WeaponMesh->SetSimulatePhysics(true);
-            WeaponMesh->SetEnableGravity(true);
-            WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            SetWeaponMeshState(true);
             break;
     }
 }
@@ -104,8 +100,20 @@ void AWeapon::OnRep_WeaponState()
     {
         case EWeaponState::EWS_Equipped:
             ShowPickupWidget(false);
+            SetWeaponMeshState(false);
+            break;
+        case EWeaponState::EWS_Dropped:
+            SetWeaponMeshState(true);
             break;
     }
+}
+
+void AWeapon::SetWeaponMeshState(bool bIsEnabled)
+{
+    WeaponMesh->SetSimulatePhysics(bIsEnabled);
+    WeaponMesh->SetEnableGravity(bIsEnabled);
+    const auto CollisionEnabled = bIsEnabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
+    WeaponMesh->SetCollisionEnabled(CollisionEnabled);
 }
 
 void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -141,4 +149,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 void AWeapon::DropWeapon()
 {
     SetWeaponState(EWeaponState::EWS_Dropped);
+    const FDetachmentTransformRules TransformRules(EDetachmentRule::KeepWorld, true);
+    WeaponMesh->DetachFromComponent(TransformRules);
+    SetOwner(nullptr);
 }
