@@ -39,6 +39,7 @@ protected:
     void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
     void TraceUnderCrosshairs(FHitResult& TraceHitResult);
+    void SetWeaponStateAndAttach();
 
     void SetHUDCrosshairs(float DeltaTime);
     
