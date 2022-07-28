@@ -190,8 +190,6 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
 
-    bAutomatic = EquippedWeapon->bAutomatic;
-    FireDelay = EquippedWeapon->FireDelay;
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -254,14 +252,14 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 void UCombatComponent::StartFireTimer()
 {
     if (!EquippedWeapon || !Character) return;
-    Character->GetWorldTimerManager().SetTimer(FireTimer, this, &UCombatComponent::FireTimerFinished, FireDelay);
+    Character->GetWorldTimerManager().SetTimer(FireTimer, this, &UCombatComponent::FireTimerFinished, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireTimerFinished()
 {
     bCanFire = true;
     if (!EquippedWeapon) return;
-    if (bFireButtonPressed && bAutomatic)
+    if (bFireButtonPressed && EquippedWeapon->bAutomatic)
     {
         Fire();
     }
