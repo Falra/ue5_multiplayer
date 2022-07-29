@@ -50,6 +50,9 @@ protected:
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
     void StopMovementAndCollision();
     void SpawnEliminationBot();
+
+    void PollInit();
+    
 private:
     UPROPERTY(VisibleAnywhere, Category = "Camera")
     class USpringArmComponent* CameraBoom;
@@ -160,6 +163,9 @@ private:
     
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerController* BlasterPlayerController;
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterPlayerState* BlasterPlayerState;
     
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);

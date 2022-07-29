@@ -6,6 +6,7 @@
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
+#include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -94,6 +95,7 @@ void ABlasterCharacter::Tick(float DeltaTime)
         CalculateAO_Pitch();
     }
     HideCameraIfCharacterClose();
+    PollInit();
 }
 
 void ABlasterCharacter::Destroyed()
@@ -540,4 +542,16 @@ void ABlasterCharacter::SpawnEliminationBot()
 
     if (!EliminationSound) return;
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), EliminationSound, BotSpawnPoint);
+}
+
+void ABlasterCharacter::PollInit()
+{
+    if (!BlasterPlayerState)
+    {
+        BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
+        if (BlasterPlayerState)
+        {
+            BlasterPlayerState->AddToScore(0.0f);
+        }
+    }
 }
