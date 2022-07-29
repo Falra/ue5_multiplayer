@@ -35,3 +35,12 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
     const FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
     BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 }
+
+void ABlasterPlayerController::SetHUDScore(float Score)
+{
+    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
+    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
+
+    const FString ScoreText = FString::Printf(TEXT("%d"), FMath::FloorToInt(Score));
+    BlasterHUD->CharacterOverlay->ScoreAmount->SetText(FText::FromString(ScoreText));
+}
