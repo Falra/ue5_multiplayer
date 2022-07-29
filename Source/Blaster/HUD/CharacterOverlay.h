@@ -27,4 +27,7 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* DefeatsAmount;
+
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* ShowDefeatedAnimation;
 };

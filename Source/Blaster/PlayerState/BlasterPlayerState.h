@@ -21,7 +21,7 @@ public:
     virtual void OnRep_Defeats();
     void AddToScore(float ScoreAmount);
     void AddToDefeats(int32 DefeatsAmount);
-    void CheckSetController();
+    void ShowDefeatedAnimation();
 private:
 
     UPROPERTY(VisibleAnywhere)
@@ -32,6 +32,8 @@ private:
 
     void SetHUDScore();
     void SetHUDDefeats();
+    
+    void CheckSetController();
 
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Defeats")
     int32 Defeats = 0;

@@ -51,6 +51,13 @@ void ABlasterPlayerState::SetHUDDefeats()
     Controller->SetHUDDefeats(Defeats);
 }
 
+void ABlasterPlayerState::ShowDefeatedAnimation()
+{
+    CheckSetController();
+    if (!Controller) return;
+    Controller->MulticastShowDefeatedAnimation();
+}
+
 void ABlasterPlayerState::CheckSetController()
 {
     Character = !Character ? Cast<ABlasterCharacter>(GetPawn()) : Character;

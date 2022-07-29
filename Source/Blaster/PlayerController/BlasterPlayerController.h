@@ -18,6 +18,8 @@ public:
     void SetHUDHealth(float Health, float MaxHealth);
     void SetHUDScore(float Score);
     void SetHUDDefeats(int32 Defeats);
+    UFUNCTION(NetMulticast, Unreliable)
+    void MulticastShowDefeatedAnimation();
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;

@@ -24,8 +24,9 @@ void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, 
     if (VictimPlayerState && AttackerPlayerState != VictimPlayerState)
     {
         VictimPlayerState->AddToDefeats(1);
+        VictimPlayerState->ShowDefeatedAnimation();
     }
-    
+
     if (EliminatedCharacter)
     {
         EliminatedCharacter->Eliminate();

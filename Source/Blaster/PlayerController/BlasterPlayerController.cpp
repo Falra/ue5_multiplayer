@@ -53,3 +53,10 @@ void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
     const FString DefeatsText = FString::Printf(TEXT("%d"), Defeats);
     BlasterHUD->CharacterOverlay->DefeatsAmount->SetText(FText::FromString(DefeatsText));
 }
+
+void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
+{
+    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
+    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
+    BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->ShowDefeatedAnimation);
+}
