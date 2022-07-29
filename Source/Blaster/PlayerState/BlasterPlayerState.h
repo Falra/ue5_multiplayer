@@ -21,6 +21,7 @@ public:
     virtual void OnRep_Defeats();
     void AddToScore(float ScoreAmount);
     void AddToDefeats(int32 DefeatsAmount);
+    void CheckSetController();
 private:
 
     UPROPERTY(VisibleAnywhere)

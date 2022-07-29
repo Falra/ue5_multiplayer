@@ -39,18 +39,21 @@ void ABlasterPlayerState::AddToDefeats(int32 DefeatsAmount)
 
 void ABlasterPlayerState::SetHUDScore()
 {
-    Character = !Character ? Cast<ABlasterCharacter>(GetPawn()) : Character;
-    if (!Character) return;
-    Controller = !Controller ? Cast<ABlasterPlayerController>(Character->GetController()) : Controller;
+    CheckSetController();
     if (!Controller) return;
     Controller->SetHUDScore(GetScore());
 }
 
 void ABlasterPlayerState::SetHUDDefeats()
 {
+    CheckSetController();
+    if (!Controller) return;
+    Controller->SetHUDDefeats(Defeats);
+}
+
+void ABlasterPlayerState::CheckSetController()
+{
     Character = !Character ? Cast<ABlasterCharacter>(GetPawn()) : Character;
     if (!Character) return;
     Controller = !Controller ? Cast<ABlasterPlayerController>(Character->GetController()) : Controller;
-    if (!Controller) return;
-    Controller->SetHUDDefeats(Defeats);
 }
