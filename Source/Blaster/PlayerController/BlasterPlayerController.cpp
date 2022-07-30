@@ -54,6 +54,15 @@ void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
     BlasterHUD->CharacterOverlay->DefeatsAmount->SetText(FText::FromString(DefeatsText));
 }
 
+void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
+{
+    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
+    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
+
+    const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
+    BlasterHUD->CharacterOverlay->AmmoAmount->SetText(FText::FromString(AmmoText));
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
     BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 

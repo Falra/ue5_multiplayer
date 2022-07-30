@@ -5,6 +5,7 @@
 
 #include "Casing.h"
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -30,12 +31,12 @@ AWeapon::AWeapon()
     PickupWidget->SetupAttachment(GetRootComponent());
 }
 
-void AWeapon::ShowPickupWidget(const bool bShowWidget) const
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-    if (PickupWidget)
-    {
-        PickupWidget->SetVisibility(bShowWidget);
-    }
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AWeapon, WeaponState);
+    DOREPLIFETIME(AWeapon, Ammo);
 }
 
 void AWeapon::BeginPlay()
@@ -108,19 +109,40 @@ void AWeapon::OnRep_WeaponState()
     }
 }
 
+void AWeapon::CheckUpdateController()
+{
+    BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+    BlasterOwnerController = (!BlasterOwnerController && BlasterOwnerCharacter) ? BlasterOwnerCharacter->GetController<ABlasterPlayerController>() : BlasterOwnerController;
+}
+
+void AWeapon::SpendRound()
+{
+    --Ammo;
+
+    CheckUpdateController();
+
+    if (BlasterOwnerController)
+    {
+        BlasterOwnerController->SetHUDWeaponAmmo(Ammo);
+    }
+}
+
+void AWeapon::OnRep_Ammo()
+{
+    CheckUpdateController();
+
+    if (BlasterOwnerController)
+    {
+        BlasterOwnerController->SetHUDWeaponAmmo(Ammo);
+    }
+}
+
 void AWeapon::SetWeaponMeshState(bool bIsEnabled)
 {
     WeaponMesh->SetSimulatePhysics(bIsEnabled);
     WeaponMesh->SetEnableGravity(bIsEnabled);
     const auto CollisionEnabled = bIsEnabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
     WeaponMesh->SetCollisionEnabled(CollisionEnabled);
-}
-
-void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(AWeapon, WeaponState);
 }
 
 void AWeapon::Fire(const FVector& HitTarget)
@@ -144,6 +166,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 
         World->SpawnActor<ACasing>(CasingClass, SocketTransform.GetLocation(), ShellRotation);
     }
+    SpendRound();
 }
 
 void AWeapon::DropWeapon()
@@ -152,4 +175,12 @@ void AWeapon::DropWeapon()
     const FDetachmentTransformRules TransformRules(EDetachmentRule::KeepWorld, true);
     WeaponMesh->DetachFromComponent(TransformRules);
     SetOwner(nullptr);
+}
+
+void AWeapon::ShowPickupWidget(const bool bShowWidget) const
+{
+    if (PickupWidget)
+    {
+        PickupWidget->SetVisibility(bShowWidget);
+    }
 }

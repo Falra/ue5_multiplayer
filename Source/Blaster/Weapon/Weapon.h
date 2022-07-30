@@ -73,6 +73,24 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     FVector2D ShellOffset {-15.0f, 15.0f};
+
+    UPROPERTY(EditAnywhere, ReplicatedUsing= "OnRep_Ammo", Category = "Weapon Properties")
+    int32 Ammo;
+
+    UFUNCTION()
+    void OnRep_Ammo();
+    void CheckUpdateController();
+
+    void SpendRound();
+    
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+    int32 MagCapacity;
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterCharacter* BlasterOwnerCharacter;
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterPlayerController* BlasterOwnerController;
     
 public:
 
