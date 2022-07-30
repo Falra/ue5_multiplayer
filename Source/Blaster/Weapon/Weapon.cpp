@@ -42,7 +42,17 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 void AWeapon::OnRep_Owner()
 {
     Super::OnRep_Owner();
-    ShowWeaponAmmo();
+
+    if (!Owner)
+    {
+        BlasterOwnerCharacter = nullptr;
+        BlasterOwnerController = nullptr;
+    }
+    else
+    {
+        ShowWeaponAmmo();
+    }
+
 }
 
 void AWeapon::BeginPlay()
@@ -180,6 +190,8 @@ void AWeapon::DropWeapon()
     const FDetachmentTransformRules TransformRules(EDetachmentRule::KeepWorld, true);
     WeaponMesh->DetachFromComponent(TransformRules);
     SetOwner(nullptr);
+    BlasterOwnerCharacter = nullptr;
+    BlasterOwnerController = nullptr;
 }
 
 void AWeapon::ShowPickupWidget(const bool bShowWidget) const

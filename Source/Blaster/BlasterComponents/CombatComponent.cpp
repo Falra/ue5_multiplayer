@@ -183,6 +183,11 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
     if (!Character || !WeaponToEquip) return;
 
+    if (EquippedWeapon)
+    {
+        EquippedWeapon->DropWeapon();
+    }
+    
     EquippedWeapon = WeaponToEquip;
     SetWeaponStateAndAttach();
     EquippedWeapon->SetOwner(Character);
