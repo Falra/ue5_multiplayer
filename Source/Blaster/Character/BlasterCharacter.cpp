@@ -481,6 +481,11 @@ void ABlasterCharacter::MulticastEliminate_Implementation()
     StartDissolve();
     StopMovementAndCollision();
     SpawnEliminationBot();
+
+    if (BlasterPlayerController)
+    {
+        BlasterPlayerController->SetHUDWeaponAmmo(0);
+    }
 }
 
 void ABlasterCharacter::EliminationTimerFinished()
