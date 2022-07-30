@@ -24,6 +24,7 @@ public:
     AWeapon();
     void ShowPickupWidget(const bool bShowWidget) const;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void OnRep_Owner() override;
     virtual void Fire(const FVector& HitTarget);
     virtual void DropWeapon();
 protected:
@@ -82,7 +83,7 @@ private:
     void CheckUpdateController();
 
     void SpendRound();
-    
+
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     int32 MagCapacity;
 
@@ -129,6 +130,7 @@ public:
 #pragma endregion
     
     void SetWeaponState(EWeaponState State);
+    void ShowWeaponAmmo();
     FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
     FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }

@@ -39,6 +39,12 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
     DOREPLIFETIME(AWeapon, Ammo);
 }
 
+void AWeapon::OnRep_Owner()
+{
+    Super::OnRep_Owner();
+    ShowWeaponAmmo();
+}
+
 void AWeapon::BeginPlay()
 {
     Super::BeginPlay();
@@ -57,8 +63,7 @@ void AWeapon::BeginPlay()
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-    if (BlasterCharacter)
+    if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
     {
         BlasterCharacter->SetOverlappingWeapon(this);
     }
@@ -119,15 +124,15 @@ void AWeapon::SpendRound()
 {
     --Ammo;
 
-    CheckUpdateController();
-
-    if (BlasterOwnerController)
-    {
-        BlasterOwnerController->SetHUDWeaponAmmo(Ammo);
-    }
+    ShowWeaponAmmo();
 }
 
 void AWeapon::OnRep_Ammo()
+{
+    ShowWeaponAmmo();
+}
+
+void AWeapon::ShowWeaponAmmo()
 {
     CheckUpdateController();
 

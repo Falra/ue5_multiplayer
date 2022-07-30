@@ -186,7 +186,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     EquippedWeapon = WeaponToEquip;
     SetWeaponStateAndAttach();
     EquippedWeapon->SetOwner(Character);
-
+    EquippedWeapon->ShowWeaponAmmo();
+    
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
 
