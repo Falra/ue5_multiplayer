@@ -118,6 +118,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction("Aim", IE_Released, this, &ABlasterCharacter::AimButtonReleased);
     PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABlasterCharacter::FireButtonPressed);
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &ABlasterCharacter::FireButtonReleased);
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ABlasterCharacter::ReloadButtonPressed);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABlasterCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
@@ -188,6 +189,14 @@ void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
 void ABlasterCharacter::CrouchButtonPressed()
 {
     bIsCrouched ? UnCrouch() : Crouch();
+}
+
+void ABlasterCharacter::ReloadButtonPressed()
+{
+    if (CombatComponent)
+    {
+        CombatComponent->Reload();
+    }
 }
 
 void ABlasterCharacter::AimButtonPressed()

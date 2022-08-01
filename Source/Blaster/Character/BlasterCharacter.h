@@ -36,6 +36,7 @@ protected:
     void LookUp(float Value);
     void EquipButtonPressed();
     void CrouchButtonPressed();
+    void ReloadButtonPressed();
     void AimButtonPressed();
     void AimButtonReleased();
     void CalculateAO_Pitch();
