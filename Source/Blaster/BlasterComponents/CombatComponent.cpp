@@ -36,6 +36,11 @@ void UCombatComponent::BeginPlay()
             DefaultFOV = Character->GetFollowCamera()->FieldOfView;
             CurrentFOV = DefaultFOV;
         }
+
+        if (Character->HasAuthority())
+        {
+            InitializeCarriedAmmo();
+        }
     }
 }
 
@@ -192,6 +197,15 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     SetWeaponStateAndAttach();
     EquippedWeapon->SetOwner(Character);
     EquippedWeapon->ShowWeaponAmmo();
+
+    if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+    {
+        CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+    }
+    if (Controller)
+    {
+        Controller->SetHUDCarriedAmmo(CarriedAmmo);
+    }
     
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
@@ -279,6 +293,15 @@ bool UCombatComponent::CanFire() const
 
 void UCombatComponent::OnRep_CarriedAmmo()
 {
+    if (Controller)
+    {
+        Controller->SetHUDCarriedAmmo(CarriedAmmo);
+    }
+}
+
+void UCombatComponent::InitializeCarriedAmmo()
+{
+    CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
 }
 
 #pragma endregion

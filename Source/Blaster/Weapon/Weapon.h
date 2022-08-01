@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponTypes.h"
 #include "GameFramework/Actor.h"
 #include "PacketHandlers/StatelessConnectHandlerComponent.h"
 #include "Weapon.generated.h"
@@ -92,6 +93,9 @@ private:
 
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerController* BlasterOwnerController;
+
+    UPROPERTY(EditAnywhere)
+    EWeaponType WeaponType;
     
 public:
 
@@ -136,4 +140,5 @@ public:
     FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
     FORCEINLINE float GetZoomedInterpSpeed() const { return ZoomedInterpSpeed; }
     bool IsEmpty() const;
+    FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 };

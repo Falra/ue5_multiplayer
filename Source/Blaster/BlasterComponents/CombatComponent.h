@@ -117,6 +117,11 @@ private:
 
     TMap<EWeaponType, int32> CarriedAmmoMap;
 
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 StartingARAmmo = 30;
+    
+    void InitializeCarriedAmmo();
+
 #pragma endregion
 
 };
