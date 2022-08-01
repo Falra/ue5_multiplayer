@@ -48,6 +48,8 @@ protected:
 
     UFUNCTION(Server, Reliable)
     void ServerReload();
+
+    void HandleReload();
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;

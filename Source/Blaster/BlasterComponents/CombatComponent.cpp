@@ -317,6 +317,12 @@ void UCombatComponent::Reload()
 void UCombatComponent::ServerReload_Implementation()
 {
     if (!Character) return;
+    CombatState = ECombatState::ECS_Reloading;
+    HandleReload();
+}
+
+void UCombatComponent::HandleReload()
+{
     Character->PlayReloadMontage();
 }
 
@@ -324,6 +330,12 @@ void UCombatComponent::ServerReload_Implementation()
 
 void UCombatComponent::OnRep_CombatState()
 {
+    switch (CombatState)
+    {
+        case ECombatState::ECS_Reloading:
+            HandleReload();
+            break;
+    }
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
