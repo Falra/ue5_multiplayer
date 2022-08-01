@@ -277,6 +277,10 @@ bool UCombatComponent::CanFire() const
     return !EquippedWeapon->IsEmpty();
 }
 
+void UCombatComponent::OnRep_CarriedAmmo()
+{
+}
+
 #pragma endregion
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -284,4 +288,5 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(UCombatComponent, EquippedWeapon);
     DOREPLIFETIME(UCombatComponent, bIsAiming);
+    DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
 }
