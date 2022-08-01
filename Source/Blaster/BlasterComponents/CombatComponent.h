@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/BlasterTypes/CombatState.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/Weapon/WeaponTypes.h"
 #include "Components/ActorComponent.h"
@@ -127,4 +128,9 @@ private:
 
 #pragma endregion
 
+    UPROPERTY(ReplicatedUsing = "OnRep_CombatState")
+    ECombatState CombatState = ECombatState::ECS_Unoccupied;
+
+    UFUNCTION()
+    void OnRep_CombatState();
 };

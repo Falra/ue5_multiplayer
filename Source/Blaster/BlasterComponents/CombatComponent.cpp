@@ -322,10 +322,15 @@ void UCombatComponent::ServerReload_Implementation()
 
 #pragma endregion 
 
+void UCombatComponent::OnRep_CombatState()
+{
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(UCombatComponent, EquippedWeapon);
     DOREPLIFETIME(UCombatComponent, bIsAiming);
     DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
+    DOREPLIFETIME(UCombatComponent, CombatState);
 }
