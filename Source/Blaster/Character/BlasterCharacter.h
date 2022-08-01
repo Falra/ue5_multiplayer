@@ -22,6 +22,7 @@ public:
     virtual void PostInitializeComponents() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
+    void PlayReloadMontage();
     virtual void OnRep_ReplicatedMovement() override;
     void Eliminate();
     UFUNCTION(NetMulticast, Reliable)
@@ -84,8 +85,13 @@ private:
     ETurningInPlace TurningInPlace;
     void TurnInPlace(float DeltaTime);
 
+#pragma region AnimationMontages   
+
     UPROPERTY(EditAnywhere, Category = "Montage")
     class UAnimMontage* FireWeaponMontage;
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    UAnimMontage* ReloadMontage;
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* HitReactMontage;
@@ -93,6 +99,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* EliminatedMontage;
 
+
+#pragma endregion 
+    
     void HideCameraIfCharacterClose();
 
     UPROPERTY(EditAnywhere, Category = "Camera")

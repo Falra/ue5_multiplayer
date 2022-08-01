@@ -212,10 +212,6 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 }
 
-void UCombatComponent::Reload()
-{
-}
-
 void UCombatComponent::OnRep_EquippedWeapon()
 {
     if (EquippedWeapon && Character)
@@ -309,6 +305,22 @@ void UCombatComponent::InitializeCarriedAmmo()
 }
 
 #pragma endregion
+
+#pragma region Reload
+
+void UCombatComponent::Reload()
+{
+    if (CarriedAmmo <= 0) return;
+    ServerReload();
+}
+
+void UCombatComponent::ServerReload_Implementation()
+{
+    if (!Character) return;
+    Character->PlayReloadMontage();
+}
+
+#pragma endregion 
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

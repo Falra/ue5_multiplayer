@@ -421,6 +421,25 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
     AnimInstance->Montage_JumpToSection(SectionName);
 }
 
+void ABlasterCharacter::PlayReloadMontage()
+{
+    if (!CombatComponent || !ReloadMontage || !CombatComponent->EquippedWeapon) return;
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(ReloadMontage);
+    FName SectionName;
+
+    switch (CombatComponent->EquippedWeapon->GetWeaponType())
+    {
+        case EWeaponType::EWT_AssaultRifle:
+            SectionName = FName("Rifle");
+            break;
+    }
+
+    AnimInstance->Montage_JumpToSection(SectionName);
+}
+
 void ABlasterCharacter::OnRep_ReplicatedMovement()
 {
     Super::OnRep_ReplicatedMovement();
