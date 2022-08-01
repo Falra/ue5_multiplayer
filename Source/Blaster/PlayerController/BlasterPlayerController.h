@@ -19,6 +19,7 @@ public:
     void SetHUDScore(float Score);
     void SetHUDDefeats(int32 Defeats);
     void SetHUDWeaponAmmo(int32 Ammo);
+    void SetHUDCarriedAmmo(int32 Ammo);
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastShowDefeatedAnimation();
 protected:

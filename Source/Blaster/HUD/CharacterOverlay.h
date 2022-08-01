@@ -29,7 +29,10 @@ public:
     UTextBlock* DefeatsAmount;
 
     UPROPERTY(meta = (BindWidget))
-    UTextBlock* AmmoAmount;
+    UTextBlock* WeaponAmmoAmount;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* CarriedAmmoAmount;
     
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation* ShowDefeatedAnimation;
