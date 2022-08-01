@@ -223,7 +223,7 @@ void UCombatComponent::SetWeaponStateAndAttach()
 
 void UCombatComponent::Fire()
 {
-    if (!EquippedWeapon || !bCanFire) return;
+    if (!EquippedWeapon || !CanFire()) return;
     bCanFire = false;
     ServerFire(HitTarget);
     CrosshairShootingFactor = 0.75f;
@@ -269,6 +269,12 @@ void UCombatComponent::FireTimerFinished()
     {
         Fire();
     }
+}
+
+bool UCombatComponent::CanFire() const
+{
+    if (!EquippedWeapon || !bCanFire) return false;
+    return !EquippedWeapon->IsEmpty();
 }
 
 #pragma endregion

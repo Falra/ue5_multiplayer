@@ -135,4 +135,5 @@ public:
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
     FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
     FORCEINLINE float GetZoomedInterpSpeed() const { return ZoomedInterpSpeed; }
+    bool IsEmpty() const;
 };

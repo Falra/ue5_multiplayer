@@ -132,7 +132,7 @@ void AWeapon::CheckUpdateController()
 
 void AWeapon::SpendRound()
 {
-    --Ammo;
+    Ammo = FMath::Clamp(Ammo - 1, 0 ,MagCapacity);
 
     ShowWeaponAmmo();
 }
@@ -150,6 +150,11 @@ void AWeapon::ShowWeaponAmmo()
     {
         BlasterOwnerController->SetHUDWeaponAmmo(Ammo);
     }
+}
+
+bool AWeapon::IsEmpty() const
+{
+    return Ammo <= 0;
 }
 
 void AWeapon::SetWeaponMeshState(bool bIsEnabled)
