@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/BlasterTypes/CombatState.h"
 #include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
 #include "Components/TimelineComponent.h"
@@ -191,4 +192,5 @@ public:
     FORCEINLINE bool IsEliminated() const { return bEliminated; }
     FORCEINLINE float GetHealth() const { return Health; }
     FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+    ECombatState GetCombatState() const;
 };

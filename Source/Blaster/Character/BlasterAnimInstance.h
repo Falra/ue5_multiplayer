@@ -73,7 +73,10 @@ private:
 
     UPROPERTY(BlueprintReadOnly, Category = "Player stats", meta = (AllowPrivateAccess = true))
     bool bEliminated;
-    
+
+    UPROPERTY(BlueprintReadOnly, Category = "IK", meta = (AllowPrivateAccess = true))
+    bool bUseFABRIK;
+
     FRotator CharacterRotationLastFrame;
     FRotator CharacterRotation;
     FRotator DeltaRotation;

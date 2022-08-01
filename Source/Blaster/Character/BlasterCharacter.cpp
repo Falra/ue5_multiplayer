@@ -410,6 +410,12 @@ FVector ABlasterCharacter::GetHitTarget() const
     return CombatComponent->HitTarget;
 }
 
+ECombatState ABlasterCharacter::GetCombatState() const
+{
+    if (!CombatComponent) return ECombatState::ECS_MAX;
+    return CombatComponent->CombatState;
+}
+
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
 {
     if (!CombatComponent || !FireWeaponMontage || !CombatComponent->EquippedWeapon) return;
