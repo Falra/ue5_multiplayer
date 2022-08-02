@@ -133,6 +133,9 @@ public:
     float ZoomedInterpSpeed = 20.0f;
 
 #pragma endregion
+
+    UPROPERTY(EditAnywhere)
+    class USoundCue* EquipSound;
     
     void SetWeaponState(EWeaponState State);
     void ShowWeaponAmmo();

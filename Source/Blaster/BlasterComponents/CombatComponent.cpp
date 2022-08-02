@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -206,6 +207,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
+
+    PlayEquipEffects();
     
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
@@ -219,6 +222,15 @@ void UCombatComponent::OnRep_EquippedWeapon()
         SetWeaponStateAndAttach();
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;
+        PlayEquipEffects();
+    }
+}
+
+void UCombatComponent::PlayEquipEffects() const
+{
+    if (EquippedWeapon->EquipSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
     }
 }
 
