@@ -28,6 +28,7 @@ public:
     virtual void OnRep_Owner() override;
     virtual void Fire(const FVector& HitTarget);
     virtual void DropWeapon();
+    virtual void AddAmmo(int32 AmmoToAdd);
 protected:
     UFUNCTION()
     virtual void BeginPlay() override;
@@ -141,4 +142,6 @@ public:
     FORCEINLINE float GetZoomedInterpSpeed() const { return ZoomedInterpSpeed; }
     bool IsEmpty() const;
     FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+    FORCEINLINE int32 GetAmmo() const { return Ammo; }
+    FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
 };

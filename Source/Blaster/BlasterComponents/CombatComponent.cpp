@@ -316,7 +316,7 @@ void UCombatComponent::Reload()
 
 void UCombatComponent::ServerReload_Implementation()
 {
-    if (!Character) return;
+    if (!Character || !EquippedWeapon) return;
     CombatState = ECombatState::ECS_Reloading;
     HandleReload();
 }
@@ -326,13 +326,29 @@ void UCombatComponent::HandleReload()
     Character->PlayReloadMontage();
 }
 
+int32 UCombatComponent::AmountToReload()
+{
+    if (!EquippedWeapon) return 0;
+    const int32 RoomInMag = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetAmmo();
+    if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+    {
+        const int32 Carried = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+        const int32 Least = FMath::Min(RoomInMag, Carried);
+        return FMath::Clamp(RoomInMag, 0, Least);
+    }
+    return 0;
+}
+
 void UCombatComponent::FinishReloading()
 {
     if (!Character) return;
+
     if (Character->HasAuthority())
     {
         CombatState = ECombatState::ECS_Unoccupied;
+        UpdateAmmoValues();
     }
+
     if (bFireButtonPressed)
     {
         Fire();
@@ -355,6 +371,25 @@ void UCombatComponent::OnRep_CombatState()
             }
             break;
     }
+}
+
+void UCombatComponent::UpdateAmmoValues()
+{
+    if (!EquippedWeapon) return;
+    
+    const int32 ReloadAmount = AmountToReload();
+    if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+    {
+        CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= ReloadAmount;
+        CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+    }
+
+    if (Controller)
+    {
+        Controller->SetHUDCarriedAmmo(CarriedAmmo);
+    }
+    
+    EquippedWeapon->AddAmmo(-ReloadAmount);
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

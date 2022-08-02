@@ -199,6 +199,12 @@ void AWeapon::DropWeapon()
     BlasterOwnerController = nullptr;
 }
 
+void AWeapon::AddAmmo(int32 AmmoToAdd)
+{
+    Ammo = FMath::Clamp(Ammo - AmmoToAdd, 0, MagCapacity);
+    ShowWeaponAmmo();
+}
+
 void AWeapon::ShowPickupWidget(const bool bShowWidget) const
 {
     if (PickupWidget)
