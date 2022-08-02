@@ -33,7 +33,9 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
     bEliminated = BlasterCharacter->IsEliminated();
     bUseFABRIK = BlasterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
-
+    bUseAimOffsets = BlasterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
+    bTransformRightHand = BlasterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
+        
     // Yaw offset for strafing
     const auto AimRotation = BlasterCharacter->GetBaseAimRotation();
     const auto MovementRotation = UKismetMathLibrary::MakeRotFromX(BlasterCharacter->GetVelocity());
