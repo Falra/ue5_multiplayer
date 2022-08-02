@@ -262,7 +262,7 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 {
     if (!EquippedWeapon) return;
 
-    if (Character)
+    if (Character && CombatState == ECombatState::ECS_Unoccupied)
     {
         Character->PlayFireMontage(bIsAiming);
         EquippedWeapon->Fire(TraceHitTarget);
@@ -287,8 +287,8 @@ void UCombatComponent::FireTimerFinished()
 
 bool UCombatComponent::CanFire() const
 {
-    if (!EquippedWeapon || !bCanFire) return false;
-    return !EquippedWeapon->IsEmpty();
+    if (!EquippedWeapon) return false;
+    return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UCombatComponent::OnRep_CarriedAmmo()
@@ -328,8 +328,15 @@ void UCombatComponent::HandleReload()
 
 void UCombatComponent::FinishReloading()
 {
-    if (!Character || !Character->HasAuthority()) return;
-    CombatState = ECombatState::ECS_Unoccupied;
+    if (!Character) return;
+    if (Character->HasAuthority())
+    {
+        CombatState = ECombatState::ECS_Unoccupied;
+    }
+    if (bFireButtonPressed)
+    {
+        Fire();
+    }
 }
 
 #pragma endregion 
@@ -340,6 +347,12 @@ void UCombatComponent::OnRep_CombatState()
     {
         case ECombatState::ECS_Reloading:
             HandleReload();
+            break;
+        case ECombatState::ECS_Unoccupied:
+            if (bFireButtonPressed)
+            {
+                Fire();
+            }
             break;
     }
 }
