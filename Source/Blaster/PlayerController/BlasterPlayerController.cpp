@@ -75,6 +75,15 @@ void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
     BlasterHUD->CharacterOverlay->WeaponType->SetText(FText::FromString(WeaponTypeText));
 }
 
+void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
+{
+    if (!IsHUDValid()) return;
+    const int32 Minutes = FMath::FloorToInt(CountdownTime / 60);
+    const int32 Seconds = CountdownTime - Minutes * 60;
+    const FString MatchCountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+    BlasterHUD->CharacterOverlay->MatchCountdownText->SetText(FText::FromString(MatchCountdownText));
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
     if (!IsHUDValid()) return;
