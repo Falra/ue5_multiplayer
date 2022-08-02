@@ -20,6 +20,8 @@ public:
     friend class ABlasterCharacter;
     void EquipWeapon(class AWeapon* WeaponToEquip);
     void Reload();
+    UFUNCTION(BlueprintCallable)
+    void FinishReloading();
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
@@ -50,6 +52,7 @@ protected:
     void ServerReload();
 
     void HandleReload();
+
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;

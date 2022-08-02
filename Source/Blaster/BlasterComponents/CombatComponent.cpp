@@ -310,7 +310,7 @@ void UCombatComponent::InitializeCarriedAmmo()
 
 void UCombatComponent::Reload()
 {
-    if (CarriedAmmo <= 0) return;
+    if (CarriedAmmo <= 0 || CombatState == ECombatState::ECS_Reloading) return;
     ServerReload();
 }
 
@@ -324,6 +324,12 @@ void UCombatComponent::ServerReload_Implementation()
 void UCombatComponent::HandleReload()
 {
     Character->PlayReloadMontage();
+}
+
+void UCombatComponent::FinishReloading()
+{
+    if (!Character || !Character->HasAuthority()) return;
+    CombatState = ECombatState::ECS_Unoccupied;
 }
 
 #pragma endregion 
