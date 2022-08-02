@@ -27,9 +27,7 @@ void ABlasterPlayerController::OnPossess(APawn* aPawn)
 
 void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 {
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
-
+    if (!IsHUDValid()) return;
     const float HealthPercent = Health / MaxHealth;
     BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
     const FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
@@ -38,44 +36,54 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 
 void ABlasterPlayerController::SetHUDScore(float Score)
 {
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
-
+    if (!IsHUDValid()) return;
     const FString ScoreText = FString::Printf(TEXT("%d"), FMath::FloorToInt(Score));
     BlasterHUD->CharacterOverlay->ScoreAmount->SetText(FText::FromString(ScoreText));
 }
 
 void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
 {
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
-
+    if (!IsHUDValid()) return;
     const FString DefeatsText = FString::Printf(TEXT("%d"), Defeats);
     BlasterHUD->CharacterOverlay->DefeatsAmount->SetText(FText::FromString(DefeatsText));
 }
 
 void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 {
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
-
+    if (!IsHUDValid()) return;
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
 void ABlasterPlayerController::SetHUDCarriedAmmo(int32 Ammo)
 {
-    
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
-
+    if (!IsHUDValid()) return;
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->CarriedAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
+void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
+{
+    if (!IsHUDValid()) return;
+    FString WeaponTypeText;
+    switch (WeaponType)
+    {
+        case EWeaponType::EWT_AssaultRifle:
+            WeaponTypeText = "Assault Rifle";
+            break;
+    }
+    BlasterHUD->CharacterOverlay->WeaponType->SetText(FText::FromString(WeaponTypeText));
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
-    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return;
+    if (!IsHUDValid()) return;
     BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->ShowDefeatedAnimation);
+}
+
+bool ABlasterPlayerController::IsHUDValid()
+{
+    BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
+    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return false;
+    return true;
 }

@@ -33,6 +33,9 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* CarriedAmmoAmount;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* WeaponType;
     
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation* ShowDefeatedAnimation;

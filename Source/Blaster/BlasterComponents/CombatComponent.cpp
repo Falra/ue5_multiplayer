@@ -206,6 +206,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     if (Controller)
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
+        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
     }
 
     PlayEquipEffects();
@@ -228,6 +229,10 @@ void UCombatComponent::OnRep_EquippedWeapon()
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;
         PlayEquipEffects();
+        if (Controller)
+        {
+            Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+        }
     }
 }
 
