@@ -26,10 +26,32 @@ public:
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastShowDefeatedAnimation();
     virtual void Tick(float DeltaSeconds) override;
+    virtual float GetServerTime();
+    virtual void ReceivedPlayer() override;
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
     void SetHUDTime();
+
+#pragma region GameTime
+    
+    UFUNCTION(Server, Reliable)
+    void ServerRequestServerTime(float TimeOfClientRequest);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReportServerTime(float TimeOfClientRequest, float TimeServerReceivedClientRequest);
+
+    float ClientServerDelta = 0.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Time")
+    float TimeSyncFrequency = 5.0f;
+
+    float TimeSyncRunningTime = 0.0f;
+
+    void CheckTimeSync(float DeltaSeconds);
+
+#pragma endregion
+    
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;

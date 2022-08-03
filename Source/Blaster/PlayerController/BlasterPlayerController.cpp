@@ -19,7 +19,21 @@ void ABlasterPlayerController::BeginPlay()
 void ABlasterPlayerController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
     SetHUDTime();
+
+    CheckTimeSync(DeltaSeconds);
+}
+
+void ABlasterPlayerController::CheckTimeSync(float DeltaSeconds)
+{
+    if (!IsLocalController()) return;
+    TimeSyncRunningTime += DeltaSeconds;
+    if (TimeSyncRunningTime > TimeSyncFrequency)
+    {
+        ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+        TimeSyncRunningTime = 0.0f;
+    }
 }
 
 void ABlasterPlayerController::OnPossess(APawn* aPawn)
@@ -28,6 +42,16 @@ void ABlasterPlayerController::OnPossess(APawn* aPawn)
     if (const auto BlasterCharacter = Cast<ABlasterCharacter>(aPawn))
     {
         SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
+    }
+}
+
+void ABlasterPlayerController::ReceivedPlayer()
+{
+    Super::ReceivedPlayer();
+
+    if (IsLocalController())
+    {
+        ServerRequestServerTime(GetWorld()->GetTimeSeconds());
     }
 }
 
@@ -105,9 +129,29 @@ bool ABlasterPlayerController::IsHUDValid()
 
 void ABlasterPlayerController::SetHUDTime()
 {
-    const uint32 SecondsLeft = FMath::CeilToInt(MatchTime - GetWorld()->GetTimeSeconds());
+    const uint32 SecondsLeft = FMath::CeilToInt(MatchTime - GetServerTime());
     if (SecondsLeft == CountdownInt) return;
 
     CountdownInt = SecondsLeft;
     SetHUDMatchCountdown(CountdownInt);
+}
+
+float ABlasterPlayerController::GetServerTime()
+{
+    if (HasAuthority()) return GetWorld()->GetTimeSeconds();
+    
+    return GetWorld()->GetTimeSeconds() + ClientServerDelta;
+}
+
+void ABlasterPlayerController::ServerRequestServerTime_Implementation(float TimeOfClientRequest)
+{
+    const float ServerTimeOfReceipt = GetWorld()->GetTimeSeconds();
+    ClientReportServerTime(TimeOfClientRequest, ServerTimeOfReceipt);
+}
+
+void ABlasterPlayerController::ClientReportServerTime_Implementation(float TimeOfClientRequest, float TimeServerReceivedClientRequest)
+{
+    const float RoundTripTime = GetWorld()->GetTimeSeconds() - TimeOfClientRequest;
+    const float CurrentServerTime = TimeServerReceivedClientRequest + (RoundTripTime * 0.5f);
+    ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
 }
