@@ -25,12 +25,16 @@ public:
     void SetHUDMatchCountdown(float CountdownTime);
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastShowDefeatedAnimation();
+    virtual void Tick(float DeltaSeconds) override;
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
+    void SetHUDTime();
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;
     bool IsHUDValid();
-    
+
+    float MatchTime = 120.0f;
+    uint32 CountdownInt = 0;
 };

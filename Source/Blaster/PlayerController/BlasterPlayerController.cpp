@@ -16,6 +16,12 @@ void ABlasterPlayerController::BeginPlay()
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
 }
 
+void ABlasterPlayerController::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    SetHUDTime();
+}
+
 void ABlasterPlayerController::OnPossess(APawn* aPawn)
 {
     Super::OnPossess(aPawn);
@@ -95,4 +101,13 @@ bool ABlasterPlayerController::IsHUDValid()
     BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
     if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return false;
     return true;
+}
+
+void ABlasterPlayerController::SetHUDTime()
+{
+    const uint32 SecondsLeft = FMath::CeilToInt(MatchTime - GetWorld()->GetTimeSeconds());
+    if (SecondsLeft == CountdownInt) return;
+
+    CountdownInt = SecondsLeft;
+    SetHUDMatchCountdown(CountdownInt);
 }
