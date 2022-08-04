@@ -9,6 +9,33 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+ABlasterGameMode::ABlasterGameMode()
+{
+    bDelayedStart = true;
+}
+
+void ABlasterGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+    CountdownTime = WarmupTime;
+    LevelStartingTime = GetWorld()->GetTimeSeconds();
+}
+
+void ABlasterGameMode::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+
+    if (MatchState == MatchState::WaitingToStart)
+    {
+        CountdownTime -= DeltaSeconds; // TODO: Maybe move to own timer func?
+        // CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + GetWorld()->GetTimeSeconds();
+        if (CountdownTime <= 0.0f)
+        {
+            StartMatch();
+        }
+    }
+}
+
 void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, ABlasterPlayerController* VictimController,
     ABlasterPlayerController* AttackerController)
 {
