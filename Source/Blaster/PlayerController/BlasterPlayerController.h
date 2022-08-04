@@ -28,6 +28,7 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     virtual float GetServerTime();
     virtual void ReceivedPlayer() override;
+    void HandleStateChange();
     void OnMatchStateSet(FName State);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 protected:
@@ -53,10 +54,15 @@ protected:
     void CheckTimeSync(float DeltaSeconds);
 
 #pragma endregion
-    
+
+    void PollInit();
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;
+
+    UPROPERTY(VisibleAnywhere)
+    class UCharacterOverlay* CharacterOverlay;
+    
     bool IsHUDValid();
 
     float MatchTime = 120.0f;
@@ -67,4 +73,10 @@ private:
 
     UFUNCTION()
     void OnRep_MatchState();
+
+    bool bInitialiseCharacterOverlay = false;
+    float HUDHealth;
+    float HUDMaxHealth;
+    float HUDScore;
+    int32 HUDDefeats;
 };

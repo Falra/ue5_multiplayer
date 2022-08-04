@@ -8,6 +8,7 @@
 #include "Blaster/HUD/CharacterOverlay.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/GameMode.h"
 #include "Net/UnrealNetwork.h"
 
 void ABlasterPlayerController::BeginPlay()
@@ -30,6 +31,8 @@ void ABlasterPlayerController::Tick(float DeltaSeconds)
     SetHUDTime();
 
     CheckTimeSync(DeltaSeconds);
+
+    PollInit();
 }
 
 void ABlasterPlayerController::CheckTimeSync(float DeltaSeconds)
@@ -40,6 +43,23 @@ void ABlasterPlayerController::CheckTimeSync(float DeltaSeconds)
     {
         ServerRequestServerTime(GetWorld()->GetTimeSeconds());
         TimeSyncRunningTime = 0.0f;
+    }
+}
+
+void ABlasterPlayerController::PollInit()
+{
+    if (!CharacterOverlay)
+    {
+        if (BlasterHUD && BlasterHUD->CharacterOverlay)
+        {
+            CharacterOverlay = BlasterHUD->CharacterOverlay;
+            if (CharacterOverlay)
+            {
+                SetHUDHealth(HUDHealth, HUDMaxHealth);
+                SetHUDScore(HUDScore);
+                SetHUDDefeats(HUDDefeats);
+            }
+        }
     }
 }
 
@@ -64,7 +84,13 @@ void ABlasterPlayerController::ReceivedPlayer()
 
 void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseCharacterOverlay = true;
+        HUDHealth = Health;
+        HUDMaxHealth = MaxHealth;
+        return;
+    }
     const float HealthPercent = Health / MaxHealth;
     BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
     const FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
@@ -73,35 +99,45 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 
 void ABlasterPlayerController::SetHUDScore(float Score)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseCharacterOverlay = true;
+        HUDScore = Score;
+        return;
+    }
     const FString ScoreText = FString::Printf(TEXT("%d"), FMath::FloorToInt(Score));
     BlasterHUD->CharacterOverlay->ScoreAmount->SetText(FText::FromString(ScoreText));
 }
 
 void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseCharacterOverlay = true;
+        HUDDefeats = Defeats;
+        return;
+    }
     const FString DefeatsText = FString::Printf(TEXT("%d"), Defeats);
     BlasterHUD->CharacterOverlay->DefeatsAmount->SetText(FText::FromString(DefeatsText));
 }
 
 void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
 void ABlasterPlayerController::SetHUDCarriedAmmo(int32 Ammo)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->CarriedAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
 void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
     FString WeaponTypeText;
     switch (WeaponType)
     {
@@ -114,7 +150,7 @@ void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
 
 void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
     const int32 Minutes = FMath::FloorToInt(CountdownTime / 60);
     const int32 Seconds = CountdownTime - Minutes * 60;
     const FString MatchCountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
@@ -123,15 +159,14 @@ void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
-    if (!IsHUDValid()) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
     BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->ShowDefeatedAnimation);
 }
 
 bool ABlasterPlayerController::IsHUDValid()
 {
     BlasterHUD = !BlasterHUD ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD; 
-    if (!BlasterHUD || !BlasterHUD->CharacterOverlay) return false;
-    return true;
+    return BlasterHUD != nullptr;
 }
 
 void ABlasterPlayerController::SetHUDTime()
@@ -166,8 +201,19 @@ void ABlasterPlayerController::ClientReportServerTime_Implementation(float TimeO
 void ABlasterPlayerController::OnMatchStateSet(FName State)
 {
     MatchState = State;
+    HandleStateChange();
 }
 
 void ABlasterPlayerController::OnRep_MatchState()
 {
+    HandleStateChange();
+}
+
+void ABlasterPlayerController::HandleStateChange()
+{
+    if (MatchState == MatchState::InProgress)
+    {
+        if (!IsHUDValid()) return;
+        BlasterHUD->AddCharacterOverlay();
+    }
 }
