@@ -8,12 +8,19 @@
 #include "Blaster/HUD/CharacterOverlay.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Net/UnrealNetwork.h"
 
 void ABlasterPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
+}
+
+void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ABlasterPlayerController, MatchState);
 }
 
 void ABlasterPlayerController::Tick(float DeltaSeconds)
@@ -154,4 +161,13 @@ void ABlasterPlayerController::ClientReportServerTime_Implementation(float TimeO
     const float RoundTripTime = GetWorld()->GetTimeSeconds() - TimeOfClientRequest;
     const float CurrentServerTime = TimeServerReceivedClientRequest + (RoundTripTime * 0.5f);
     ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
+}
+
+void ABlasterPlayerController::OnMatchStateSet(FName State)
+{
+    MatchState = State;
+}
+
+void ABlasterPlayerController::OnRep_MatchState()
+{
 }
