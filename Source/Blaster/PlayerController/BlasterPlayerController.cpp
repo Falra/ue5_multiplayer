@@ -4,6 +4,7 @@
 #include "BlasterPlayerController.h"
 
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/HUD/Announcement.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
 #include "Components/ProgressBar.h"
@@ -16,6 +17,10 @@ void ABlasterPlayerController::BeginPlay()
     Super::BeginPlay();
 
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
+    if (BlasterHUD)
+    {
+        BlasterHUD->AddAnnouncementWidget();
+    }
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -215,5 +220,9 @@ void ABlasterPlayerController::HandleStateChange()
     {
         if (!IsHUDValid()) return;
         BlasterHUD->AddCharacterOverlay();
+        if (BlasterHUD->AnnouncementWidget)
+        {
+            BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Hidden);
+        }
     }
 }
