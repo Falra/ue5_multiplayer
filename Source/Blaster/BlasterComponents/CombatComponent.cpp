@@ -80,7 +80,11 @@ void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
 
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 {
-    if (!Character || !Controller || !HUD) return;
+    if (!Character) return;
+    Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+    if (!Controller) return;
+    HUD = HUD == nullptr ? Cast<ABlasterHUD>(Controller->GetHUD()) : HUD;
+    if (!HUD) return;
 
     if (EquippedWeapon)
     {
@@ -203,6 +207,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     {
         CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
     }
+
+    Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
     if (Controller)
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
@@ -229,6 +235,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;
         PlayEquipEffects();
+        Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
         if (Controller)
         {
             Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
@@ -409,7 +416,7 @@ void UCombatComponent::UpdateAmmoValues()
         CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= ReloadAmount;
         CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
     }
-
+    Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
     if (Controller)
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
