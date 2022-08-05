@@ -9,6 +9,11 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+namespace MatchState
+{
+    const FName Cooldown = FName(TEXT("Cooldown"));
+}
+
 ABlasterGameMode::ABlasterGameMode()
 {
     bDelayedStart = true;

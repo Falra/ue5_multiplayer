@@ -6,6 +6,12 @@
 #include "GameFramework/GameMode.h"
 #include "BlasterGameMode.generated.h"
 
+
+namespace MatchState
+{
+    extern BLASTER_API const FName Cooldown; // Match ended, display player stats and restart timer
+}
+
 /**
  * 
  */
