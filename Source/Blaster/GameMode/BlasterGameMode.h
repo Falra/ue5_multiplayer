@@ -40,4 +40,6 @@ protected:
     virtual void OnMatchStateSet() override;
 private:
     float CountdownTime = 0.0f;
+public:
+    FORCEINLINE float GetCountdownTime() const { return CountdownTime; };
 };

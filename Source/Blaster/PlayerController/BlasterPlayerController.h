@@ -67,6 +67,9 @@ private:
     class ABlasterHUD* BlasterHUD;
 
     UPROPERTY(VisibleAnywhere)
+    class ABlasterGameMode* BlasterGameMode;
+
+    UPROPERTY(VisibleAnywhere)
     class UCharacterOverlay* CharacterOverlay;
     
     bool IsHUDValid();

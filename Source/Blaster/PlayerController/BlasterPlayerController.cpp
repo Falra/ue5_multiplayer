@@ -188,7 +188,7 @@ void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
 void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
-    if (CountdownTime < 0.0f)
+    if (CountdownTime <= 0.0f)
     {
         BlasterHUD->CharacterOverlay->MatchCountdownText->SetText(FText());
         return;
@@ -202,7 +202,7 @@ void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)
 {
     if (!IsHUDValid() || !BlasterHUD->AnnouncementWidget) return;
-    if (CountdownTime < 0.0f)
+    if (CountdownTime <= 0.0f)
     {
         BlasterHUD->AnnouncementWidget->WarmupTime->SetText(FText());
         return;
@@ -232,7 +232,16 @@ void ABlasterPlayerController::SetHUDTime()
     if (MatchState == MatchState::WaitingToStart) TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
     else if (MatchState == MatchState::InProgress)  TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
     else if (MatchState == MatchState::Cooldown)  TimeLeft = WarmupTime + MatchTime + CooldownTime - GetServerTime() + LevelStartingTime;
-        
+
+    if (HasAuthority())
+    {
+        // Why not GetWorld()->GetAuthGameMode() ?
+        BlasterGameMode = !BlasterGameMode ? Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this)): BlasterGameMode;
+        if (BlasterGameMode)
+        {
+            TimeLeft = FMath::CeilToInt(BlasterGameMode->GetCountdownTime() + LevelStartingTime);
+        }
+    }
     const uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);
     if (SecondsLeft == CountdownInt) return;
 
