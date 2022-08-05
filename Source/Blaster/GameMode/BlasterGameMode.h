@@ -22,10 +22,13 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     float WarmupTime = 10.0f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    float MatchTime = 120.0f;
+
+    float LevelStartingTime = 0.0f;
 protected:
     virtual void BeginPlay() override;
     virtual void OnMatchStateSet() override;
 private:
     float CountdownTime = 0.0f;
-    float LevelStartingTime = 0.0f;
 };

@@ -4,23 +4,23 @@
 #include "BlasterPlayerController.h"
 
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/HUD/Announcement.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/GameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 void ABlasterPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+    ServerCheckMatchState();
+    
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
-    if (BlasterHUD)
-    {
-        BlasterHUD->AddAnnouncementWidget();
-    }
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -65,6 +65,36 @@ void ABlasterPlayerController::PollInit()
                 SetHUDDefeats(HUDDefeats);
             }
         }
+    }
+}
+
+void ABlasterPlayerController::ServerCheckMatchState_Implementation()
+{
+    const ABlasterGameMode* GameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
+    if (!GameMode) return;
+    WarmupTime = GameMode->WarmupTime;
+    MatchTime = GameMode->MatchTime;
+    LevelStartingTime = GameMode->LevelStartingTime;
+    MatchState = GameMode->GetMatchState();
+    ClientJoinMidGame(MatchState, WarmupTime, MatchTime, LevelStartingTime);
+
+    if (BlasterHUD && MatchState == MatchState::WaitingToStart)
+    {
+        BlasterHUD->AddAnnouncementWidget();
+    }
+}
+
+void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName State, float Warmup, float Match, float StartingTime)
+{
+    WarmupTime = Warmup;
+    MatchTime = Match;
+    LevelStartingTime = StartingTime;
+    MatchState = State;
+    OnMatchStateSet(MatchState);
+
+    if (BlasterHUD && MatchState == MatchState::WaitingToStart)
+    {
+        BlasterHUD->AddAnnouncementWidget();
     }
 }
 

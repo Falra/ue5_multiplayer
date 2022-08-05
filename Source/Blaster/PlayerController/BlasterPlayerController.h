@@ -56,6 +56,11 @@ protected:
 #pragma endregion
 
     void PollInit();
+    UFUNCTION(Server, Reliable)
+    void ServerCheckMatchState();
+
+    UFUNCTION(Client, Reliable)
+    void ClientJoinMidGame(FName State, float Warmup, float Match, float StartingTime);
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;
@@ -65,7 +70,9 @@ private:
     
     bool IsHUDValid();
 
-    float MatchTime = 120.0f;
+    float MatchTime = 0.0f;
+    float WarmupTime = 0.0f;
+    float LevelStartingTime = 0.0f;
     uint32 CountdownInt = 0;
 
     UPROPERTY(ReplicatedUsing = "OnRep_MatchState")
