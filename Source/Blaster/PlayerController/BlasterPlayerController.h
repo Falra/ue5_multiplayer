@@ -23,6 +23,7 @@ public:
     void SetHUDCarriedAmmo(int32 Ammo);
     void SetHUDWeaponType(EWeaponType WeaponType);
     void SetHUDMatchCountdown(float CountdownTime);
+    void SetHUDAnnouncementCountdown(float CountdownTime);
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastShowDefeatedAnimation();
     virtual void Tick(float DeltaSeconds) override;

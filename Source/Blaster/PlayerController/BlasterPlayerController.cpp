@@ -18,9 +18,9 @@ void ABlasterPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    ServerCheckMatchState();
-    
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
+
+    ServerCheckMatchState();
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -192,6 +192,15 @@ void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
     BlasterHUD->CharacterOverlay->MatchCountdownText->SetText(FText::FromString(MatchCountdownText));
 }
 
+void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)
+{
+    if (!IsHUDValid() || !BlasterHUD->AnnouncementWidget) return;
+    const int32 Minutes = FMath::FloorToInt(CountdownTime / 60);
+    const int32 Seconds = CountdownTime - Minutes * 60;
+    const FString WarmupCountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+    BlasterHUD->AnnouncementWidget->WarmupTime->SetText(FText::FromString(WarmupCountdownText));
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
@@ -206,11 +215,24 @@ bool ABlasterPlayerController::IsHUDValid()
 
 void ABlasterPlayerController::SetHUDTime()
 {
-    const uint32 SecondsLeft = FMath::CeilToInt(MatchTime - GetServerTime());
+    float TimeLeft = 0.0f;
+
+    if (MatchState == MatchState::WaitingToStart) TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
+    else if (MatchState == MatchState::InProgress)  TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
+    
+    const uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);
     if (SecondsLeft == CountdownInt) return;
 
     CountdownInt = SecondsLeft;
-    SetHUDMatchCountdown(CountdownInt);
+    if (MatchState == MatchState::WaitingToStart)
+    {
+        SetHUDAnnouncementCountdown(CountdownInt);
+    }
+    else if (MatchState == MatchState::InProgress)
+    {
+        SetHUDMatchCountdown(CountdownInt);
+    }
+    
 }
 
 float ABlasterPlayerController::GetServerTime()

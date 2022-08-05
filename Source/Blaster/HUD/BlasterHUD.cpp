@@ -41,7 +41,7 @@ void ABlasterHUD::AddCharacterOverlay()
 void ABlasterHUD::AddAnnouncementWidget()
 {
     const auto PlayerController = GetOwningPlayerController();
-    if (!PlayerController || !AnnouncementWidgetClass) return;
+    if (!PlayerController || !AnnouncementWidgetClass || AnnouncementWidget) return;
     AnnouncementWidget = CreateWidget<UAnnouncement>(PlayerController, AnnouncementWidgetClass);
     AnnouncementWidget->AddToViewport();
 }
