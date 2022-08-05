@@ -81,6 +81,8 @@ private:
 
     UFUNCTION()
     void OnRep_MatchState();
+    void HandleMatchHasStarted();
+    void HandleCooldown();
 
     bool bInitialiseCharacterOverlay = false;
     float HUDHealth;

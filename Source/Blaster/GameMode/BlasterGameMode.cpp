@@ -45,10 +45,20 @@ void ABlasterGameMode::Tick(float DeltaSeconds)
     if (MatchState == MatchState::WaitingToStart)
     {
         CountdownTime -= DeltaSeconds; // TODO: Maybe move to own timer func?
-        // CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + GetWorld()->GetTimeSeconds();
+        // CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
         if (CountdownTime <= 0.0f)
         {
             StartMatch();
+            CountdownTime = WarmupTime + MatchTime;
+        }
+    }
+    else if (MatchState == MatchState::InProgress)
+    {
+        CountdownTime -= DeltaSeconds;
+        // CountdownTime = MatchTime + WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+        if (CountdownTime <= 0.0f)
+        {
+            SetMatchState(MatchState::Cooldown);
         }
     }
 }

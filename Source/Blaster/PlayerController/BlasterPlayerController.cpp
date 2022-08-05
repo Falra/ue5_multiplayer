@@ -270,11 +270,33 @@ void ABlasterPlayerController::HandleStateChange()
 {
     if (MatchState == MatchState::InProgress)
     {
-        if (!IsHUDValid()) return;
-        BlasterHUD->AddCharacterOverlay();
-        if (BlasterHUD->AnnouncementWidget)
-        {
-            BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Hidden);
-        }
+        HandleMatchHasStarted();
+    }
+    else if (MatchState == MatchState::Cooldown)
+    {
+        HandleCooldown();
+    }
+}
+
+void ABlasterPlayerController::HandleMatchHasStarted()
+{
+    if (!IsHUDValid()) return;
+    BlasterHUD->AddCharacterOverlay();
+    if (BlasterHUD->AnnouncementWidget)
+    {
+        BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+}
+
+void ABlasterPlayerController::HandleCooldown()
+{
+    if (!IsHUDValid()) return;
+    if (BlasterHUD->CharacterOverlay)
+    {
+        BlasterHUD->CharacterOverlay->RemoveFromParent();
+    }
+    if (BlasterHUD->AnnouncementWidget)
+    {
+        BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Visible);
     }
 }

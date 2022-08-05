@@ -31,6 +31,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     float MatchTime = 120.0f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    float CooldownTime = 10.0f;
+
     float LevelStartingTime = 0.0f;
 protected:
     virtual void BeginPlay() override;
