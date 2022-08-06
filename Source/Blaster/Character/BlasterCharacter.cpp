@@ -590,6 +590,10 @@ void ABlasterCharacter::StopMovementAndCollision()
     GetCharacterMovement()->DisableMovement();
     GetCharacterMovement()->StopMovementImmediately();
     bDisableGameplay = true;
+    if (CombatComponent)
+    {
+        CombatComponent->FireButtonPressed(false);
+    }
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
