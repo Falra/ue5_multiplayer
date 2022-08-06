@@ -81,7 +81,14 @@ void ABlasterCharacter::BeginPlay()
 void ABlasterCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    RotateInPlace(DeltaTime);
+    HideCameraIfCharacterClose();
+    PollInit();
+}
 
+void ABlasterCharacter::RotateInPlace(float DeltaTime)
+{
+    if (bDisableGameplay) return;
     if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
     {
         AimOffset(DeltaTime);
@@ -95,8 +102,6 @@ void ABlasterCharacter::Tick(float DeltaTime)
         }
         CalculateAO_Pitch();
     }
-    HideCameraIfCharacterClose();
-    PollInit();
 }
 
 void ABlasterCharacter::Destroyed()

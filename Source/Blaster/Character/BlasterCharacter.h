@@ -34,6 +34,7 @@ public:
     bool bDisableGameplay = false;
 protected:
     virtual void BeginPlay() override;
+    void RotateInPlace(float DeltaTime);
 
     void MoveForward(float Value);
     void MoveRight(float Value);
