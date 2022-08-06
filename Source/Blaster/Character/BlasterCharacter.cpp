@@ -88,7 +88,12 @@ void ABlasterCharacter::Tick(float DeltaTime)
 
 void ABlasterCharacter::RotateInPlace(float DeltaTime)
 {
-    if (bDisableGameplay) return;
+    if (bDisableGameplay)
+    {
+        bUseControllerRotationYaw = false;
+        TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+        return;
+    }
     if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
     {
         AimOffset(DeltaTime);
