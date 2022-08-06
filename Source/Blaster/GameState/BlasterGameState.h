@@ -13,4 +13,15 @@ UCLASS()
 class BLASTER_API ABlasterGameState : public AGameState
 {
     GENERATED_BODY()
+
+public:
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    
+    UPROPERTY(Replicated)
+    TArray<class ABlasterPlayerState*> TopScoringPlayers;
+
+    void UpdateTopScore(ABlasterPlayerState* ScorePlayer);
+    
+private:
+    float TopScore = 0.0f;
 };
