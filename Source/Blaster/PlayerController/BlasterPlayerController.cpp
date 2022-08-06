@@ -200,6 +200,10 @@ void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
     const int32 Seconds = CountdownTime - Minutes * 60;
     const FString MatchCountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
     BlasterHUD->CharacterOverlay->MatchCountdownText->SetText(FText::FromString(MatchCountdownText));
+    if (CountdownTime <= WarningTimeThreshold)
+    {
+        BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->BlinkCountdown);
+    }
 }
 
 void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)

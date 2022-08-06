@@ -42,4 +42,7 @@ public:
     
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation* ShowDefeatedAnimation;
+
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* BlinkCountdown;
 };

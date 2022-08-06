@@ -79,6 +79,7 @@ private:
     float CooldownTime = 0.0f;
     float LevelStartingTime = 0.0f;
     uint32 CountdownInt = 0;
+    float WarningTimeThreshold = 30.0f; 
 
     UPROPERTY(ReplicatedUsing = "OnRep_MatchState")
     FName MatchState;
