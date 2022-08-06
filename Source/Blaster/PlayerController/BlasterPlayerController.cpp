@@ -3,6 +3,7 @@
 
 #include "BlasterPlayerController.h"
 
+#include "Blaster/BlasterComponents/CombatComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/HUD/Announcement.h"
@@ -312,6 +313,7 @@ void ABlasterPlayerController::HandleMatchHasStarted()
 
 void ABlasterPlayerController::HandleCooldown()
 {
+    SetCharacterInputEnabled(false);
     if (!IsHUDValid()) return;
     if (BlasterHUD->CharacterOverlay)
     {
@@ -323,5 +325,18 @@ void ABlasterPlayerController::HandleCooldown()
         const FString AnnouncementText = TEXT("New Match starts in:");
         BlasterHUD->AnnouncementWidget->AnnouncementText->SetText(FText::FromString(AnnouncementText));
         BlasterHUD->AnnouncementWidget->InfoText->SetText(FText());
+    }
+}
+
+void ABlasterPlayerController::SetCharacterInputEnabled(bool bIsEnabled)
+{
+    if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn()))
+    {
+        BlasterCharacter->bDisableGameplay = !bIsEnabled;
+        if (!bIsEnabled) return;
+        if (UCombatComponent* CombatComponent = BlasterCharacter->GetCombatComponent())
+        {
+            CombatComponent->FireButtonPressed(false);
+        }
     }
 }

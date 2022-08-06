@@ -36,7 +36,7 @@ protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
     void SetHUDTime();
-
+    void SetCharacterInputEnabled(bool bIsEnabled);
 #pragma region GameTime
     
     UFUNCTION(Server, Reliable)
