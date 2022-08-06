@@ -104,7 +104,6 @@ private:
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* EliminatedMontage;
 
-
 #pragma endregion 
     
     void HideCameraIfCharacterClose();
@@ -181,7 +180,9 @@ private:
 
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerState* BlasterPlayerState;
-    
+
+    UPROPERTY(EditDefaultsOnly, Category = "Elimination")
+    bool bDestroyWeaponOnDeath = false;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;
