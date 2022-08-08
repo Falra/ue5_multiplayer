@@ -6,7 +6,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
+#include "Sound/SoundCue.h"
 
 AProjectileRocket::AProjectileRocket()
 {
@@ -23,22 +25,20 @@ void AProjectileRocket::BeginPlay()
     {
         CollisionBox->OnComponentHit.AddDynamic(this, &AProjectileRocket::OnHit);
     }
-    
+
     if (TrailSystem)
     {
-        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(), GetActorRotation(),
+        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(),
+            GetActorRotation(),
             EAttachLocation::KeepWorldPosition, false);
     }
-}
 
-void AProjectileRocket::DestroyTimerFinished()
-{
-    Destroy();
-}
-
-void AProjectileRocket::Destroyed()
-{
-    
+    if (ProjectileLoop && LoopingSoundAttenuation)
+    {
+        ProjectileLoopComponent = UGameplayStatics::SpawnSoundAttached(ProjectileLoop, GetRootComponent(), FName(), GetActorLocation(),
+            GetActorRotation(), EAttachLocation::KeepWorldPosition, false, 1.0f, 1.0f, 0.0f, LoopingSoundAttenuation,
+            (USoundConcurrency*)nullptr, false);
+    }
 }
 
 void AProjectileRocket::HideAndStopRocket() const
@@ -54,6 +54,9 @@ void AProjectileRocket::HideAndStopRocket() const
     if (TrailSystemComponent && TrailSystemComponent->GetSystemInstanceController())
     {
         TrailSystemComponent->GetSystemInstanceController()->Deactivate();
+    }
+    if (ProjectileLoopComponent && ProjectileLoopComponent->IsPlaying())
+    {
     }
 }
 
@@ -72,4 +75,14 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
     SpawnDestroyEffects();
     HideAndStopRocket();
     GetWorldTimerManager().SetTimer(DestroyTimer, this, &AProjectileRocket::DestroyTimerFinished, DestroyTime);
+}
+
+void AProjectileRocket::DestroyTimerFinished()
+{
+    Destroy();
+}
+
+void AProjectileRocket::Destroyed()
+{
+    // Do nothing because all effects was already spawned
 }
