@@ -19,6 +19,15 @@ public:
 protected:
     virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
     virtual void BeginPlay() override;
+    virtual void Destroyed() override;
+    void HideAndStopRocket() const;
+    void DestroyTimerFinished();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
+    class UNiagaraSystem* TrailSystem;
+
+    UPROPERTY(VisibleAnywhere, Category = "Rocket")
+    class UNiagaraComponent* TrailSystemComponent;
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     float RocketMinimumDamage = 10.0f;
@@ -28,6 +37,8 @@ private:
     float RocketDamageOuterRadius = 500.0f;
     UPROPERTY(VisibleAnywhere, Category = "Rocket")
     UStaticMeshComponent* RocketMesh;
-    UPROPERTY(EditAnywhere, Category = "Rocket")
-    class UNiagaraSystem* TrailSystem;
+    
+    FTimerHandle DestroyTimer;
+    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
+    float DestroyTime = 3.0f;
 };

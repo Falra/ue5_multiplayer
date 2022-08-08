@@ -5,6 +5,8 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "Components/BoxComponent.h"
 
 AProjectileRocket::AProjectileRocket()
 {
@@ -16,17 +18,50 @@ AProjectileRocket::AProjectileRocket()
 void AProjectileRocket::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (!HasAuthority())
+    {
+        CollisionBox->OnComponentHit.AddDynamic(this, &AProjectileRocket::OnHit);
+    }
+    
     if (TrailSystem)
     {
-        UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(), GetActorRotation(),
+        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(), GetActorRotation(),
             EAttachLocation::KeepWorldPosition, false);
+    }
+}
+
+void AProjectileRocket::DestroyTimerFinished()
+{
+    Destroy();
+}
+
+void AProjectileRocket::Destroyed()
+{
+    
+}
+
+void AProjectileRocket::HideAndStopRocket() const
+{
+    if (RocketMesh)
+    {
+        RocketMesh->SetVisibility(false);
+    }
+    if (CollisionBox)
+    {
+        CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+    if (TrailSystemComponent && TrailSystemComponent->GetSystemInstanceController())
+    {
+        TrailSystemComponent->GetSystemInstanceController()->Deactivate();
     }
 }
 
 void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
     const FHitResult& Hit)
 {
-    if (const APawn* FiringPawn = GetInstigator())
+    CheckIfHitPlayer(OtherActor);
+    if (const APawn* FiringPawn = GetInstigator(); FiringPawn && HasAuthority())
     {
         if (AController* FiringController = FiringPawn->GetController())
         {
@@ -34,5 +69,7 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
                 RocketDamageOuterRadius, 1.0f, UDamageType::StaticClass(), TArray<AActor*>(), this, FiringController);
         }
     }
-    Super::OnHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
+    SpawnDestroyEffects();
+    HideAndStopRocket();
+    GetWorldTimerManager().SetTimer(DestroyTimer, this, &AProjectileRocket::DestroyTimerFinished, DestroyTime);
 }

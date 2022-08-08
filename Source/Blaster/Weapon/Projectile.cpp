@@ -44,13 +44,18 @@ void AProjectile::BeginPlay()
     }
 }
 
-void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-    const FHitResult& Hit)
+void AProjectile::CheckIfHitPlayer(AActor* OtherActor)
 {
     if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
     {
         bHitPlayer = true;
     }
+}
+
+void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+    const FHitResult& Hit)
+{
+    CheckIfHitPlayer(OtherActor);
     Destroy();
 }
 
@@ -59,10 +64,8 @@ void AProjectile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AProjectile::Destroyed()
+void AProjectile::SpawnDestroyEffects() const
 {
-    Super::Destroyed();
-
     if (bHitPlayer && ImpactPlayerParticles)
     {
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactPlayerParticles, GetActorTransform());
@@ -76,4 +79,11 @@ void AProjectile::Destroyed()
     {
         UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
     }
+}
+
+void AProjectile::Destroyed()
+{
+    Super::Destroyed();
+
+    SpawnDestroyEffects();
 }
