@@ -18,7 +18,7 @@ public:
 
 protected:
     virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
-
+    virtual void BeginPlay() override;
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     float RocketMinimumDamage = 10.0f;
@@ -28,4 +28,6 @@ private:
     float RocketDamageOuterRadius = 500.0f;
     UPROPERTY(VisibleAnywhere, Category = "Rocket")
     UStaticMeshComponent* RocketMesh;
+    UPROPERTY(EditAnywhere, Category = "Rocket")
+    class UNiagaraSystem* TrailSystem;
 };
