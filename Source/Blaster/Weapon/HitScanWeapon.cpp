@@ -6,6 +6,7 @@
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 void AHitScanWeapon::Fire(const FVector& HitTarget)
 {
@@ -15,12 +16,12 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 
 void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
 {
-    if (!GetWorld()) return;
+    auto World = GetWorld();
+    if (!World) return;
 
     APawn* OwnerPawn = Cast<APawn>(GetOwner());
     if (!OwnerPawn) return;
     AController* InstigatorController = OwnerPawn->GetController();
-    if (!InstigatorController) return;
     
     if (const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash"))
     {
@@ -29,18 +30,29 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
         const FVector End = Start + (HitTarget - Start) * 1.25f;
         FHitResult FireHit;
         GetWorld()->LineTraceSingleByChannel(FireHit, Start, End, ECollisionChannel::ECC_Visibility);
-        if (!FireHit.bBlockingHit) return;
-        ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
-        if (!BlasterCharacter) return;
 
-        if (HasAuthority())
+        FVector BeamEnd = End;
+        if (FireHit.bBlockingHit)
         {
-            UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
+            BeamEnd = FireHit.ImpactPoint;
+
+            if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()); BlasterCharacter && HasAuthority() && InstigatorController)
+            {
+                UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
+            }
+
+            if (ImpactParticle)
+            {
+                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactParticle, FireHit.ImpactPoint, FireHit.ImpactNormal.Rotation());
+            }
         }
 
-        if (ImpactParticle)
+        if (BeamParticle)
         {
-            UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticle, FireHit.ImpactPoint, FireHit.ImpactNormal.Rotation());
+            if (auto Beam = UGameplayStatics::SpawnEmitterAtLocation(World, BeamParticle, SocketTransform))
+            {
+                Beam->SetVectorParameter(FName("Target"), BeamEnd);
+            }
         }
     }
 }
