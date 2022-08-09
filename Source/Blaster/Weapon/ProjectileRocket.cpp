@@ -62,6 +62,7 @@ void AProjectileRocket::HideAndStopRocket() const
     }
     if (ProjectileLoopComponent && ProjectileLoopComponent->IsPlaying())
     {
+        ProjectileLoopComponent->Stop();
     }
 }
 
