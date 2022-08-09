@@ -26,12 +26,21 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
     {
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         const FVector Start = SocketTransform.GetLocation();
-        const FVector End = (HitTarget - Start) * 1.25f;
+        const FVector End = Start + (HitTarget - Start) * 1.25f;
         FHitResult FireHit;
         GetWorld()->LineTraceSingleByChannel(FireHit, Start, End, ECollisionChannel::ECC_Visibility);
         if (!FireHit.bBlockingHit) return;
         ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
         if (!BlasterCharacter) return;
-        UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
+
+        if (HasAuthority())
+        {
+            UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
+        }
+
+        if (ImpactParticle)
+        {
+            UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticle, End, FireHit.ImpactNormal.Rotation());
+        }
     }
 }
