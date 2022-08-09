@@ -37,6 +37,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     USoundAttenuation* LoopingSoundAttenuation;
+
+    UPROPERTY(VisibleAnywhere, Category = "Rocket")
+    class URocketMovementComponent* RocketMovementComponent;
     
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")

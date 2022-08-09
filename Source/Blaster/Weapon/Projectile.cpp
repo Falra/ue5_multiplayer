@@ -5,7 +5,6 @@
 
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Components/BoxComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Blaster/Blaster.h"
@@ -23,9 +22,6 @@ AProjectile::AProjectile()
     CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
     CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
     CollisionBox->SetCollisionResponseToChannel(ECC_SkeletalMesh, ECollisionResponse::ECR_Block);
-    
-    ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
-    ProjectileMovementComponent->bRotationFollowsVelocity = true;
 }
 
 void AProjectile::BeginPlay()

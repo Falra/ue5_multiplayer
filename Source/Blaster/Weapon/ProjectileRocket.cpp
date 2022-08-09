@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "RocketMovementComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Sound/SoundCue.h"
@@ -15,6 +16,10 @@ AProjectileRocket::AProjectileRocket()
     RocketMesh = CreateDefaultSubobject<UStaticMeshComponent>("RocketMesh");
     RocketMesh->SetupAttachment(RootComponent);
     RocketMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RocketMovementComponent = CreateDefaultSubobject<URocketMovementComponent>("RocketMovementComponent");
+    RocketMovementComponent->bRotationFollowsVelocity = true;
+    RocketMovementComponent->SetIsReplicated(true);
 }
 
 void AProjectileRocket::BeginPlay()
@@ -63,6 +68,11 @@ void AProjectileRocket::HideAndStopRocket() const
 void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
     const FHitResult& Hit)
 {
+    if (OtherActor == GetOwner())
+    {
+        return;
+    }
+    
     CheckIfHitPlayer(OtherActor);
     if (const APawn* FiringPawn = GetInstigator(); FiringPawn && HasAuthority())
     {

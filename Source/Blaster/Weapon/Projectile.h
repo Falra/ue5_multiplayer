@@ -40,10 +40,11 @@ protected:
     class USoundCue* ImpactSound;
 
     bool bHitPlayer = false;
-private:
-    
+
     UPROPERTY(VisibleAnywhere)
     class UProjectileMovementComponent* ProjectileMovementComponent;
+
+private:
 
     UPROPERTY(EditAnywhere)
     UParticleSystem* Tracer;
