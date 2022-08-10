@@ -164,6 +164,18 @@ void AWeapon::SetWeaponMeshState(bool bIsEnabled)
     WeaponMesh->SetEnableGravity(bIsEnabled);
     const auto CollisionEnabled = bIsEnabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
     WeaponMesh->SetCollisionEnabled(CollisionEnabled);
+    if (bIsEnabled)
+    {
+        WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+        WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+        WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+    }
+    else if (bHasStrap)
+    {
+        WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        WeaponMesh->SetEnableGravity(true);
+        WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    }
 }
 
 void AWeapon::Fire(const FVector& HitTarget)
