@@ -71,3 +71,12 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
         }
     }
 }
+
+FVector AHitScanWeapon::TraceEndWithScatter(const FVector& Start, const FVector& HitTarget) const
+{
+    const FVector ToTargetNormalized = (HitTarget - Start).GetSafeNormal();
+    const FVector SphereCenter = Start + ToTargetNormalized * DistanceToSphere;
+
+    DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
+    return FVector::Zero();
+}
