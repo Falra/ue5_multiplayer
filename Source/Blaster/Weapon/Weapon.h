@@ -80,9 +80,6 @@ private:
     UPROPERTY(EditAnywhere, ReplicatedUsing= "OnRep_Ammo", Category = "Weapon Properties")
     int32 Ammo;
 
-    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
-    bool bHasStrap = false;
-    
     UFUNCTION()
     void OnRep_Ammo();
     void CheckUpdateController();
@@ -92,6 +89,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     int32 MagCapacity;
 
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+    bool bHasStrap = false;
+    
     UPROPERTY(VisibleAnywhere)
     class ABlasterCharacter* BlasterOwnerCharacter;
 
