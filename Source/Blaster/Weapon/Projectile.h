@@ -59,6 +59,9 @@ protected:
     void StartDestroyTimer();
     void DestroyTimerFinished();
 
+    UPROPERTY(VisibleAnywhere, Category = "Launcher")
+    UStaticMeshComponent* ProjectileMesh;
+
 private:
 
     UPROPERTY(EditAnywhere)

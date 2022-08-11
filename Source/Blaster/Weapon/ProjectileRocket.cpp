@@ -12,9 +12,9 @@
 
 AProjectileRocket::AProjectileRocket()
 {
-    RocketMesh = CreateDefaultSubobject<UStaticMeshComponent>("RocketMesh");
-    RocketMesh->SetupAttachment(RootComponent);
-    RocketMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("RocketMesh");
+    ProjectileMesh->SetupAttachment(RootComponent);
+    ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     RocketMovementComponent = CreateDefaultSubobject<URocketMovementComponent>("RocketMovementComponent");
     RocketMovementComponent->bRotationFollowsVelocity = true;
@@ -42,9 +42,9 @@ void AProjectileRocket::BeginPlay()
 
 void AProjectileRocket::HideAndStopRocket() const
 {
-    if (RocketMesh)
+    if (ProjectileMesh)
     {
-        RocketMesh->SetVisibility(false);
+        ProjectileMesh->SetVisibility(false);
     }
     if (CollisionBox)
     {

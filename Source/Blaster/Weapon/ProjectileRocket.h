@@ -41,7 +41,4 @@ private:
     float RocketDamageInnerRadius = 200.0f;
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     float RocketDamageOuterRadius = 500.0f;
-    UPROPERTY(VisibleAnywhere, Category = "Rocket")
-    UStaticMeshComponent* RocketMesh;
-    
 };
