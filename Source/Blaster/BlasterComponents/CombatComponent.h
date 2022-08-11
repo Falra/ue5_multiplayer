@@ -78,9 +78,6 @@ private:
 
     bool bFireButtonPressed;
 
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    float CrosshairTraceLenght = 80000.0f;
-
     FHUDPackage HUDPackage;
 
     bool bIsAimingPlayer;

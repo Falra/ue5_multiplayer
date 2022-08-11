@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#define TRACE_LENGTH 80000.0f
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {

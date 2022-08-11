@@ -6,6 +6,7 @@
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 
@@ -76,7 +77,14 @@ FVector AHitScanWeapon::TraceEndWithScatter(const FVector& Start, const FVector&
 {
     const FVector ToTargetNormalized = (HitTarget - Start).GetSafeNormal();
     const FVector SphereCenter = Start + ToTargetNormalized * DistanceToSphere;
-
+    const FVector RandVector = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.0f, SphereRadius);
+    const FVector EndLoc = SphereCenter + RandVector;
+    const FVector ToEndLoc = EndLoc - Start;
+    const FVector Result = FVector(Start + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
+    
     DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
-    return FVector::Zero();
+    DrawDebugSphere(GetWorld(), EndLoc, 4.0f, 12, FColor::Orange, true);
+    DrawDebugLine(GetWorld(), Start, Result, FColor::Green, true);
+    
+    return Result;
 }
