@@ -79,12 +79,7 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
     }
     SpawnDestroyEffects();
     HideAndStopRocket();
-    GetWorldTimerManager().SetTimer(DestroyTimer, this, &AProjectileRocket::DestroyTimerFinished, DestroyTime);
-}
-
-void AProjectileRocket::DestroyTimerFinished()
-{
-    Destroy();
+    StartDestroyTimer();
 }
 
 void AProjectileRocket::Destroyed()

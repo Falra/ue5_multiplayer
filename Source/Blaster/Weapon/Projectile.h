@@ -51,7 +51,14 @@ protected:
     class UNiagaraComponent* TrailSystemComponent;
 
     void SpawnTrailSystem();
-    
+
+    FTimerHandle DestroyTimer;
+    UPROPERTY(EditDefaultsOnly, Category = "Launcher")
+    float DestroyTime = 3.0f;
+
+    void StartDestroyTimer();
+    void DestroyTimerFinished();
+
 private:
 
     UPROPERTY(EditAnywhere)

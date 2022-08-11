@@ -88,6 +88,16 @@ void AProjectile::SpawnDestroyEffects() const
     }
 }
 
+void AProjectile::StartDestroyTimer()
+{
+    GetWorldTimerManager().SetTimer(DestroyTimer, this, &AProjectile::DestroyTimerFinished, DestroyTime);
+}
+
+void AProjectile::DestroyTimerFinished()
+{
+    Destroy();
+}
+
 void AProjectile::Destroyed()
 {
     Super::Destroyed();

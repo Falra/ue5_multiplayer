@@ -21,8 +21,7 @@ protected:
     virtual void BeginPlay() override;
     virtual void Destroyed() override;
     void HideAndStopRocket() const;
-    void DestroyTimerFinished();
-
+    
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     USoundCue* ProjectileLoop;
 
@@ -45,7 +44,4 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Rocket")
     UStaticMeshComponent* RocketMesh;
     
-    FTimerHandle DestroyTimer;
-    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
-    float DestroyTime = 3.0f;
 };
