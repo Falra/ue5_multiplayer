@@ -17,7 +17,8 @@ public:
     virtual void Fire(const FVector& HitTarget) override;
     void HitScanFire(const FVector& HitTarget);
 protected:
-    FVector TraceEndWithScatter(const FVector& Start, const FVector& HitTarget) const;
+    FVector TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget) const;
+    void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit);
     
     UPROPERTY(EditAnywhere)
     float Damage = 5.0f;

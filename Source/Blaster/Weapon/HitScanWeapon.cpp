@@ -29,15 +29,11 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
     {
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         const FVector Start = SocketTransform.GetLocation();
-        const FVector End = Start + (HitTarget - Start) * 1.25f;
         FHitResult FireHit;
-        GetWorld()->LineTraceSingleByChannel(FireHit, Start, End, ECollisionChannel::ECC_Visibility);
-
-        FVector BeamEnd = End;
+        WeaponTraceHit(Start, HitTarget, FireHit);
+        
         if (FireHit.bBlockingHit)
         {
-            BeamEnd = FireHit.ImpactPoint;
-
             if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()); BlasterCharacter && HasAuthority() && InstigatorController)
             {
                 UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
@@ -54,14 +50,6 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
             }
         }
 
-        if (BeamParticle)
-        {
-            if (auto Beam = UGameplayStatics::SpawnEmitterAtLocation(World, BeamParticle, SocketTransform))
-            {
-                Beam->SetVectorParameter(FName("Target"), BeamEnd);
-            }
-        }
-
         if (MuzzleFlash)
         {
             UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, SocketTransform);
@@ -73,18 +61,39 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
     }
 }
 
-FVector AHitScanWeapon::TraceEndWithScatter(const FVector& Start, const FVector& HitTarget) const
+void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit)
 {
-    const FVector ToTargetNormalized = (HitTarget - Start).GetSafeNormal();
-    const FVector SphereCenter = Start + ToTargetNormalized * DistanceToSphere;
+    UWorld* World = GetWorld();
+    if (!World) return;
+    const FVector End = bUseScatter ? TraceEndWithScatter(TraceStart, HitTarget) : TraceStart + (HitTarget - TraceStart) * 1.25f;
+    GetWorld()->LineTraceSingleByChannel(OutHit, TraceStart, End, ECollisionChannel::ECC_Visibility);
+    FVector BeamEnd = End;
+    if (OutHit.bBlockingHit)
+    {
+        BeamEnd = OutHit.ImpactPoint;
+    }
+    if (BeamParticle)
+    {
+        if (auto Beam = UGameplayStatics::SpawnEmitterAtLocation(World, BeamParticle, TraceStart, FRotator::ZeroRotator, true))
+        {
+            Beam->SetVectorParameter(FName("Target"), BeamEnd);
+        }
+    }
+}
+
+FVector AHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget) const
+{
+    const FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
+    const FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
     const FVector RandVector = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.0f, SphereRadius);
     const FVector EndLoc = SphereCenter + RandVector;
-    const FVector ToEndLoc = EndLoc - Start;
-    const FVector Result = FVector(Start + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
+    const FVector ToEndLoc = EndLoc - TraceStart;
+    const FVector Result = FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
     
     DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
     DrawDebugSphere(GetWorld(), EndLoc, 4.0f, 12, FColor::Orange, true);
-    DrawDebugLine(GetWorld(), Start, Result, FColor::Green, true);
+    DrawDebugLine(GetWorld(), TraceStart, Result, FColor::Green, true);
     
     return Result;
 }
+
