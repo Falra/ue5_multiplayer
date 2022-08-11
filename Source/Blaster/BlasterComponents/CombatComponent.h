@@ -143,6 +143,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon")
     int32 StartingSMGAmmo = 60;
 
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 StartingShotgunAmmo = 10;
+
     void InitializeCarriedAmmo();
 
 #pragma endregion
