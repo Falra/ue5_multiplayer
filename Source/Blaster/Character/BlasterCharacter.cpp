@@ -559,6 +559,10 @@ void ABlasterCharacter::MulticastEliminate_Implementation()
     {
         BlasterPlayerController->SetHUDWeaponAmmo(0);
     }
+    if (IsLocallyControlled() && CombatComponent && CombatComponent->bIsAiming && CombatComponent->IsEquippedSniperRifle())
+    {
+        ShowSniperScopeWidget(false); 
+    }
 }
 
 void ABlasterCharacter::EliminationTimerFinished()

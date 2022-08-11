@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blaster/BlasterTypes/CombatState.h"
 #include "Blaster/HUD/BlasterHUD.h"
+#include "Blaster/Weapon/Weapon.h"
 #include "Blaster/Weapon/WeaponTypes.h"
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
@@ -25,7 +26,7 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void FireButtonPressed(bool bPressed);
-
+    bool IsEquippedSniperRifle() const { return EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle; };
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
