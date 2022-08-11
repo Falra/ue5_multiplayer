@@ -18,7 +18,7 @@ public:
     void HitScanFire(const FVector& HitTarget);
 protected:
     FVector TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget) const;
-    void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit);
+    void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit) const;
     
     UPROPERTY(EditAnywhere)
     float Damage = 5.0f;
