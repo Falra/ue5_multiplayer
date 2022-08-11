@@ -24,6 +24,9 @@ void AShotgun::Fire(const FVector& HitTarget)
     {
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         const FVector Start = SocketTransform.GetLocation();
-        const FVector End = TraceEndWithScatter(Start, HitTarget);
+        for (uint32 i = 0; i < NumberOfPellets; ++i)
+        {
+            const FVector End = TraceEndWithScatter(Start, HitTarget);
+        }
     }
 }

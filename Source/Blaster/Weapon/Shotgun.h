@@ -16,6 +16,6 @@ class BLASTER_API AShotgun : public AHitScanWeapon
 public:
     virtual void Fire(const FVector& HitTarget) override;
 private:
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
     uint32 NumberOfPellets = 10;
 };
