@@ -11,6 +11,8 @@
 
 void AShotgun::Fire(const FVector& HitTarget)
 {
+    AWeapon::Fire(HitTarget);
+    
     auto World = GetWorld();
     if (!World) return;
 
