@@ -61,11 +61,17 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::SetAiming(bool IsAiming)
 {
+    if (!Character || !EquippedWeapon) return;
+    
     bIsAiming = IsAiming;
     ServerSetAiming(IsAiming);
     if (Character)
     {
         Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+    }
+    if (Character->IsLocallyControlled() && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+    {
+        Character->ShowSniperScopeWidget(bIsAiming);
     }
 }
 
