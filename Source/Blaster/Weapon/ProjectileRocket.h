@@ -24,12 +24,6 @@ protected:
     void DestroyTimerFinished();
 
     UPROPERTY(EditDefaultsOnly, Category = "Rocket")
-    class UNiagaraSystem* TrailSystem;
-
-    UPROPERTY(VisibleAnywhere, Category = "Rocket")
-    class UNiagaraComponent* TrailSystemComponent;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
     USoundCue* ProjectileLoop;
 
     UPROPERTY(VisibleAnywhere, Category = "Rocket")

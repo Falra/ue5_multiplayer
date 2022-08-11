@@ -3,6 +3,7 @@
 
 #include "Projectile.h"
 
+#include "NiagaraFunctionLibrary.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -53,6 +54,16 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 {
     CheckIfHitPlayer(OtherActor);
     Destroy();
+}
+
+void AProjectile::SpawnTrailSystem()
+{
+    if (TrailSystem)
+    {
+        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(),
+            GetActorRotation(),
+            EAttachLocation::KeepWorldPosition, false);
+    }
 }
 
 void AProjectile::Tick(float DeltaTime)

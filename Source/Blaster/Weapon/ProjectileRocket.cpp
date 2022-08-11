@@ -4,7 +4,6 @@
 #include "ProjectileRocket.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "RocketMovementComponent.h"
 #include "Components/AudioComponent.h"
@@ -31,13 +30,8 @@ void AProjectileRocket::BeginPlay()
         CollisionBox->OnComponentHit.AddDynamic(this, &AProjectileRocket::OnHit);
     }
 
-    if (TrailSystem)
-    {
-        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(TrailSystem, GetRootComponent(), FName(), GetActorLocation(),
-            GetActorRotation(),
-            EAttachLocation::KeepWorldPosition, false);
-    }
-
+    SpawnTrailSystem();
+    
     if (ProjectileLoop && LoopingSoundAttenuation)
     {
         ProjectileLoopComponent = UGameplayStatics::SpawnSoundAttached(ProjectileLoop, GetRootComponent(), FName(), GetActorLocation(),

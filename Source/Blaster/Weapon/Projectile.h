@@ -44,6 +44,14 @@ protected:
     UPROPERTY(VisibleAnywhere)
     class UProjectileMovementComponent* ProjectileMovementComponent;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Launcher")
+    class UNiagaraSystem* TrailSystem;
+
+    UPROPERTY(VisibleAnywhere, Category = "Launcher")
+    class UNiagaraComponent* TrailSystemComponent;
+
+    void SpawnTrailSystem();
+    
 private:
 
     UPROPERTY(EditAnywhere)
