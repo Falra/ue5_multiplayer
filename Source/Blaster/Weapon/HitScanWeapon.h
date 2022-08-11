@@ -19,6 +19,7 @@ public:
 protected:
     FVector TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget) const;
     void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit) const;
+    void ApplyHitEffects(const FHitResult& FireHit) const;
     
     UPROPERTY(EditAnywhere)
     float Damage = 5.0f;

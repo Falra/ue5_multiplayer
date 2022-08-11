@@ -36,15 +36,7 @@ void AShotgun::Fire(const FVector& HitTarget)
                     HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
                 }
                 
-                if (ImpactParticle)
-                {
-                    UGameplayStatics::SpawnEmitterAtLocation(World, ImpactParticle, FireHit.ImpactPoint, FireHit.ImpactNormal.Rotation());
-                }
-
-                if (HitSound)
-                {
-                    UGameplayStatics::PlaySoundAtLocation(this, HitSound, FireHit.ImpactPoint, 0.5f, FMath::FRandRange(-0.5f, 0.5f));
-                }
+                ApplyHitEffects(FireHit);
             }
         }
 

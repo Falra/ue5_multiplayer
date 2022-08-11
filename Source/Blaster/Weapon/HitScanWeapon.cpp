@@ -39,15 +39,7 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
                 UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
             }
 
-            if (ImpactParticle)
-            {
-                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactParticle, FireHit.ImpactPoint, FireHit.ImpactNormal.Rotation());
-            }
-
-            if (HitSound)
-            {
-                UGameplayStatics::PlaySoundAtLocation(this, HitSound, FireHit.ImpactPoint);
-            }
+            ApplyHitEffects(FireHit);
         }
 
         if (MuzzleFlash)
@@ -97,3 +89,15 @@ FVector AHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, const FVe
     return Result;
 }
 
+void AHitScanWeapon::ApplyHitEffects(const FHitResult& FireHit) const
+{
+    if (ImpactParticle)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticle, FireHit.ImpactPoint, FireHit.ImpactNormal.Rotation());
+    }
+
+    if (HitSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, HitSound, FireHit.ImpactPoint);
+    }
+}
