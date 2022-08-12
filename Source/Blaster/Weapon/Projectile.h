@@ -20,6 +20,9 @@ public:
 protected:
     virtual void BeginPlay() override;
     void CheckIfHitPlayer(AActor* OtherActor);
+    void StartDestroyTimer();
+    void DestroyTimerFinished();
+    void SpawnTrailSystem();
 
     UFUNCTION()
     virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -49,15 +52,10 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Launcher")
     class UNiagaraComponent* TrailSystemComponent;
-
-    void SpawnTrailSystem();
-
+    
     FTimerHandle DestroyTimer;
     UPROPERTY(EditDefaultsOnly, Category = "Launcher")
     float DestroyTime = 3.0f;
-
-    void StartDestroyTimer();
-    void DestroyTimerFinished();
 
     UPROPERTY(VisibleAnywhere, Category = "Launcher")
     UStaticMeshComponent* ProjectileMesh;
