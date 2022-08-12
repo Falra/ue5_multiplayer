@@ -34,11 +34,4 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Rocket")
     class URocketMovementComponent* RocketMovementComponent;
     
-private:
-    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
-    float RocketMinimumDamage = 10.0f;
-    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
-    float RocketDamageInnerRadius = 200.0f;
-    UPROPERTY(EditDefaultsOnly, Category = "Rocket")
-    float RocketDamageOuterRadius = 500.0f;
 };

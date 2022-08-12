@@ -35,3 +35,9 @@ void AProjectileGrenade::OnProjectileBounce(const FHitResult& ImpactResult, cons
         UGameplayStatics::PlaySoundAtLocation(this, BounceSound, GetActorLocation());
     }
 }
+
+void AProjectileGrenade::Destroyed()
+{
+    ExplodeDamage();
+    Super::Destroyed();
+}

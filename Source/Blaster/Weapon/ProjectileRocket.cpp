@@ -69,14 +69,7 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
     }
     
     CheckIfHitPlayer(OtherActor);
-    if (const APawn* FiringPawn = GetInstigator(); FiringPawn && HasAuthority())
-    {
-        if (AController* FiringController = FiringPawn->GetController())
-        {
-            UGameplayStatics::ApplyRadialDamageWithFalloff(this, Damage, RocketMinimumDamage, GetActorLocation(), RocketDamageInnerRadius,
-                RocketDamageOuterRadius, 1.0f, UDamageType::StaticClass(), TArray<AActor*>(), this, FiringController);
-        }
-    }
+    ExplodeDamage();
     SpawnDestroyEffects();
     HideAndStopRocket();
     StartDestroyTimer();

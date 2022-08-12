@@ -66,6 +66,18 @@ void AProjectile::SpawnTrailSystem()
     }
 }
 
+void AProjectile::ExplodeDamage()
+{
+    if (const APawn* FiringPawn = GetInstigator(); FiringPawn && HasAuthority())
+    {
+        if (AController* FiringController = FiringPawn->GetController())
+        {
+            UGameplayStatics::ApplyRadialDamageWithFalloff(this, Damage, ExplodeMinimumDamage, GetActorLocation(), ExplodeDamageInnerRadius,
+                ExplodeDamageOuterRadius, 1.0f, UDamageType::StaticClass(), TArray<AActor*>(), this, FiringController);
+        }
+    }
+}
+
 void AProjectile::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);

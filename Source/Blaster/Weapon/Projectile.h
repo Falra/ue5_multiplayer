@@ -23,6 +23,7 @@ protected:
     void StartDestroyTimer();
     void DestroyTimerFinished();
     void SpawnTrailSystem();
+    void ExplodeDamage();
 
     UFUNCTION()
     virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -60,6 +61,15 @@ protected:
     UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* ProjectileMesh;
 
+    UPROPERTY(EditDefaultsOnly)
+    float ExplodeMinimumDamage = 10.0f;
+
+    UPROPERTY(EditDefaultsOnly)
+    float ExplodeDamageInnerRadius = 200.0f;
+
+    UPROPERTY(EditDefaultsOnly)
+    float ExplodeDamageOuterRadius = 500.0f;
+    
 private:
 
     UPROPERTY(EditAnywhere)
