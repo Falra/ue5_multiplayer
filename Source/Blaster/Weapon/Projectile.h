@@ -47,17 +47,17 @@ protected:
     UPROPERTY(VisibleAnywhere)
     class UProjectileMovementComponent* ProjectileMovementComponent;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Launcher")
+    UPROPERTY(EditDefaultsOnly)
     class UNiagaraSystem* TrailSystem;
 
-    UPROPERTY(VisibleAnywhere, Category = "Launcher")
+    UPROPERTY(VisibleAnywhere)
     class UNiagaraComponent* TrailSystemComponent;
     
     FTimerHandle DestroyTimer;
-    UPROPERTY(EditDefaultsOnly, Category = "Launcher")
+    UPROPERTY(EditDefaultsOnly)
     float DestroyTime = 3.0f;
 
-    UPROPERTY(VisibleAnywhere, Category = "Launcher")
+    UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* ProjectileMesh;
 
 private:
