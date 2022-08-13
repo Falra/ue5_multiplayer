@@ -4,6 +4,7 @@
 #include "Weapon.h"
 
 #include "Casing.h"
+#include "Blaster/BlasterComponents/CombatComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Components/SphereComponent.h"
@@ -141,6 +142,11 @@ void AWeapon::SpendRound()
 void AWeapon::OnRep_Ammo()
 {
     ShowWeaponAmmo();
+    
+    if (IsFull() && BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombatComponent())
+    {
+        BlasterOwnerCharacter->GetCombatComponent()->JumpToShotgunEnd();
+    }
 }
 
 void AWeapon::ShowWeaponAmmo()

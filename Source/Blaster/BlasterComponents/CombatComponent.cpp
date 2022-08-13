@@ -344,6 +344,8 @@ void UCombatComponent::OnRep_CarriedAmmo()
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
+
+    bool bJumpToShotgunEnd = false;
 }
 
 void UCombatComponent::InitializeCarriedAmmo()
@@ -462,8 +464,15 @@ void UCombatComponent::UpdateShotgunAmmoValues()
     EquippedWeapon->AddAmmo(-1);
     if (EquippedWeapon->IsFull())
     {
-        // TODO: Jump to ShotgunEnd section
+        JumpToShotgunEnd();
     }
+}
+
+void UCombatComponent::JumpToShotgunEnd() const
+{
+    UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+    if (!AnimInstance || !Character->GetReloadMontage()) return;
+    AnimInstance->Montage_JumpToSection(FName("ShotgunEnd"));
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

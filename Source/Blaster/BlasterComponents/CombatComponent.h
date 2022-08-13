@@ -29,6 +29,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void ShotgunShellReload();
     bool IsEquippedSniperRifle() const { return EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle; };
+    void JumpToShotgunEnd() const;
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
