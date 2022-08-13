@@ -158,6 +158,11 @@ bool AWeapon::IsEmpty() const
     return Ammo <= 0;
 }
 
+bool AWeapon::IsFull() const
+{
+    return Ammo == MagCapacity;
+}
+
 void AWeapon::SetWeaponMeshState(bool bIsEnabled)
 {
     WeaponMesh->SetSimulatePhysics(bIsEnabled);

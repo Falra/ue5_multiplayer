@@ -26,6 +26,8 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void FireButtonPressed(bool bPressed);
+    UFUNCTION(BlueprintCallable)
+    void ShotgunShellReload();
     bool IsEquippedSniperRifle() const { return EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle; };
 protected:
     virtual void BeginPlay() override;
@@ -161,4 +163,5 @@ private:
     void OnRep_CombatState();
 
     void UpdateAmmoValues();
+    void UpdateShotgunAmmoValues();
 };

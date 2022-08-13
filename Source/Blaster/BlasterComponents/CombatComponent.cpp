@@ -288,6 +288,14 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
     }
 }
 
+void UCombatComponent::ShotgunShellReload()
+{
+    if(Character && Character->HasAuthority())
+    {
+        UpdateShotgunAmmoValues();
+    }
+}
+
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
     MulticastFire(TraceHitTarget);
@@ -436,6 +444,26 @@ void UCombatComponent::UpdateAmmoValues()
     }
     
     EquippedWeapon->AddAmmo(-ReloadAmount);
+}
+
+void UCombatComponent::UpdateShotgunAmmoValues()
+{
+    if (!EquippedWeapon) return;
+    if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+    {
+        CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= 1;
+        CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+    }
+    Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+    if (Controller)
+    {
+        Controller->SetHUDCarriedAmmo(CarriedAmmo);
+    }
+    EquippedWeapon->AddAmmo(-1);
+    if (EquippedWeapon->IsFull())
+    {
+        // TODO: Jump to ShotgunEnd section
+    }
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
