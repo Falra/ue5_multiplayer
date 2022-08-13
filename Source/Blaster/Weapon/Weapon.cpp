@@ -179,11 +179,14 @@ void AWeapon::SetWeaponMeshState(bool bIsEnabled)
     WeaponMesh->SetEnableGravity(bIsEnabled);
     const auto CollisionEnabled = bIsEnabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
     WeaponMesh->SetCollisionEnabled(CollisionEnabled);
+    EnableCustomDepth(bIsEnabled);
     if (bIsEnabled)
     {
         WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
         WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
         WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+        WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+        WeaponMesh->MarkRenderStateDirty();
     }
     else if (bHasStrap)
     {
