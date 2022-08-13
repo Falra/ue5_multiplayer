@@ -345,7 +345,8 @@ void UCombatComponent::OnRep_CarriedAmmo()
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
 
-    bool bJumpToShotgunEnd = false;
+    const bool bJumpToShotgunEnd = CombatState == ECombatState::ECS_Reloading && CarriedAmmo == 0 && IsEquippedShotgun();
+    if (bJumpToShotgunEnd) JumpToShotgunEnd();
 }
 
 void UCombatComponent::InitializeCarriedAmmo()
@@ -462,7 +463,7 @@ void UCombatComponent::UpdateShotgunAmmoValues()
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
     EquippedWeapon->AddAmmo(-1);
-    if (EquippedWeapon->IsFull())
+    if (EquippedWeapon->IsFull() || CarriedAmmo == 0)
     {
         JumpToShotgunEnd();
     }
