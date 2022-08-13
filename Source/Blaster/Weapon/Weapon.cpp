@@ -24,6 +24,10 @@ AWeapon::AWeapon()
     WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
     WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+    WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_PURPLE);
+    WeaponMesh->MarkRenderStateDirty();
+    EnableCustomDepth(true);
+    
     AreaSphere = CreateDefaultSubobject<USphereComponent>("AreaSphere");
     AreaSphere->SetupAttachment(GetRootComponent());
     AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -227,6 +231,14 @@ void AWeapon::AddAmmo(int32 AmmoToAdd)
 {
     Ammo = FMath::Clamp(Ammo - AmmoToAdd, 0, MagCapacity);
     ShowWeaponAmmo();
+}
+
+void AWeapon::EnableCustomDepth(bool bEnable)
+{
+    if (WeaponMesh)
+    {
+        WeaponMesh->SetRenderCustomDepth(bEnable);
+    }
 }
 
 void AWeapon::ShowPickupWidget(const bool bShowWidget) const

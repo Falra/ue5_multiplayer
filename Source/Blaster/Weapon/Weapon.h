@@ -29,6 +29,7 @@ public:
     virtual void Fire(const FVector& HitTarget);
     virtual void DropWeapon();
     virtual void AddAmmo(int32 AmmoToAdd);
+    void EnableCustomDepth(bool bEnable);
 protected:
     UFUNCTION()
     virtual void BeginPlay() override;
