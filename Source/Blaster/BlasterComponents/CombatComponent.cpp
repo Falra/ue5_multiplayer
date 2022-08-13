@@ -305,7 +305,13 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 {
     if (!EquippedWeapon) return;
 
-    if (Character && CombatState == ECombatState::ECS_Unoccupied)
+    if (Character && IsEquippedShotgun() && CombatState == ECombatState::ECS_Reloading)
+    {
+        Character->PlayFireMontage(bIsAiming);
+        EquippedWeapon->Fire(TraceHitTarget);
+        CombatState = ECombatState::ECS_Unoccupied;
+    }
+    else if (Character && CombatState == ECombatState::ECS_Unoccupied)
     {
         Character->PlayFireMontage(bIsAiming);
         EquippedWeapon->Fire(TraceHitTarget);
@@ -335,7 +341,9 @@ void UCombatComponent::FireTimerFinished()
 bool UCombatComponent::CanFire() const
 {
     if (!EquippedWeapon) return false;
-    return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
+    if (EquippedWeapon->IsEmpty() || !bCanFire) return false;
+    if (IsEquippedShotgun() && CombatState == ECombatState::ECS_Reloading) return true;
+    return CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UCombatComponent::OnRep_CarriedAmmo()
@@ -463,6 +471,7 @@ void UCombatComponent::UpdateShotgunAmmoValues()
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
     EquippedWeapon->AddAmmo(-1);
+    bCanFire = true;
     if (EquippedWeapon->IsFull() || CarriedAmmo == 0)
     {
         JumpToShotgunEnd();
