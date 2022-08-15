@@ -406,6 +406,8 @@ int32 UCombatComponent::AmountToReload()
 
 void UCombatComponent::ThrowGrenade()
 {
+    if (CombatState != ECombatState::ECS_Unoccupied) return;
+    
     CombatState = ECombatState::ECS_ThrowingGrenade;
     if (Character)
     {
