@@ -404,6 +404,11 @@ int32 UCombatComponent::AmountToReload()
     return 0;
 }
 
+void UCombatComponent::ThrowGrenade()
+{
+    
+}
+
 void UCombatComponent::FinishReloading()
 {
     if (!Character) return;

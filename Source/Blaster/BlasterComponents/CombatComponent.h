@@ -59,6 +59,8 @@ protected:
 
     void HandleReload();
     int32 AmountToReload();
+
+    void ThrowGrenade();
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
