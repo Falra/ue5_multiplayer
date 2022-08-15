@@ -51,6 +51,10 @@ protected:
     void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
     void TraceUnderCrosshairs(FHitResult& TraceHitResult);
+    void ReloadEmptyWeapon();
+    void UpdateCarriedAmmo();
+    void DropEquippedWeapon();
+    void AttachActorToRightHand(AActor* ActorToAttach);
     void PlayEquipEffects() const;
     void SetWeaponStateAndAttach();
 

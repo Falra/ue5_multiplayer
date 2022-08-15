@@ -199,16 +199,58 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
     if (!Character || !WeaponToEquip || CombatState != ECombatState::ECS_Unoccupied) return;
 
-    if (EquippedWeapon)
-    {
-        EquippedWeapon->DropWeapon();
-    }
+    DropEquippedWeapon();
     
     EquippedWeapon = WeaponToEquip;
     SetWeaponStateAndAttach();
     EquippedWeapon->SetOwner(Character);
     EquippedWeapon->ShowWeaponAmmo();
 
+    UpdateCarriedAmmo();
+
+    if (Controller)
+    {
+        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+    }
+    
+    PlayEquipEffects();
+    ReloadEmptyWeapon();
+    
+    Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+    Character->bUseControllerRotationYaw = true;
+
+}
+
+void UCombatComponent::DropEquippedWeapon()
+{
+    if (EquippedWeapon)
+    {
+        EquippedWeapon->DropWeapon();
+    }
+}
+
+void UCombatComponent::ReloadEmptyWeapon()
+{
+    if (EquippedWeapon && EquippedWeapon->IsEmpty())
+    {
+        Reload();
+    }
+}
+
+void UCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
+{
+    if (!Character || !ActorToAttach) return;
+    
+    if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket")))
+    {
+        WeaponSocket->AttachActor(ActorToAttach, Character->GetMesh());
+    }
+}
+
+void UCombatComponent::UpdateCarriedAmmo()
+{
+    if (!EquippedWeapon) return;
+    
     if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
     {
         CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
@@ -218,19 +260,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
     if (Controller)
     {
         Controller->SetHUDCarriedAmmo(CarriedAmmo);
-        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
     }
-
-    PlayEquipEffects();
-
-    if (EquippedWeapon->IsEmpty())
-    {
-        Reload();
-    }
-    
-    Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-    Character->bUseControllerRotationYaw = true;
-
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -260,10 +290,7 @@ void UCombatComponent::PlayEquipEffects() const
 void UCombatComponent::SetWeaponStateAndAttach()
 {
     EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-    if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket")))
-    {
-        WeaponSocket->AttachActor(EquippedWeapon, Character->GetMesh());
-    }
+    AttachActorToRightHand(EquippedWeapon);
 }
 
 #pragma endregion
@@ -332,10 +359,7 @@ void UCombatComponent::FireTimerFinished()
     {
         Fire();
     }
-    if (EquippedWeapon->IsEmpty())
-    {
-        Reload();
-    }
+    ReloadEmptyWeapon();
 }
 
 bool UCombatComponent::CanFire() const
