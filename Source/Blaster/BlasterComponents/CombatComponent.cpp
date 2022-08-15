@@ -411,7 +411,8 @@ void UCombatComponent::InitializeCarriedAmmo()
 
 void UCombatComponent::Reload()
 {
-    if (CarriedAmmo <= 0 || CombatState != ECombatState::ECS_Unoccupied) return;
+    if (CarriedAmmo <= 0 || CombatState != ECombatState::ECS_Unoccupied
+        || !EquippedWeapon || EquippedWeapon->IsFull()) return;
     ServerReload();
 }
 
