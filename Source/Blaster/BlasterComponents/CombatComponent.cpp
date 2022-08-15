@@ -247,6 +247,16 @@ void UCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
     }
 }
 
+void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
+{
+    if (!Character || !ActorToAttach) return;
+    
+    if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("LeftHandSocket")))
+    {
+        WeaponSocket->AttachActor(ActorToAttach, Character->GetMesh());
+    }
+}
+
 void UCombatComponent::UpdateCarriedAmmo()
 {
     if (!EquippedWeapon) return;
@@ -436,6 +446,7 @@ void UCombatComponent::ThrowGrenade()
     if (Character)
     {
         Character->PlayThrowGrenadeMontage();
+        AttachActorToLeftHand(EquippedWeapon);
     }
     if (Character && !Character->HasAuthority())
     {
@@ -449,6 +460,7 @@ void UCombatComponent::ServerThrowGrenade_Implementation()
     if (Character)
     {
         Character->PlayThrowGrenadeMontage();
+        AttachActorToLeftHand(EquippedWeapon);
     }
 }
 
@@ -487,6 +499,7 @@ void UCombatComponent::OnRep_CombatState()
             if (Character && !Character->IsLocallyControlled())
             {
                 Character->PlayThrowGrenadeMontage();
+                AttachActorToLeftHand(EquippedWeapon);
             }
             break;
     }
@@ -542,6 +555,7 @@ void UCombatComponent::JumpToShotgunEnd() const
 void UCombatComponent::ThrowGrenadeFinished()
 {
     CombatState = ECombatState::ECS_Unoccupied;
+    AttachActorToRightHand(EquippedWeapon);
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

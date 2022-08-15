@@ -55,6 +55,7 @@ protected:
     void UpdateCarriedAmmo();
     void DropEquippedWeapon();
     void AttachActorToRightHand(AActor* ActorToAttach);
+    void AttachActorToLeftHand(AActor* ActorToAttach);
     void PlayEquipEffects() const;
     void SetWeaponStateAndAttach();
 
