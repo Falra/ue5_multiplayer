@@ -197,7 +197,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
-    if (!Character || !WeaponToEquip) return;
+    if (!Character || !WeaponToEquip || CombatState != ECombatState::ECS_Unoccupied) return;
 
     if (EquippedWeapon)
     {
@@ -375,7 +375,7 @@ void UCombatComponent::InitializeCarriedAmmo()
 
 void UCombatComponent::Reload()
 {
-    if (CarriedAmmo <= 0 || CombatState == ECombatState::ECS_Reloading) return;
+    if (CarriedAmmo <= 0 || CombatState != ECombatState::ECS_Unoccupied) return;
     ServerReload();
 }
 
@@ -406,7 +406,24 @@ int32 UCombatComponent::AmountToReload()
 
 void UCombatComponent::ThrowGrenade()
 {
-    
+    CombatState = ECombatState::ECS_ThrowingGrenade;
+    if (Character)
+    {
+        Character->PlayThrowGrenadeMontage();
+    }
+    if (Character && !Character->HasAuthority())
+    {
+        ServerThrowGrenade();
+    }
+}
+
+void UCombatComponent::ServerThrowGrenade_Implementation()
+{
+    CombatState = ECombatState::ECS_ThrowingGrenade;
+    if (Character)
+    {
+        Character->PlayThrowGrenadeMontage();
+    }
 }
 
 void UCombatComponent::FinishReloading()
@@ -438,6 +455,12 @@ void UCombatComponent::OnRep_CombatState()
             if (bFireButtonPressed)
             {
                 Fire();
+            }
+            break;
+        case ECombatState::ECS_ThrowingGrenade:
+            if (Character && !Character->IsLocallyControlled())
+            {
+                Character->PlayThrowGrenadeMontage();
             }
             break;
     }
@@ -488,6 +511,11 @@ void UCombatComponent::JumpToShotgunEnd() const
     UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
     if (!AnimInstance || !Character->GetReloadMontage()) return;
     AnimInstance->Montage_JumpToSection(FName("ShotgunEnd"));
+}
+
+void UCombatComponent::ThrowGrenadeFinished()
+{
+    CombatState = ECombatState::ECS_Unoccupied;
 }
 
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

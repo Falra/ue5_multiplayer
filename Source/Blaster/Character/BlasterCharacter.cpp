@@ -345,7 +345,8 @@ void ABlasterCharacter::FireButtonReleased()
 
 void ABlasterCharacter::GrenadeButtonPressed()
 {
-    // PlayThrowGrenadeMontage();
+    if (!CombatComponent) return;
+    CombatComponent->ThrowGrenade();
 }
 
 void ABlasterCharacter::TurnInPlace(float DeltaTime)

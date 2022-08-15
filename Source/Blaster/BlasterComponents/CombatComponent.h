@@ -31,6 +31,8 @@ public:
     bool IsEquippedSniperRifle() const { return EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle; };
     bool IsEquippedShotgun() const { return EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun; };
     void JumpToShotgunEnd() const;
+    UFUNCTION(BlueprintCallable)
+    void ThrowGrenadeFinished();
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
@@ -61,6 +63,9 @@ protected:
     int32 AmountToReload();
 
     void ThrowGrenade();
+
+    UFUNCTION(Server, Reliable)
+    void ServerThrowGrenade();
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
