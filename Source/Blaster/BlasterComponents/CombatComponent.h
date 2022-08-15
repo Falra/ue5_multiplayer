@@ -74,6 +74,9 @@ protected:
     UFUNCTION(Server, Reliable)
     void ServerThrowGrenade();
     void ShowAttachedGrenade(bool bShow);
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<class AProjectile> GrenadeClass;
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
