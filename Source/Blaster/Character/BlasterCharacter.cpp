@@ -80,6 +80,10 @@ void ABlasterCharacter::BeginPlay()
     {
         OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::OnReceiveDamage);
     }
+    if (AttachedGrenade)
+    {
+        AttachedGrenade->SetVisibility(false, true);
+    }
 }
 
 void ABlasterCharacter::Tick(float DeltaTime)

@@ -71,6 +71,7 @@ protected:
 
     UFUNCTION(Server, Reliable)
     void ServerThrowGrenade();
+    void ShowAttachedGrenade(bool bShow);
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
