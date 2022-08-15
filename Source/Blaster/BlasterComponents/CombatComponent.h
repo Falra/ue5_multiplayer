@@ -33,6 +33,8 @@ public:
     void JumpToShotgunEnd() const;
     UFUNCTION(BlueprintCallable)
     void ThrowGrenadeFinished();
+    UFUNCTION(BlueprintCallable)
+    void LaunchGrenade();
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);

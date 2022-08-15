@@ -570,6 +570,11 @@ void UCombatComponent::ThrowGrenadeFinished()
     AttachActorToRightHand(EquippedWeapon);
 }
 
+void UCombatComponent::LaunchGrenade()
+{
+    ShowAttachedGrenade(false);
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
