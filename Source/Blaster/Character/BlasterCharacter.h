@@ -190,6 +190,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Elimination")
     bool bDestroyWeaponOnDeath = false;
+
+    UPROPERTY(VisibleAnywhere)
+    UStaticMeshComponent* AttachedGrenade;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;

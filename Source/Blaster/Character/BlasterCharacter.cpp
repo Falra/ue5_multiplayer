@@ -55,6 +55,10 @@ ABlasterCharacter::ABlasterCharacter()
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 720.0f);
 
     DissolveTimeline = CreateDefaultSubobject<UTimelineComponent>("DissolveTimeline");
+
+    AttachedGrenade = CreateDefaultSubobject<UStaticMeshComponent>("AttachedGrenade");
+    AttachedGrenade->SetupAttachment(GetMesh(), FName("GrenadeSocket"));
+    AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
