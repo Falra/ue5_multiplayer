@@ -29,7 +29,7 @@ public:
     UFUNCTION(NetMulticast, Reliable)
     void MulticastEliminate();
     void PlayEliminatedMontage();
-
+    void PlayThrowGrenadeMontage();
     UPROPERTY(Replicated)
     bool bDisableGameplay = false;
 
@@ -54,13 +54,14 @@ protected:
     virtual void Jump() override;
     void FireButtonPressed();
     void FireButtonReleased();
+    void GrenadeButtonPressed();
     void PlayHitReactMontage() const;
     void UpdateHUDHealth();
     UFUNCTION()
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
     void StopMovementAndCollision();
     void SpawnEliminationBot();
-
+    
     void PollInit();
     
 private:
@@ -106,6 +107,9 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* EliminatedMontage;
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    UAnimMontage* ThrowGrenadeMontage;
 
 #pragma endregion 
     

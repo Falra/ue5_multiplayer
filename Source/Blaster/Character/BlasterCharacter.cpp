@@ -134,6 +134,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABlasterCharacter::FireButtonPressed);
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &ABlasterCharacter::FireButtonReleased);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ABlasterCharacter::ReloadButtonPressed);
+    PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &ABlasterCharacter::GrenadeButtonPressed);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABlasterCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
@@ -340,6 +341,11 @@ void ABlasterCharacter::FireButtonReleased()
     {
         CombatComponent->FireButtonPressed(false);
     }
+}
+
+void ABlasterCharacter::GrenadeButtonPressed()
+{
+    // PlayThrowGrenadeMontage();
 }
 
 void ABlasterCharacter::TurnInPlace(float DeltaTime)
@@ -621,6 +627,15 @@ void ABlasterCharacter::StopMovementAndCollision()
 }
 
 #pragma endregion
+
+void ABlasterCharacter::PlayThrowGrenadeMontage()
+{
+    if (!ThrowGrenadeMontage) return;
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(ThrowGrenadeMontage);
+}
 
 void ABlasterCharacter::SpawnEliminationBot()
 {
