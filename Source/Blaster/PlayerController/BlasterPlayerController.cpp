@@ -220,6 +220,13 @@ void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)
     BlasterHUD->AnnouncementWidget->WarmupTime->SetText(FText::FromString(WarmupCountdownText));
 }
 
+void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
+    const FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
+    BlasterHUD->CharacterOverlay->GrenadesAmount->SetText(FText::FromString(GrenadesText));
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;

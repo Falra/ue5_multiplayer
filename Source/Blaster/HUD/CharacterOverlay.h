@@ -35,6 +35,9 @@ public:
     UTextBlock* CarriedAmmoAmount;
 
     UPROPERTY(meta = (BindWidget))
+    UTextBlock* GrenadesAmount;
+
+    UPROPERTY(meta = (BindWidget))
     UTextBlock* WeaponType;
 
     UPROPERTY(meta = (BindWidget))
