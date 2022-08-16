@@ -76,6 +76,7 @@ void ABlasterCharacter::BeginPlay()
     Health = MaxHealth;
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
     UpdateHUDHealth();
+    UpdateHUDGrenades();
     if (HasAuthority())
     {
         OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::OnReceiveDamage);
@@ -552,6 +553,15 @@ void ABlasterCharacter::UpdateHUDHealth()
     if (BlasterPlayerController)
     {
         BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+    }
+}
+
+void ABlasterCharacter::UpdateHUDGrenades()
+{
+    BlasterPlayerController = !BlasterPlayerController ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+    if (BlasterPlayerController)
+    {
+        BlasterPlayerController->SetHUDGrenades(CombatComponent->GetGrenades());
     }
 }
 

@@ -57,6 +57,7 @@ protected:
     void GrenadeButtonPressed();
     void PlayHitReactMontage() const;
     void UpdateHUDHealth();
+    void UpdateHUDGrenades();
     UFUNCTION()
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
     void StopMovementAndCollision();
