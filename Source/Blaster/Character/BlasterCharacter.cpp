@@ -524,6 +524,8 @@ void ABlasterCharacter::PlayHitReactMontage() const
 void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
     AActor* DamageCauser)
 {
+    if (bEliminated) return;
+    
     Health = FMath::ClampAngle(Health - Damage, 0.0f, MaxHealth);
     PlayHitReactMontage();
     UpdateHUDHealth();
