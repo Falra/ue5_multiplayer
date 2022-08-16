@@ -66,6 +66,13 @@ void ABlasterPlayerController::PollInit()
                 SetHUDHealth(HUDHealth, HUDMaxHealth);
                 SetHUDScore(HUDScore);
                 SetHUDDefeats(HUDDefeats);
+
+                if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
+                    BlasterCharacter && BlasterCharacter->GetCombatComponent())
+                {
+                    HUDGrenades = BlasterCharacter->GetCombatComponent()->GetGrenades();
+                }
+                SetHUDGrenades(HUDGrenades);
             }
         }
     }
@@ -222,7 +229,12 @@ void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)
 
 void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
 {
-    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseCharacterOverlay = true;
+        HUDGrenades = Grenades;
+        return;
+    }
     const FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
     BlasterHUD->CharacterOverlay->GrenadesAmount->SetText(FText::FromString(GrenadesText));
 }

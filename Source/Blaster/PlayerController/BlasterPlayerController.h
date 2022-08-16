@@ -95,4 +95,5 @@ private:
     float HUDMaxHealth;
     float HUDScore;
     int32 HUDDefeats;
+    int32 HUDGrenades;
 };

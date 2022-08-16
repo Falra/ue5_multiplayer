@@ -197,4 +197,7 @@ private:
     
     UPROPERTY(EditAnywhere)
     int32 MaxGrenades = 4;
+
+public:
+    FORCEINLINE int32 GetGrenades() const { return Grenades; }
 };
