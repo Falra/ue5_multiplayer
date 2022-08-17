@@ -37,6 +37,7 @@ public:
     void LaunchGrenade();
     UFUNCTION(Server, Reliable)
     void ServerLaunchGrenade(const FVector_NetQuantize& Target);
+    void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
@@ -148,6 +149,9 @@ private:
     void OnRep_CarriedAmmo();
 
     TMap<EWeaponType, int32> CarriedAmmoMap;
+
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 MaxCarriedAmmo = 500;
 
 #pragma endregion
 

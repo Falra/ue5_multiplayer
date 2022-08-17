@@ -194,6 +194,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
     bIsAimingPlayer = TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>();
 }
 
+
 #pragma region EquipWeapon
 
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
@@ -614,6 +615,20 @@ void UCombatComponent::ServerLaunchGrenade_Implementation(const FVector_NetQuant
         UWorld* World = GetWorld();
         if (!World) return;
         World->SpawnActor<AProjectile>(GrenadeClass, StartingLocation, ToTarget.Rotation(), SpawnParameters);
+    }
+}
+
+void UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount)
+{
+    if (CarriedAmmoMap.Contains(WeaponType))
+    {
+        CarriedAmmoMap[WeaponType] = FMath::Clamp(CarriedAmmoMap[WeaponType] + AmmoAmount, 0, MaxCarriedAmmo);
+
+        UpdateCarriedAmmo();
+    }
+    if (EquippedWeapon && EquippedWeapon->IsEmpty() && EquippedWeapon->GetWeaponType() == WeaponType)
+    {
+        Reload();
     }
 }
 
