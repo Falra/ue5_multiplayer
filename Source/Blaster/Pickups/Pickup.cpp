@@ -50,7 +50,7 @@ void APickup::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     if (PickupMesh && BaseTurnRate != 0.0f)
     {
-        PickupMesh->AddLocalRotation(FRotator(0.0f, BaseTurnRate * DeltaTime, 0.0f));
+        PickupMesh->AddWorldRotation(FRotator(0.0f, BaseTurnRate * DeltaTime, 0.0f));
     }
 }
 
