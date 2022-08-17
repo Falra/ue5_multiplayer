@@ -14,8 +14,12 @@ class BLASTER_API UBuffComponent : public UActorComponent
 
 public:
     UBuffComponent();
+    friend class ABlasterCharacter;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
     virtual void BeginPlay() override;
+private:
+    UPROPERTY()
+    class ABlasterCharacter* Character;
 public:
 };

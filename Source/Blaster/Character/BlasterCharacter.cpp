@@ -3,6 +3,7 @@
 #include "BlasterCharacter.h"
 
 #include "Blaster/Blaster.h"
+#include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
@@ -41,6 +42,9 @@ ABlasterCharacter::ABlasterCharacter()
     CombatComponent = CreateDefaultSubobject<UCombatComponent>("CombatComponent");
     CombatComponent->SetIsReplicated(true);
 
+    BuffComponent = CreateDefaultSubobject<UBuffComponent>("BuffComponent");
+    BuffComponent->SetIsReplicated(true);
+    
     // Ignore other players when trace from Camera
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
     GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
@@ -159,6 +163,10 @@ void ABlasterCharacter::PostInitializeComponents()
     if (CombatComponent)
     {
         CombatComponent->Character = this;
+    }
+    if (BuffComponent)
+    {
+        BuffComponent->Character = this;
     }
 }
 
