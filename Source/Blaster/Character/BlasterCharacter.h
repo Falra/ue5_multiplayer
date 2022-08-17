@@ -215,4 +215,6 @@ public:
     FORCEINLINE UCombatComponent* GetCombatComponent() const { return CombatComponent; }
     FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage;}
     FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const {return AttachedGrenade;}
+    FORCEINLINE UBuffComponent* GetBuffComponent() const { return BuffComponent; }
+    
 };
