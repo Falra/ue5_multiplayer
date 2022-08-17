@@ -146,7 +146,7 @@ private:
     void EliminationTimerFinished();
     
     UFUNCTION()
-    void OnRep_Health();
+    void OnRep_Health(float LastHealth);
 
 #pragma region DissolveEffect
     
@@ -210,6 +210,7 @@ public:
     FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
     FORCEINLINE bool IsEliminated() const { return bEliminated; }
     FORCEINLINE float GetHealth() const { return Health; }
+    void SetHealth(float HealthToSet);
     FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
     ECombatState GetCombatState() const;
     FORCEINLINE UCombatComponent* GetCombatComponent() const { return CombatComponent; }

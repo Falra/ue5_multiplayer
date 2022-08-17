@@ -458,6 +458,16 @@ FVector ABlasterCharacter::GetHitTarget() const
     return CombatComponent->HitTarget;
 }
 
+void ABlasterCharacter::SetHealth(float HealthToSet)
+{
+    Health = FMath::Clamp(HealthToSet, 0.0f, MaxHealth);
+
+    if (HasAuthority())
+    {
+        UpdateHUDHealth();
+    }
+}
+
 ECombatState ABlasterCharacter::GetCombatState() const
 {
     if (!CombatComponent) return ECombatState::ECS_MAX;
@@ -549,10 +559,15 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
     }
 }
 
-void ABlasterCharacter::OnRep_Health()
+void ABlasterCharacter::OnRep_Health(float LastHealth)
 {
-    PlayHitReactMontage();
     UpdateHUDHealth();
+
+    if (Health < LastHealth)
+    {
+        PlayHitReactMontage();
+    }
+    
 }
 
 void ABlasterCharacter::UpdateHUDHealth()

@@ -5,6 +5,7 @@
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
 
 AHealthPickup::AHealthPickup()
@@ -22,7 +23,7 @@ void AHealthPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
     const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
     if (!BlasterCharacter || !BlasterCharacter->GetBuffComponent()) return;
-    
+    BlasterCharacter->GetBuffComponent()->Heal(HealAmount, HealingTime);
     Destroy();
 }
 
