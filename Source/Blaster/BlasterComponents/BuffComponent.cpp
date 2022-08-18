@@ -39,3 +39,8 @@ void UBuffComponent::HealRampUp(float DeltaTime)
         bHealing = false;
     }
 }
+
+void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime)
+{
+    
+}

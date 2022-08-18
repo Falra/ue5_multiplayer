@@ -16,6 +16,7 @@ public:
     UBuffComponent();
     friend class ABlasterCharacter;
     void Heal(float HealAmount, float HealingTime = 0.0f);
+    void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
     virtual void BeginPlay() override;
