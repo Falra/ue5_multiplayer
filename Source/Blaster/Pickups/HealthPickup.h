@@ -25,10 +25,4 @@ private:
 
     UPROPERTY(EditAnywhere)
     float HealingTime = 5.0f;
-
-    UPROPERTY(VisibleAnywhere)
-    class UNiagaraComponent* PickupEffectComponent;
-
-    UPROPERTY(EditAnywhere)
-    class UNiagaraSystem* PickupEffect;
 };

@@ -3,7 +3,9 @@
 
 #include "Pickup.h"
 
+#include "NiagaraComponent.h"
 #include "Blaster/Weapon/WeaponTypes.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
@@ -29,6 +31,9 @@ APickup::APickup()
     PickupMesh->SetRelativeScale3D(FVector(5.0f, 5.0f, 5.0f));
     PickupMesh->SetRenderCustomDepth(true);
     PickupMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+
+    PickupEffectComponent = CreateDefaultSubobject<UNiagaraComponent>("PickupEffectComponent");
+    PickupEffectComponent->SetupAttachment(RootComponent);
 }
 
 void APickup::BeginPlay()
@@ -60,6 +65,11 @@ void APickup::Destroyed()
     {
         UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation());
     }
-        
+
+    if (PickupEffect)
+    {
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, PickupEffect, GetActorLocation(), GetActorRotation());
+    }
+    
     Super::Destroyed();
 }

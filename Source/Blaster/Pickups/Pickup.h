@@ -23,6 +23,12 @@ protected:
     UPROPERTY(EditAnywhere)
     float BaseTurnRate = 45.0f;
     
+    UPROPERTY(VisibleAnywhere)
+    class UNiagaraComponent* PickupEffectComponent;
+
+    UPROPERTY(EditAnywhere)
+    class UNiagaraSystem* PickupEffect;
+    
 private:
     UPROPERTY(EditAnywhere)
     class USphereComponent* OverlapSphere;
