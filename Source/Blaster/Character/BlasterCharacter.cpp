@@ -167,6 +167,7 @@ void ABlasterCharacter::PostInitializeComponents()
     if (BuffComponent)
     {
         BuffComponent->Character = this;
+        BuffComponent->SetInitialSpeed(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeedCrouched);
     }
 }
 

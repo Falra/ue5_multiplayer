@@ -4,6 +4,7 @@
 #include "BuffComponent.h"
 
 #include "Blaster/Character/BlasterCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBuffComponent::UBuffComponent()
 {
@@ -40,7 +41,31 @@ void UBuffComponent::HealRampUp(float DeltaTime)
     }
 }
 
+void UBuffComponent::SetInitialSpeed(float BaseSpeed, float CrouchSpeed)
+{
+    InitialBaseSpeed = BaseSpeed;
+    InitialCrouchSpeed = CrouchSpeed;
+}
+
 void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime)
 {
-    
+    if (!Character) return;
+    Character->GetWorldTimerManager().SetTimer(SpeedBuffTimer, this, &UBuffComponent::ResetSpeeds, BuffTime);
+
+    if (UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement())
+    {
+        CharacterMovement->MaxWalkSpeed = BuffBaseSpeed;
+        CharacterMovement->MaxWalkSpeedCrouched = BuffCrouchSpeed;
+    }
+}
+
+void UBuffComponent::ResetSpeeds()
+{
+    if (!Character) return;
+
+    if (UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement())
+    {
+        CharacterMovement->MaxWalkSpeed = InitialBaseSpeed;
+        CharacterMovement->MaxWalkSpeedCrouched = InitialCrouchSpeed;
+    }
 }
