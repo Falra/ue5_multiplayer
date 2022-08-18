@@ -56,6 +56,7 @@ void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float
     {
         CharacterMovement->MaxWalkSpeed = BuffBaseSpeed;
         CharacterMovement->MaxWalkSpeedCrouched = BuffCrouchSpeed;
+        MulticastSpeedBuff(BuffBaseSpeed, BuffCrouchSpeed);
     }
 }
 
@@ -67,5 +68,15 @@ void UBuffComponent::ResetSpeeds()
     {
         CharacterMovement->MaxWalkSpeed = InitialBaseSpeed;
         CharacterMovement->MaxWalkSpeedCrouched = InitialCrouchSpeed;
+        MulticastSpeedBuff(InitialBaseSpeed, InitialCrouchSpeed);
+    }
+}
+
+void UBuffComponent::MulticastSpeedBuff_Implementation(float BaseSpeed, float CrouchSpeed)
+{
+    if (UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement())
+    {
+        CharacterMovement->MaxWalkSpeed = BaseSpeed;
+        CharacterMovement->MaxWalkSpeedCrouched = CrouchSpeed;
     }
 }
