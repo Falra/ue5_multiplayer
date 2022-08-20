@@ -549,8 +549,13 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
     AActor* DamageCauser)
 {
     if (bEliminated) return;
+
     
-    Health = FMath::ClampAngle(Health - Damage, 0.0f, MaxHealth);
+    const float DamageToShield = FMath::Min(Damage, Shield);
+    const float DamageToHealth = Damage - DamageToShield;
+    Shield -= DamageToShield;
+    Health = FMath::Clamp(Health - DamageToHealth, 0.0f, MaxHealth);
+
     PlayHitReactMontage();
     UpdateHUDHealth();
     UpdateHUDShield();
