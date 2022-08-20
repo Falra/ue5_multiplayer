@@ -78,8 +78,6 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    Health = MaxHealth;
-    Shield = MaxShield;
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
     UpdateHUDHealth();
     UpdateHUDShield();

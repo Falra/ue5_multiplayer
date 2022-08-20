@@ -91,12 +91,21 @@ private:
     void HandleMatchHasStarted();
     void HandleCooldown();
 
-    bool bInitialiseCharacterOverlay = false;
     float HUDHealth;
     float HUDMaxHealth;
+    bool bInitialiseHealth = false;
+    
     float HUDShield;
     float HUDMaxShield;
+    bool bInitialiseShield = false;
+    
     float HUDScore;
+    bool bInitialiseScore = false;
+    
     int32 HUDDefeats;
+    bool bInitialiseDefeats = false;
+    
     int32 HUDGrenades;
+    bool bInitialiseGrenades = false;
+    
 };

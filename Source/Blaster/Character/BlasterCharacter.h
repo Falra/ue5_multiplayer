@@ -134,7 +134,7 @@ private:
     float MaxHealth = 100.0f;
 
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
-    float Health;
+    float Health = 100.0f;
 
     UFUNCTION()
     void OnRep_Health(float LastHealth);
@@ -143,7 +143,7 @@ private:
     float MaxShield = 100.0f;
 
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Shield", Category = "Player stats")
-    float Shield;
+    float Shield = 100.0f;
 
     UFUNCTION()
     void OnRep_Shield(float LastShield);
