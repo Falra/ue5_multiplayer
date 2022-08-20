@@ -24,6 +24,10 @@ void APickupSpawnPoint::SpawnPickup()
     if (NumPickupClasses == 0) return;
     const int32 RandIndex = FMath::RandRange(0, NumPickupClasses - 1);
     SpawnedPickup = GetWorld()->SpawnActor<APickup>(PickupClasses[RandIndex], GetActorTransform());
+    if (SpawnedPickup && HasAuthority())
+    {
+        SpawnedPickup->OnDestroyed.AddDynamic(this, &APickupSpawnPoint::OnPickupDestroyed);
+    }
     
 }
 
@@ -39,6 +43,11 @@ void APickupSpawnPoint::SpawnPickupTimerFinished()
     {
         SpawnPickup();
     }
+}
+
+void APickupSpawnPoint::OnPickupDestroyed(AActor* DestroyedActor)
+{
+    StartSpawnPickupTimer();
 }
 
 void APickupSpawnPoint::Tick(float DeltaTime)
