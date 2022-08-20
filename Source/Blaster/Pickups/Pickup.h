@@ -38,5 +38,9 @@ private:
     
     UPROPERTY(EditAnywhere)
     class USoundCue* PickupSound;
+
+    FTimerHandle BindOverlapTimer;
+    float BindOverlapTime = 0.25f;
+    void BindOverlapTimerFinished();
 public:
 };
