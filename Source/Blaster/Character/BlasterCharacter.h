@@ -57,6 +57,7 @@ protected:
     void GrenadeButtonPressed();
     void PlayHitReactMontage() const;
     void UpdateHUDHealth();
+    void UpdateHUDShield();
     void UpdateHUDGrenades();
     UFUNCTION()
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
@@ -135,6 +136,18 @@ private:
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Health", Category = "Player stats")
     float Health;
 
+    UFUNCTION()
+    void OnRep_Health(float LastHealth);
+
+    UPROPERTY(EditAnywhere, Category = "Player stats")
+    float MaxShield = 100.0f;
+
+    UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Shield", Category = "Player stats")
+    float Shield;
+
+    UFUNCTION()
+    void OnRep_Shield(float LastShield);
+
     UPROPERTY(VisibleAnywhere, Category = "Elimination")
     bool bEliminated = false;
 
@@ -144,9 +157,7 @@ private:
     float EliminationDelay = 3.0f;
     
     void EliminationTimerFinished();
-    
-    UFUNCTION()
-    void OnRep_Health(float LastHealth);
+
 
 #pragma region DissolveEffect
     

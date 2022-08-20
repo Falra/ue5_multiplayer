@@ -71,6 +71,7 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
     DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
     DOREPLIFETIME(ABlasterCharacter, Health);
+    DOREPLIFETIME(ABlasterCharacter, Shield);
     DOREPLIFETIME(ABlasterCharacter, bDisableGameplay);
 }
 
@@ -78,8 +79,10 @@ void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
     Health = MaxHealth;
+    Shield = MaxShield;
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
     UpdateHUDHealth();
+    UpdateHUDShield();
     UpdateHUDGrenades();
     if (HasAuthority())
     {
@@ -550,6 +553,7 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
     Health = FMath::ClampAngle(Health - Damage, 0.0f, MaxHealth);
     PlayHitReactMontage();
     UpdateHUDHealth();
+    UpdateHUDShield();
 
     if (Health == 0.0f)
     {
@@ -572,12 +576,31 @@ void ABlasterCharacter::OnRep_Health(float LastHealth)
     
 }
 
+void ABlasterCharacter::OnRep_Shield(float LastShield)
+{
+    UpdateHUDShield();
+
+    if (Health < LastShield)
+    {
+        PlayHitReactMontage();
+    }
+}
+
 void ABlasterCharacter::UpdateHUDHealth()
 {
     BlasterPlayerController = !BlasterPlayerController ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
     if (BlasterPlayerController)
     {
         BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+    }
+}
+
+void ABlasterCharacter::UpdateHUDShield()
+{
+    BlasterPlayerController = !BlasterPlayerController ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+    if (BlasterPlayerController)
+    {
+        BlasterPlayerController->SetHUDShield(Shield, MaxShield);
     }
 }
 
