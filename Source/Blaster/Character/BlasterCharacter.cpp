@@ -78,10 +78,17 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
-    UpdateHUDHealth();
-    UpdateHUDShield();
-    UpdateHUDGrenades();
+
+    if (BlasterPlayerController)
+    {
+        UpdateHUDHealth();
+        UpdateHUDShield();
+        UpdateHUDGrenades();
+        bHUDWasUpdated = true;
+    }
+    
     if (HasAuthority())
     {
         OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::OnReceiveDamage);
@@ -170,6 +177,20 @@ void ABlasterCharacter::PostInitializeComponents()
         BuffComponent->Character = this;
         BuffComponent->SetInitialSpeed(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeedCrouched);
         BuffComponent->SetInitialJumpSpeed(GetCharacterMovement()->JumpZVelocity);
+    }
+}
+
+void ABlasterCharacter::PossessedBy(AController* NewController)
+{
+    Super::PossessedBy(NewController);
+
+    if (!bHUDWasUpdated)
+    {
+        BlasterPlayerController = Cast<ABlasterPlayerController>(NewController);
+        UpdateHUDHealth();
+        UpdateHUDShield();
+        UpdateHUDGrenades();
+        bHUDWasUpdated = true;
     }
 }
 

@@ -21,6 +21,7 @@ public:
     virtual void Destroyed() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void PostInitializeComponents() override;
+    virtual void PossessedBy(AController* NewController) override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void PlayFireMontage(bool bAiming);
     void PlayReloadMontage();
@@ -98,6 +99,8 @@ private:
 
     ETurningInPlace TurningInPlace;
     void TurnInPlace(float DeltaTime);
+
+    bool bHUDWasUpdated = false;
 
 #pragma region AnimationMontages   
 
