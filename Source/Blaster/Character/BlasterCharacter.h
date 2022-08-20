@@ -224,7 +224,9 @@ public:
     FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
     FORCEINLINE bool IsEliminated() const { return bEliminated; }
     FORCEINLINE float GetHealth() const { return Health; }
+    FORCEINLINE float GetShield() const { return Shield; }
     void SetHealth(float HealthToSet);
+    void SetShield(float ShieldToSet);
     FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
     ECombatState GetCombatState() const;
     FORCEINLINE UCombatComponent* GetCombatComponent() const { return CombatComponent; }

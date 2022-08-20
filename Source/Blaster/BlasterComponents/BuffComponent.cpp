@@ -20,6 +20,7 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     HealRampUp(DeltaTime);
+    ShieldRampUp(DeltaTime);
 }
 
 void UBuffComponent::Heal(float HealAmount, float HealingTime)
@@ -27,6 +28,13 @@ void UBuffComponent::Heal(float HealAmount, float HealingTime)
     bHealing = true;
     HealingRate = HealingTime == 0 ? HealAmount : HealAmount / HealingTime;
     AmountToHeal = HealAmount;
+}
+
+void UBuffComponent::BuffShield(float ShieldAmount, float BuffTime)
+{
+    bShieldBuff = true;
+    ShieldRate = BuffTime == 0 ? ShieldAmount : ShieldAmount / BuffTime;
+    ShieldAmountToAdd = ShieldAmount;
 }
 
 void UBuffComponent::HealRampUp(float DeltaTime)
@@ -38,6 +46,18 @@ void UBuffComponent::HealRampUp(float DeltaTime)
     if (AmountToHeal <= 0.0f)
     {
         bHealing = false;
+    }
+}
+
+void UBuffComponent::ShieldRampUp(float DeltaTime)
+{
+    if (!bShieldBuff || !Character || Character->IsEliminated()) return;
+    const float ShieldThisFrame = ShieldRate == ShieldAmountToAdd ? ShieldAmountToAdd : ShieldRate * DeltaTime;
+    Character->SetShield(Character->GetShield() + ShieldThisFrame);
+    ShieldAmountToAdd -= ShieldThisFrame;
+    if (ShieldAmountToAdd <= 0.0f)
+    {
+        bShieldBuff = false;
     }
 }
 

@@ -492,6 +492,16 @@ void ABlasterCharacter::SetHealth(float HealthToSet)
     }
 }
 
+void ABlasterCharacter::SetShield(float ShieldToSet)
+{
+    Shield = FMath::Clamp(ShieldToSet, 0.0f, MaxShield);
+
+    if (HasAuthority())
+    {
+        UpdateHUDShield();
+    }
+}
+
 ECombatState ABlasterCharacter::GetCombatState() const
 {
     if (!CombatComponent) return ECombatState::ECS_MAX;

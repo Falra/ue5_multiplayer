@@ -16,6 +16,7 @@ public:
     UBuffComponent();
     friend class ABlasterCharacter;
     void Heal(float HealAmount, float HealingTime = 0.0f);
+    void BuffShield(float ShieldAmount, float BuffTime = 0.0f);
     void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
     void BuffJump(float BuffJumpSpeed, float BuffTime);
     void SetInitialSpeed(float BaseSpeed, float CrouchSpeed);
@@ -24,6 +25,7 @@ public:
 protected:
     virtual void BeginPlay() override;
     void HealRampUp(float DeltaTime);
+    void ShieldRampUp(float DeltaTime);
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;
@@ -32,6 +34,12 @@ private:
     bool bHealing = false;
     float HealingRate = 0.0f;
     float AmountToHeal = 0.0f;
+#pragma endregion
+
+#pragma region ShieldBuff
+    bool bShieldBuff = false;
+    float ShieldRate = 0.0f;
+    float ShieldAmountToAdd = 0.0f;
 #pragma endregion
 
 #pragma region SpeedBuff
