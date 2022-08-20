@@ -35,6 +35,7 @@ protected:
     UPROPERTY(EditAnywhere)
     float SpawnPickupTimeMax = 3.0f;
 
+    UFUNCTION()
     void OnPickupDestroyed(AActor* DestroyedActor);
 private:
     FTimerHandle SpawnPickupTimer;
