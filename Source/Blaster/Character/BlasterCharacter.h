@@ -36,6 +36,8 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent)
     void ShowSniperScopeWidget(bool bShowScope);
+
+    void SpawnDefaultWeapon();
 protected:
     virtual void BeginPlay() override;
     void RotateInPlace(float DeltaTime);
@@ -100,7 +102,7 @@ private:
     ETurningInPlace TurningInPlace;
     void TurnInPlace(float DeltaTime);
 
-    bool bHUDWasUpdated = false;
+    bool bHasInitialized = false;
 
 #pragma region AnimationMontages   
 
@@ -211,6 +213,9 @@ private:
 
     UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* AttachedGrenade;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AWeapon> DefaultWeaponClass;
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;

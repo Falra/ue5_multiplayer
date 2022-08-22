@@ -78,7 +78,7 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void ABlasterCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
+    
     BlasterPlayerController = Cast<ABlasterPlayerController>(Controller);
 
     if (BlasterPlayerController)
@@ -86,7 +86,8 @@ void ABlasterCharacter::BeginPlay()
         UpdateHUDHealth();
         UpdateHUDShield();
         UpdateHUDGrenades();
-        bHUDWasUpdated = true;
+        SpawnDefaultWeapon();
+        bHasInitialized = true;
     }
     
     if (HasAuthority())
@@ -105,6 +106,18 @@ void ABlasterCharacter::Tick(float DeltaTime)
     RotateInPlace(DeltaTime);
     HideCameraIfCharacterClose();
     PollInit();
+}
+
+void ABlasterCharacter::SpawnDefaultWeapon()
+{
+    UWorld* World = GetWorld();
+    if (!World || bEliminated || !DefaultWeaponClass) return;
+    const ABlasterGameMode* BlasterGameMode = Cast<ABlasterGameMode>(World->GetAuthGameMode());
+    if (!BlasterGameMode) return;
+    if (AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass))
+    {
+        CombatComponent->EquipWeapon(StartingWeapon);
+    }
 }
 
 void ABlasterCharacter::RotateInPlace(float DeltaTime)
@@ -184,13 +197,14 @@ void ABlasterCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
 
-    if (!bHUDWasUpdated)
+    if (!bHasInitialized)
     {
         BlasterPlayerController = Cast<ABlasterPlayerController>(NewController);
         UpdateHUDHealth();
         UpdateHUDShield();
         UpdateHUDGrenades();
-        bHUDWasUpdated = true;
+        SpawnDefaultWeapon();
+        bHasInitialized = true;
     }
 }
 

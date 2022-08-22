@@ -86,6 +86,24 @@ void ABlasterPlayerController::PollInit()
                     bInitialiseDefeats = false;
                 }
 
+                if (bInitialiseWeaponAmmo)
+                {
+                    SetHUDWeaponAmmo(HUDWeaponAmmo);
+                    bInitialiseWeaponAmmo = false;
+                }
+
+                if (bInitialiseCarriedAmmo)
+                {
+                    SetHUDCarriedAmmo(HUDCarriedAmmo);
+                    bInitialiseCarriedAmmo = false;
+                }
+
+                if (bInitialiseWeaponType)
+                {
+                    SetHUDWeaponType(HUDWeaponType);
+                    bInitialiseWeaponType = false;
+                }
+                
                 if (bInitialiseGrenades)
                 {
                     if (const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
@@ -208,26 +226,59 @@ void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
 
 void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 {
-    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseWeaponAmmo = true;
+        HUDWeaponAmmo = Ammo;
+        return;
+    }
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
 void ABlasterPlayerController::SetHUDCarriedAmmo(int32 Ammo)
 {
-    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        bInitialiseCarriedAmmo = true;
+        HUDCarriedAmmo = Ammo;
+        return;
+    }
     const FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
     BlasterHUD->CharacterOverlay->CarriedAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
 void ABlasterPlayerController::SetHUDWeaponType(EWeaponType WeaponType)
 {
-    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        HUDWeaponType = WeaponType;
+        bInitialiseWeaponType = true;
+        return;
+    }  
     FString WeaponTypeText;
     switch (WeaponType)
     {
         case EWeaponType::EWT_AssaultRifle:
             WeaponTypeText = "Assault Rifle";
+            break;
+        case EWeaponType::EWT_Pistol:
+            WeaponTypeText = "Pistol";
+            break;
+        case EWeaponType::EWT_Shotgun:
+            WeaponTypeText = "Shotgun";
+            break;
+        case EWeaponType::EWT_SubmachineGun:
+            WeaponTypeText = "Submachine Gun";
+            break;
+        case EWeaponType::EWT_RocketLauncher:
+            WeaponTypeText = "Rocket Launcher";
+            break;
+        case EWeaponType::EWT_GrenadeLauncher:
+            WeaponTypeText = "Grenade Launcher";
+            break;
+        case EWeaponType::EWT_SniperRifle:
+            WeaponTypeText = "Sniper Rifle";
             break;
     }
     BlasterHUD->CharacterOverlay->WeaponType->SetText(FText::FromString(WeaponTypeText));
