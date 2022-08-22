@@ -117,6 +117,7 @@ void ABlasterCharacter::SpawnDefaultWeapon()
     if (AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass))
     {
         CombatComponent->EquipWeapon(StartingWeapon);
+        StartingWeapon->bDestroyWeapon = true;
     }
 }
 
@@ -669,7 +670,14 @@ void ABlasterCharacter::Eliminate()
     GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
     if (CombatComponent && CombatComponent->EquippedWeapon)
     {
-        CombatComponent->EquippedWeapon->DropWeapon();
+        if (CombatComponent->EquippedWeapon->bDestroyWeapon)
+        {
+            CombatComponent->EquippedWeapon->Destroy();
+        }
+        else
+        {
+            CombatComponent->EquippedWeapon->DropWeapon();
+        }
     }
 }
 

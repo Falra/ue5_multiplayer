@@ -30,6 +30,7 @@ public:
     virtual void DropWeapon();
     virtual void AddAmmo(int32 AmmoToAdd);
     void EnableCustomDepth(bool bEnable);
+    bool bDestroyWeapon = false;
 protected:
     UFUNCTION()
     virtual void BeginPlay() override;
