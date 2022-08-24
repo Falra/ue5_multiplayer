@@ -163,7 +163,8 @@ private:
     
     void EliminationTimerFinished();
 
-
+    void DropOrDestroyWeapon(AWeapon* Weapon);
+    
 #pragma region DissolveEffect
     
     UPROPERTY(VisibleAnywhere, Category = "Elimination")

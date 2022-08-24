@@ -665,20 +665,28 @@ void ABlasterCharacter::UpdateHUDGrenades()
 
 #pragma region Elimination
 
+void ABlasterCharacter::DropOrDestroyWeapon(AWeapon* Weapon)
+{
+    if (!Weapon) return;
+    
+    if (Weapon->bDestroyWeapon)
+    {
+        Weapon->Destroy();
+    }
+    else
+    {
+        Weapon->DropWeapon();
+    }
+}
+
 void ABlasterCharacter::Eliminate()
 {
     MulticastEliminate();
     GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
-    if (CombatComponent && CombatComponent->EquippedWeapon)
+    if (CombatComponent)
     {
-        if (CombatComponent->EquippedWeapon->bDestroyWeapon)
-        {
-            CombatComponent->EquippedWeapon->Destroy();
-        }
-        else
-        {
-            CombatComponent->EquippedWeapon->DropWeapon();
-        }
+        DropOrDestroyWeapon(CombatComponent->EquippedWeapon);
+        DropOrDestroyWeapon(CombatComponent->SecondaryWeapon);
     }
 }
 
