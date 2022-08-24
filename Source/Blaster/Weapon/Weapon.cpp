@@ -104,6 +104,25 @@ void AWeapon::SetWeaponState(EWeaponState State)
 {
     WeaponState = State;
 
+    OnSetWeaponState();
+}
+
+void AWeapon::OnRep_WeaponState()
+{
+    switch (WeaponState)
+    {
+        case EWeaponState::EWS_Equipped:
+            ShowPickupWidget(false);
+            SetWeaponMeshState(false);
+            break;
+        case EWeaponState::EWS_Dropped:
+            SetWeaponMeshState(true);
+            break;
+    }
+}
+
+void AWeapon::OnSetWeaponState()
+{
     switch (WeaponState)
     {
         case EWeaponState::EWS_Equipped:
@@ -116,20 +135,6 @@ void AWeapon::SetWeaponState(EWeaponState State)
             {
                 AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
             }
-            SetWeaponMeshState(true);
-            break;
-    }
-}
-
-void AWeapon::OnRep_WeaponState()
-{
-    switch (WeaponState)
-    {
-        case EWeaponState::EWS_Equipped:
-            ShowPickupWidget(false);
-            SetWeaponMeshState(false);
-            break;
-        case EWeaponState::EWS_Dropped:
             SetWeaponMeshState(true);
             break;
     }

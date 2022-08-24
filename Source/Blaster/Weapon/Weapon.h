@@ -35,6 +35,8 @@ protected:
     UFUNCTION()
     virtual void BeginPlay() override;
 
+    virtual void OnSetWeaponState();
+    
     UFUNCTION()
     virtual void OnSphereOverlap(
         UPrimitiveComponent* OverlappedComponent,
