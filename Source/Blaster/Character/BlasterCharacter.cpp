@@ -240,6 +240,7 @@ void ABlasterCharacter::LookUp(float Value)
 void ABlasterCharacter::EquipButtonPressed()
 {
     if (bDisableGameplay) return;
+
     if (CombatComponent)
     {
         ServerEquipButtonPressed();
@@ -250,7 +251,14 @@ void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
 {
     if (CombatComponent)
     {
-        CombatComponent->EquipWeapon(OverlappingWeapon);
+        if (OverlappingWeapon)
+        {
+            CombatComponent->EquipWeapon(OverlappingWeapon);
+        }
+        else if (CombatComponent->ShouldSwapWeapons())
+        {
+            CombatComponent->SwapWeapons();
+        }
     }
 }
 

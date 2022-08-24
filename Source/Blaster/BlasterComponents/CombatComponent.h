@@ -20,6 +20,7 @@ public:
     UCombatComponent();
     friend class ABlasterCharacter;
     void EquipWeapon(class AWeapon* WeaponToEquip);
+    void SwapWeapons();
     void Reload();
     UFUNCTION(BlueprintCallable)
     void FinishReloading();
@@ -215,5 +216,6 @@ private:
 
 public:
     FORCEINLINE int32 GetGrenades() const { return Grenades; }
-    FORCEINLINE AWeapon* GetEquippedWeapon() const {return EquippedWeapon; }
+    FORCEINLINE AWeapon* GetEquippedWeapon() const { return EquippedWeapon; }
+    bool ShouldSwapWeapons() const;
 };

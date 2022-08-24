@@ -244,6 +244,26 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 }
 
+void UCombatComponent::SwapWeapons()
+{
+    AWeapon* TempWeapon = EquippedWeapon;
+    EquippedWeapon = SecondaryWeapon;
+    SecondaryWeapon = TempWeapon;
+
+    EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+    AttachActorToRightHand(EquippedWeapon);
+    EquippedWeapon->ShowWeaponAmmo();
+    UpdateCarriedAmmo();
+    PlayEquipEffects(EquippedWeapon);
+    if (Controller)
+    {
+        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+    }
+    
+    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
+    AttachActorToBackpack(SecondaryWeapon);
+}
+
 void UCombatComponent::DropEquippedWeapon()
 {
     if (EquippedWeapon)
@@ -316,6 +336,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;
         PlayEquipEffects(EquippedWeapon);
+        EquippedWeapon->ShowWeaponAmmo();
         Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
         if (Controller)
         {
@@ -620,6 +641,11 @@ void UCombatComponent::UpdateHUDGrenades()
     {
         Controller->SetHUDGrenades(Grenades);
     }
+}
+
+bool UCombatComponent::ShouldSwapWeapons() const
+{
+    return EquippedWeapon && SecondaryWeapon;
 }
 
 void UCombatComponent::JumpToShotgunEnd() const
