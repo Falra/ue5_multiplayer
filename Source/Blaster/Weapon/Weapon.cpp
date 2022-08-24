@@ -109,16 +109,7 @@ void AWeapon::SetWeaponState(EWeaponState State)
 
 void AWeapon::OnRep_WeaponState()
 {
-    switch (WeaponState)
-    {
-        case EWeaponState::EWS_Equipped:
-            ShowPickupWidget(false);
-            SetWeaponMeshState(false);
-            break;
-        case EWeaponState::EWS_Dropped:
-            SetWeaponMeshState(true);
-            break;
-    }
+    OnSetWeaponState();
 }
 
 void AWeapon::OnSetWeaponState()
@@ -126,18 +117,28 @@ void AWeapon::OnSetWeaponState()
     switch (WeaponState)
     {
         case EWeaponState::EWS_Equipped:
-            ShowPickupWidget(false);
-            AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-            SetWeaponMeshState(false);
+            OnEquipped();
             break;
         case EWeaponState::EWS_Dropped:
-            if (HasAuthority())
-            {
-                AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-            }
-            SetWeaponMeshState(true);
+            OnDropped();
             break;
     }
+}
+
+void AWeapon::OnEquipped()
+{
+    ShowPickupWidget(false);
+    AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    SetWeaponMeshState(false);
+}
+
+void AWeapon::OnDropped()
+{
+    if (HasAuthority())
+    {
+        AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    }
+    SetWeaponMeshState(true);
 }
 
 void AWeapon::CheckUpdateController()

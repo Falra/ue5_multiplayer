@@ -36,6 +36,8 @@ protected:
     virtual void BeginPlay() override;
 
     virtual void OnSetWeaponState();
+    virtual void OnEquipped();
+    virtual void OnDropped();
     
     UFUNCTION()
     virtual void OnSphereOverlap(
