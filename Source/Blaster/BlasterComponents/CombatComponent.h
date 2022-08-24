@@ -65,7 +65,8 @@ protected:
     void DropEquippedWeapon();
     void AttachActorToRightHand(AActor* ActorToAttach);
     void AttachActorToLeftHand(AActor* ActorToAttach);
-    void PlayEquipEffects() const;
+    void AttachActorToBackpack(AActor* ActorToAttach);
+    void PlayEquipEffects(AWeapon* WeaponToEquip) const;
     void SetWeaponStateAndAttach();
 
     void SetHUDCrosshairs(float DeltaTime);
@@ -84,6 +85,9 @@ protected:
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<class AProjectile> GrenadeClass;
+
+    void EquipPrimaryWeapon(AWeapon* WeaponToEquip);
+    void EquipSecondaryWeapon(AWeapon* WeaponToEquip);
 private:
     UPROPERTY()
     class ABlasterCharacter* Character;

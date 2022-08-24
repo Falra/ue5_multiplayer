@@ -197,10 +197,8 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 
 #pragma region EquipWeapon
 
-void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
+void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
 {
-    if (!Character || !WeaponToEquip || CombatState != ECombatState::ECS_Unoccupied) return;
-
     DropEquippedWeapon();
     
     EquippedWeapon = WeaponToEquip;
@@ -215,8 +213,31 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
         Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
     }
     
-    PlayEquipEffects();
+    PlayEquipEffects(WeaponToEquip);
     ReloadEmptyWeapon();
+}
+
+void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
+{
+    SecondaryWeapon = WeaponToEquip;
+    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+    AttachActorToBackpack(WeaponToEquip);
+    SecondaryWeapon->SetOwner(Character);
+    PlayEquipEffects(WeaponToEquip);
+}
+
+void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
+{
+    if (!Character || !WeaponToEquip || CombatState != ECombatState::ECS_Unoccupied) return;
+
+    if (EquippedWeapon && !SecondaryWeapon)
+    {
+        EquipSecondaryWeapon(WeaponToEquip);
+    }
+    else
+    {
+        EquipPrimaryWeapon(WeaponToEquip);
+    }
     
     Character->GetCharacterMovement()->bOrientRotationToMovement = false;
     Character->bUseControllerRotationYaw = true;
@@ -261,6 +282,16 @@ void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
     }
 }
 
+void UCombatComponent::AttachActorToBackpack(AActor* ActorToAttach)
+{
+    if (!Character || !ActorToAttach) return;
+    
+    if (const auto BackpackSocket = Character->GetMesh()->GetSocketByName(FName("BackpackSocket")))
+    {
+        BackpackSocket->AttachActor(ActorToAttach, Character->GetMesh());
+    }
+}
+
 void UCombatComponent::UpdateCarriedAmmo()
 {
     if (!EquippedWeapon) return;
@@ -284,7 +315,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
         SetWeaponStateAndAttach();
         Character->GetCharacterMovement()->bOrientRotationToMovement = false;
         Character->bUseControllerRotationYaw = true;
-        PlayEquipEffects();
+        PlayEquipEffects(EquippedWeapon);
         Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
         if (Controller)
         {
@@ -295,14 +326,19 @@ void UCombatComponent::OnRep_EquippedWeapon()
 
 void UCombatComponent::OnRep_SecondaryWeapon()
 {
-    
+    if (SecondaryWeapon && Character)
+    {
+        SecondaryWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+        AttachActorToBackpack(SecondaryWeapon);
+        PlayEquipEffects(SecondaryWeapon);
+    }
 }
 
-void UCombatComponent::PlayEquipEffects() const
+void UCombatComponent::PlayEquipEffects(AWeapon* WeaponToEquip) const
 {
-    if (EquippedWeapon->EquipSound)
+    if (WeaponToEquip->EquipSound)
     {
-        UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
+        UGameplayStatics::PlaySoundAtLocation(this, WeaponToEquip->EquipSound, Character->GetActorLocation());
     }
 }
 
