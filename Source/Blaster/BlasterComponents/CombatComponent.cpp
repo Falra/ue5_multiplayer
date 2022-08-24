@@ -293,6 +293,11 @@ void UCombatComponent::OnRep_EquippedWeapon()
     }
 }
 
+void UCombatComponent::OnRep_SecondaryWeapon()
+{
+    
+}
+
 void UCombatComponent::PlayEquipEffects() const
 {
     if (EquippedWeapon->EquipSound)
@@ -636,6 +641,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(UCombatComponent, EquippedWeapon);
+    DOREPLIFETIME(UCombatComponent, SecondaryWeapon);
     DOREPLIFETIME(UCombatComponent, bIsAiming);
     DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
     DOREPLIFETIME(UCombatComponent, CombatState);

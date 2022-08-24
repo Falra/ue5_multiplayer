@@ -47,6 +47,10 @@ protected:
 
     UFUNCTION()
     void OnRep_EquippedWeapon();
+
+    UFUNCTION()
+    void OnRep_SecondaryWeapon();
+    
     void Fire();
 
     UFUNCTION(Server, Reliable)
@@ -92,6 +96,9 @@ private:
 
     UPROPERTY(ReplicatedUsing = "OnRep_EquippedWeapon")
     AWeapon* EquippedWeapon;
+
+    UPROPERTY(ReplicatedUsing = "OnRep_SecondaryWeapon")
+    AWeapon* SecondaryWeapon;
 
     UPROPERTY(Replicated)
     bool bIsAiming;
