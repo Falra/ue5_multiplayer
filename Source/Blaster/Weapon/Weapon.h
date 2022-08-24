@@ -11,6 +11,7 @@ enum class EWeaponState : uint8
 {
     EWS_Initial UMETA(DisplayName = "Initial State"),
     EWS_Equipped UMETA(DisplayName = "Equipped"),
+    EWS_EquippedSecondary UMETA(DisplayName = "Equipped Secondary"),
     EWS_Dropped UMETA(DisplayName = "Dropped"),
 
     EWS_MAX UMETA(DisplayName = "DefaultMAX")
@@ -38,6 +39,7 @@ protected:
     virtual void OnSetWeaponState();
     virtual void OnEquipped();
     virtual void OnDropped();
+    virtual void OnEquippedSecondary();
     
     UFUNCTION()
     virtual void OnSphereOverlap(
@@ -57,7 +59,7 @@ protected:
         int32 OtherBodyIndex
         );
 
-    virtual void SetWeaponMeshState(bool bIsEnabled);
+    virtual void SetWeaponMeshState(bool bIsEnabled, bool bIsSecondary = false);
 private:
     UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
     USkeletalMeshComponent* WeaponMesh;

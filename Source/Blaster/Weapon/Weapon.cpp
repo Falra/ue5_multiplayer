@@ -119,6 +119,9 @@ void AWeapon::OnSetWeaponState()
         case EWeaponState::EWS_Equipped:
             OnEquipped();
             break;
+        case EWeaponState::EWS_EquippedSecondary:
+            OnEquippedSecondary();
+            break;
         case EWeaponState::EWS_Dropped:
             OnDropped();
             break;
@@ -139,6 +142,13 @@ void AWeapon::OnDropped()
         AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     }
     SetWeaponMeshState(true);
+}
+
+void AWeapon::OnEquippedSecondary()
+{
+    ShowPickupWidget(false);
+    AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    SetWeaponMeshState(false, true);
 }
 
 void AWeapon::CheckUpdateController()
@@ -184,19 +194,24 @@ bool AWeapon::IsFull() const
     return Ammo == MagCapacity;
 }
 
-void AWeapon::SetWeaponMeshState(bool bIsEnabled)
+void AWeapon::SetWeaponMeshState(bool bIsEnabled, bool bIsSecondary)
 {
     WeaponMesh->SetSimulatePhysics(bIsEnabled);
     WeaponMesh->SetEnableGravity(bIsEnabled);
     const auto CollisionEnabled = bIsEnabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
     WeaponMesh->SetCollisionEnabled(CollisionEnabled);
-    EnableCustomDepth(bIsEnabled);
+    EnableCustomDepth(bIsEnabled || bIsSecondary);
     if (bIsEnabled)
     {
         WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
         WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
         WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
         WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+        WeaponMesh->MarkRenderStateDirty();
+    }
+    else if (bIsSecondary)
+    {
+        WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
         WeaponMesh->MarkRenderStateDirty();
     }
     else if (bHasStrap)

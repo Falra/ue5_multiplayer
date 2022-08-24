@@ -220,7 +220,7 @@ void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
 void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
 {
     SecondaryWeapon = WeaponToEquip;
-    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
     AttachActorToBackpack(WeaponToEquip);
     SecondaryWeapon->SetOwner(Character);
     PlayEquipEffects(WeaponToEquip);
@@ -328,7 +328,7 @@ void UCombatComponent::OnRep_SecondaryWeapon()
 {
     if (SecondaryWeapon && Character)
     {
-        SecondaryWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+        SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
         AttachActorToBackpack(SecondaryWeapon);
         PlayEquipEffects(SecondaryWeapon);
     }
