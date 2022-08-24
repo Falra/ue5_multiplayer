@@ -56,7 +56,12 @@ void AWeapon::OnRep_Owner()
     }
     else
     {
-        ShowWeaponAmmo();
+        CheckUpdateController();
+        if (BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombatComponent()
+            && BlasterOwnerCharacter->GetCombatComponent()->GetEquippedWeapon() == this)
+        {
+            ShowWeaponAmmo();
+        }
     }
 
 }

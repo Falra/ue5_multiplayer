@@ -215,4 +215,5 @@ private:
 
 public:
     FORCEINLINE int32 GetGrenades() const { return Grenades; }
+    FORCEINLINE AWeapon* GetEquippedWeapon() const {return EquippedWeapon; }
 };
