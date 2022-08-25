@@ -11,6 +11,7 @@
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/GameMode.h"
@@ -348,8 +349,8 @@ void ABlasterPlayerController::HighPingWarning()
     {
         return;
     }
-    BlasterHUD->CharacterOverlay->SetRenderOpacity(1.0f);
-    BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
+    BlasterHUD->CharacterOverlay->HighPingImage->SetRenderOpacity(1.0f);
+    BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation, 0.0f, 5.0f);
 }
 
 void ABlasterPlayerController::StopHighPingWarning()
@@ -358,11 +359,11 @@ void ABlasterPlayerController::StopHighPingWarning()
     {
         return;
     }
-    BlasterHUD->CharacterOverlay->SetRenderOpacity(0.0f);
     if (BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation))
     {
         BlasterHUD->CharacterOverlay->StopAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
     }
+    BlasterHUD->CharacterOverlay->HighPingImage->SetRenderOpacity(0.0f);
 }
 
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
