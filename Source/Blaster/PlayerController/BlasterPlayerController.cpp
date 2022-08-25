@@ -41,6 +41,17 @@ void ABlasterPlayerController::Tick(float DeltaSeconds)
     CheckTimeSync(DeltaSeconds);
 
     PollInit();
+
+    HighPingRunningTime += DeltaSeconds;
+    if (HighPingRunningTime >= CheckPingFrequency)
+    {
+        PlayerState = !PlayerState ? GetPlayerState<APlayerState>() : PlayerState;
+        if (PlayerState && PlayerState->GetPingInMilliseconds() > HighPingThreshold)
+        {
+            HighPingWarning();
+        }
+        HighPingRunningTime = 0.0f;
+    }
 }
 
 void ABlasterPlayerController::CheckTimeSync(float DeltaSeconds)
