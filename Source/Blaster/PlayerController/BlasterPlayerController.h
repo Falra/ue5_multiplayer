@@ -64,6 +64,10 @@ protected:
 
     UFUNCTION(Client, Reliable)
     void ClientJoinMidGame(FName State, float Warmup, float Match, float Cooldown, float StartingTime);
+
+    void HighPingWarning();
+    void StartHighPingWarning();
+    
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;

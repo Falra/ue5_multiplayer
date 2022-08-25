@@ -328,6 +328,29 @@ void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
     BlasterHUD->CharacterOverlay->GrenadesAmount->SetText(FText::FromString(GrenadesText));
 }
 
+void ABlasterPlayerController::HighPingWarning()
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+    BlasterHUD->CharacterOverlay->SetRenderOpacity(1.0f);
+    BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
+}
+
+void ABlasterPlayerController::StartHighPingWarning()
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+    BlasterHUD->CharacterOverlay->SetRenderOpacity(0.0f);
+    if (BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation))
+    {
+        BlasterHUD->CharacterOverlay->StopAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
+    }
+}
+
 void ABlasterPlayerController::MulticastShowDefeatedAnimation_Implementation()
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay) return;
