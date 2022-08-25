@@ -34,6 +34,7 @@ public:
     void HandleStateChange();
     void OnMatchStateSet(FName State);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    void CheckPingSpeed();
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
@@ -66,7 +67,7 @@ protected:
     void ClientJoinMidGame(FName State, float Warmup, float Match, float Cooldown, float StartingTime);
 
     void HighPingWarning();
-    void StartHighPingWarning();
+    void StopHighPingWarning();
     
 private:
     UPROPERTY(VisibleAnywhere)
@@ -121,8 +122,6 @@ private:
     EWeaponType HUDWeaponType;
     bool bInitialiseWeaponType = false;
 
-    float HighPingRunningTime = 0.0f;
-    float PingAnimationRunningTime = 0.0f;
     UPROPERTY(EditAnywhere)
     float HighPingDuration = 5.0f;
     UPROPERTY(EditAnywhere)

@@ -24,12 +24,26 @@ void ABlasterPlayerController::BeginPlay()
     BlasterHUD = Cast<ABlasterHUD>(GetHUD());
 
     ServerCheckMatchState();
+
+    FTimerHandle CheckPingTimerHandle;
+    GetWorldTimerManager().SetTimer(CheckPingTimerHandle, this, &ABlasterPlayerController::CheckPingSpeed, CheckPingFrequency, true);
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ABlasterPlayerController, MatchState);
+}
+
+void ABlasterPlayerController::CheckPingSpeed()
+{
+    PlayerState = !PlayerState ? GetPlayerState<APlayerState>() : PlayerState;
+    if (PlayerState && PlayerState->GetPingInMilliseconds() > HighPingThreshold)
+    {
+        HighPingWarning();
+        FTimerHandle TurnOffHandle;
+        GetWorldTimerManager().SetTimer(TurnOffHandle, this, &ABlasterPlayerController::StopHighPingWarning, HighPingDuration);
+    }
 }
 
 void ABlasterPlayerController::Tick(float DeltaSeconds)
@@ -41,17 +55,6 @@ void ABlasterPlayerController::Tick(float DeltaSeconds)
     CheckTimeSync(DeltaSeconds);
 
     PollInit();
-
-    HighPingRunningTime += DeltaSeconds;
-    if (HighPingRunningTime >= CheckPingFrequency)
-    {
-        PlayerState = !PlayerState ? GetPlayerState<APlayerState>() : PlayerState;
-        if (PlayerState && PlayerState->GetPingInMilliseconds() > HighPingThreshold)
-        {
-            HighPingWarning();
-        }
-        HighPingRunningTime = 0.0f;
-    }
 }
 
 void ABlasterPlayerController::CheckTimeSync(float DeltaSeconds)
@@ -349,7 +352,7 @@ void ABlasterPlayerController::HighPingWarning()
     BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
 }
 
-void ABlasterPlayerController::StartHighPingWarning()
+void ABlasterPlayerController::StopHighPingWarning()
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
     {
