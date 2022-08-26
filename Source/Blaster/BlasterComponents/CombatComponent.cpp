@@ -378,6 +378,7 @@ void UCombatComponent::Fire()
     if (!EquippedWeapon || !CanFire()) return;
     bCanFire = false;
     ServerFire(HitTarget);
+    LocalFire(HitTarget);
     CrosshairShootingFactor = 0.75f;
     StartFireTimer();
 }
@@ -405,6 +406,13 @@ void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& Trac
 }
 
 void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+{
+    if (Character && Character->IsLocallyControlled() && !Character->HasAuthority()) return;
+    
+    LocalFire(TraceHitTarget);
+}
+
+void UCombatComponent::LocalFire(const FVector_NetQuantize& TraceHitTarget)
 {
     if (!EquippedWeapon) return;
 

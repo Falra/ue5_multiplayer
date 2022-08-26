@@ -59,6 +59,7 @@ protected:
 
     UFUNCTION(NetMulticast, Reliable)
     void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
+    void LocalFire(const FVector_NetQuantize& TraceHitTarget);
 
     void TraceUnderCrosshairs(FHitResult& TraceHitResult);
     void ReloadEmptyWeapon();
