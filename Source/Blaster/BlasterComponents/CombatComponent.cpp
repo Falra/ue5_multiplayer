@@ -399,6 +399,7 @@ void UCombatComponent::Fire()
 
 void UCombatComponent::FireProjectileWeapon()
 {
+    HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
     LocalFire(HitTarget);
     ServerFire(HitTarget);
 }
