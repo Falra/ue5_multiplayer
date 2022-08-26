@@ -43,7 +43,6 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AWeapon, WeaponState);
-    DOREPLIFETIME(AWeapon, Ammo);
 }
 
 void AWeapon::OnRep_Owner()
@@ -160,16 +159,46 @@ void AWeapon::SpendRound()
     Ammo = FMath::Clamp(Ammo - 1, 0 ,MagCapacity);
 
     ShowWeaponAmmo();
+
+    if (HasAuthority())
+    {
+        ClientUpdateAmmo(Ammo);
+    }
+    else
+    {
+        ++AmmoSequence;
+    }
 }
 
-void AWeapon::OnRep_Ammo()
+void AWeapon::ClientUpdateAmmo_Implementation(int32 ServerAmmo)
 {
-    ShowWeaponAmmo();
+    if (HasAuthority()) return;
     
-    if (IsFull() && BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombatComponent())
+    Ammo = ServerAmmo;
+    --AmmoSequence;
+    Ammo -= AmmoSequence;
+
+    ShowWeaponAmmo();
+}
+
+void AWeapon::AddAmmo(int32 AmmoToAdd)
+{
+    Ammo = FMath::Clamp(Ammo + AmmoToAdd, 0, MagCapacity);
+    ShowWeaponAmmo();
+    ClientAddAmmo(AmmoToAdd);
+}
+
+void AWeapon::ClientAddAmmo_Implementation(int32 AmmoToAdd)
+{
+    if (HasAuthority()) return;
+    
+    Ammo = FMath::Clamp(Ammo + AmmoToAdd, 0, MagCapacity);
+    BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+    if (BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombatComponent() && IsFull())
     {
         BlasterOwnerCharacter->GetCombatComponent()->JumpToShotgunEnd();
     }
+    ShowWeaponAmmo();
 }
 
 void AWeapon::ShowWeaponAmmo()
@@ -241,10 +270,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 
         World->SpawnActor<ACasing>(CasingClass, SocketTransform.GetLocation(), ShellRotation);
     }
-    if (HasAuthority())
-    {
-        SpendRound();
-    }
+    SpendRound();
 }
 
 void AWeapon::DropWeapon()
@@ -255,12 +281,6 @@ void AWeapon::DropWeapon()
     SetOwner(nullptr);
     BlasterOwnerCharacter = nullptr;
     BlasterOwnerController = nullptr;
-}
-
-void AWeapon::AddAmmo(int32 AmmoToAdd)
-{
-    Ammo = FMath::Clamp(Ammo - AmmoToAdd, 0, MagCapacity);
-    ShowWeaponAmmo();
 }
 
 void AWeapon::EnableCustomDepth(bool bEnable)

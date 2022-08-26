@@ -110,15 +110,21 @@ private:
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     FVector2D ShellOffset {-15.0f, 15.0f};
 
-    UPROPERTY(EditAnywhere, ReplicatedUsing= "OnRep_Ammo", Category = "Weapon Properties")
+    UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     int32 Ammo;
 
-    UFUNCTION()
-    void OnRep_Ammo();
     void CheckUpdateController();
 
     void SpendRound();
 
+    UFUNCTION(Client, Reliable)
+    void ClientUpdateAmmo(int32 ServerAmmo);
+
+    UFUNCTION(Client, Reliable)
+    void ClientAddAmmo(int32 AmmoToAdd);
+
+    int32 AmmoSequence = 0;
+    
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     int32 MagCapacity;
 
