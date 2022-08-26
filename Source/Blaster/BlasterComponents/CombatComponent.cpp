@@ -401,14 +401,14 @@ void UCombatComponent::Fire()
 void UCombatComponent::FireProjectileWeapon()
 {
     HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
-    LocalFire(HitTarget);
+    if (Character && !Character->HasAuthority()) LocalFire(HitTarget);
     ServerFire(HitTarget);
 }
 
 void UCombatComponent::FireHitScanWeapon()
 {
     HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
-    LocalFire(HitTarget);
+    if (Character && !Character->HasAuthority()) LocalFire(HitTarget);
     ServerFire(HitTarget);
 }
 
@@ -418,7 +418,7 @@ void UCombatComponent::FireShotgun()
     if (!ShotgunWeapon) return;
     TArray<FVector_NetQuantize> HitTargets;
     ShotgunWeapon->ShotgunTraceEndWithScatter(HitTarget, HitTargets);
-    LocalShotgunFire(HitTargets);
+    if (Character && !Character->HasAuthority()) LocalShotgunFire(HitTargets);
     ServerShotgunFire(HitTargets);
 }
 
