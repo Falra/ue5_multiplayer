@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 AWeapon::AWeapon()
@@ -276,4 +277,25 @@ void AWeapon::ShowPickupWidget(const bool bShowWidget) const
     {
         PickupWidget->SetVisibility(bShowWidget);
     }
+}
+
+FVector AWeapon::TraceEndWithScatter(const FVector& HitTarget) const
+{
+    const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash");
+    if (!MuzzleFlashSocket) return FVector();
+
+    const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
+    const FVector TraceStart = SocketTransform.GetLocation();
+    const FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
+    const FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
+    const FVector RandVector = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.0f, SphereRadius);
+    const FVector EndLoc = SphereCenter + RandVector;
+    const FVector ToEndLoc = EndLoc - TraceStart;
+    const FVector Result = FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
+    
+    /*DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
+    DrawDebugSphere(GetWorld(), EndLoc, 4.0f, 12, FColor::Orange, true);
+    DrawDebugLine(GetWorld(), TraceStart, Result, FColor::Green, true);*/
+    
+    return Result;
 }

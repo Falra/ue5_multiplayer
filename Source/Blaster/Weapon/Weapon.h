@@ -42,6 +42,14 @@ public:
     virtual void AddAmmo(int32 AmmoToAdd);
     void EnableCustomDepth(bool bEnable);
     bool bDestroyWeapon = false;
+
+    UPROPERTY(EditAnywhere)
+    EFireType FireType;
+
+    UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+    bool bUseScatter = false;
+
+    FVector TraceEndWithScatter(const FVector& HitTarget) const;
 protected:
     UFUNCTION()
     virtual void BeginPlay() override;
@@ -70,6 +78,13 @@ protected:
         );
 
     virtual void SetWeaponMeshState(bool bIsEnabled, bool bIsSecondary = false);
+
+    UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+    float DistanceToSphere = 800.0f;
+    
+    UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+    float SphereRadius = 75.0f;
+    
 private:
     UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
     USkeletalMeshComponent* WeaponMesh;

@@ -6,7 +6,6 @@
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 
@@ -55,15 +54,18 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
 
 void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit) const
 {
-    UWorld* World = GetWorld();
+    const UWorld* World = GetWorld();
     if (!World) return;
-    const FVector End = bUseScatter ? TraceEndWithScatter(TraceStart, HitTarget) : TraceStart + (HitTarget - TraceStart) * 1.25f;
+    const FVector End = TraceStart + (HitTarget - TraceStart) * 1.25f;
     GetWorld()->LineTraceSingleByChannel(OutHit, TraceStart, End, ECollisionChannel::ECC_Visibility);
     FVector BeamEnd = End;
     if (OutHit.bBlockingHit)
     {
         BeamEnd = OutHit.ImpactPoint;
     }
+
+    DrawDebugSphere(GetWorld(), BeamEnd, 16.0f, 12, FColor::Orange, true);
+    
     if (BeamParticle)
     {
         if (auto Beam = UGameplayStatics::SpawnEmitterAtLocation(World, BeamParticle, TraceStart, FRotator::ZeroRotator, true))
@@ -71,22 +73,6 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
             Beam->SetVectorParameter(FName("Target"), BeamEnd);
         }
     }
-}
-
-FVector AHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget) const
-{
-    const FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
-    const FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
-    const FVector RandVector = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.0f, SphereRadius);
-    const FVector EndLoc = SphereCenter + RandVector;
-    const FVector ToEndLoc = EndLoc - TraceStart;
-    const FVector Result = FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
-    
-    /*DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
-    DrawDebugSphere(GetWorld(), EndLoc, 4.0f, 12, FColor::Orange, true);
-    DrawDebugLine(GetWorld(), TraceStart, Result, FColor::Green, true);*/
-    
-    return Result;
 }
 
 void AHitScanWeapon::ApplyHitEffects(const FHitResult& FireHit) const

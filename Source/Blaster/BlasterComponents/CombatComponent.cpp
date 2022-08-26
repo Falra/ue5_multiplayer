@@ -381,10 +381,38 @@ void UCombatComponent::Fire()
 {
     if (!EquippedWeapon || !CanFire()) return;
     bCanFire = false;
-    ServerFire(HitTarget);
-    LocalFire(HitTarget);
+    switch (EquippedWeapon->FireType)
+    {
+        case EFireType::EFT_ProjectileWeapon:
+            FireProjectileWeapon();
+            break;
+        case EFireType::EFT_HitScanWeapon:
+            FireHitScanWeapon();
+            break;
+        case EFireType::EFT_Shotgun:
+            FireShotgun();
+            break;
+    }
     CrosshairShootingFactor = 0.75f;
     StartFireTimer();
+}
+
+void UCombatComponent::FireProjectileWeapon()
+{
+    LocalFire(HitTarget);
+    ServerFire(HitTarget);
+}
+
+void UCombatComponent::FireHitScanWeapon()
+{
+    HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
+    LocalFire(HitTarget);
+    ServerFire(HitTarget);
+}
+
+void UCombatComponent::FireShotgun()
+{
+    
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
