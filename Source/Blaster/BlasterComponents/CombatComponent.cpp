@@ -416,12 +416,10 @@ void UCombatComponent::FireShotgun()
 {
     const auto ShotgunWeapon = Cast<AShotgun>(EquippedWeapon);
     if (!ShotgunWeapon) return;
-    TArray<FVector> HitTargets;
+    TArray<FVector_NetQuantize> HitTargets;
     ShotgunWeapon->ShotgunTraceEndWithScatter(HitTarget, HitTargets);
-    for (const auto Target : HitTargets)
-    {
-        
-    }
+    LocalShotgunFire(HitTargets);
+    ServerShotgunFire(HitTargets);
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
@@ -453,20 +451,39 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
     LocalFire(TraceHitTarget);
 }
 
+void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets)
+{
+    MulticastShotgunFire(TraceHitTargets);
+}
+
+void UCombatComponent::MulticastShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets)
+{
+    if (Character && Character->IsLocallyControlled() && !Character->HasAuthority()) return;
+
+    LocalShotgunFire(TraceHitTargets);
+}
+
 void UCombatComponent::LocalFire(const FVector_NetQuantize& TraceHitTarget)
 {
     if (!EquippedWeapon) return;
 
-    if (Character && IsEquippedShotgun() && CombatState == ECombatState::ECS_Reloading)
+    if (Character && CombatState == ECombatState::ECS_Unoccupied)
     {
         Character->PlayFireMontage(bIsAiming);
         EquippedWeapon->Fire(TraceHitTarget);
-        CombatState = ECombatState::ECS_Unoccupied;
     }
-    else if (Character && CombatState == ECombatState::ECS_Unoccupied)
+}
+
+void UCombatComponent::LocalShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
+{
+    if (!EquippedWeapon || !Character) return;
+    if (CombatState == ECombatState::ECS_Unoccupied || CombatState == ECombatState::ECS_Reloading)
     {
+        const auto ShotgunWeapon = Cast<AShotgun>(EquippedWeapon);
+        if (!ShotgunWeapon) return;
         Character->PlayFireMontage(bIsAiming);
-        EquippedWeapon->Fire(TraceHitTarget);
+        ShotgunWeapon->ShotgunFire(TraceHitTargets);
+        CombatState = ECombatState::ECS_Unoccupied;
     }
 }
 

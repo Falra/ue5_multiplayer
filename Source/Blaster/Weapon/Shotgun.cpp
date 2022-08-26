@@ -10,10 +10,10 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 
-void AShotgun::Fire(const FVector& HitTarget)
+void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
 {
-    AWeapon::Fire(HitTarget);
-    
+    AWeapon::Fire(FVector());
+
     auto World = GetWorld();
     if (!World) return;
 
@@ -25,8 +25,9 @@ void AShotgun::Fire(const FVector& HitTarget)
     {
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         const FVector Start = SocketTransform.GetLocation();
+
         TMap<ABlasterCharacter*, uint32> HitMap;
-        for (uint32 i = 0; i < NumberOfPellets; ++i)
+        for (auto HitTarget : TraceHitTargets)
         {
             FHitResult FireHit;
             WeaponTraceHit(Start, HitTarget, FireHit);
@@ -41,17 +42,17 @@ void AShotgun::Fire(const FVector& HitTarget)
             }
         }
 
+        if (!HasAuthority() || !InstigatorController) return;
+        
         for (auto HitPair : HitMap)
         {
-            if (HitPair.Key && HasAuthority() && InstigatorController)
-            {
-                UGameplayStatics::ApplyDamage(HitPair.Key, Damage * HitPair.Value, InstigatorController, this, UDamageType::StaticClass());
-            }
+            if (!HitPair.Key) continue;
+            UGameplayStatics::ApplyDamage(HitPair.Key, Damage * HitPair.Value, InstigatorController, this, UDamageType::StaticClass());
         }
     }
 }
 
-void AShotgun::ShotgunTraceEndWithScatter(const FVector& HitTarget, TArray<FVector>& HitTargets)
+void AShotgun::ShotgunTraceEndWithScatter(const FVector& HitTarget, TArray<FVector_NetQuantize>& HitTargets)
 {
     const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash");
     if (!MuzzleFlashSocket) return;
