@@ -663,6 +663,15 @@ void ABlasterCharacter::UpdateHUDGrenades()
     }
 }
 
+void ABlasterCharacter::UpdateHUDAmmo()
+{
+    BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+    if (BlasterPlayerController && CombatComponent && CombatComponent->EquippedWeapon)
+    {
+        BlasterPlayerController->SetHUDCarriedAmmo(CombatComponent->CarriedAmmo);
+        BlasterPlayerController->SetHUDWeaponAmmo(CombatComponent->EquippedWeapon->GetAmmo());
+    }
+}
 #pragma region Elimination
 
 void ABlasterCharacter::DropOrDestroyWeapon(AWeapon* Weapon)

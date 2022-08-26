@@ -62,6 +62,7 @@ protected:
     void UpdateHUDHealth();
     void UpdateHUDShield();
     void UpdateHUDGrenades();
+    void UpdateHUDAmmo();
     UFUNCTION()
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
     void StopMovementAndCollision();

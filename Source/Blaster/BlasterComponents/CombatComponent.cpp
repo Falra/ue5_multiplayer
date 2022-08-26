@@ -211,6 +211,7 @@ void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
     if (Controller)
     {
         Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+        Controller->SetHUDCarriedAmmo(CarriedAmmo);
     }
     
     PlayEquipEffects(WeaponToEquip);
@@ -343,6 +344,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
         if (Controller)
         {
             Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+            Controller->SetHUDCarriedAmmo(CarriedAmmo);
         }
     }
 }
