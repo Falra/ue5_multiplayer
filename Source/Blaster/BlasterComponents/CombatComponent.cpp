@@ -7,6 +7,7 @@
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Weapon/Projectile.h"
+#include "Blaster/Weapon/Shotgun.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -413,7 +414,14 @@ void UCombatComponent::FireHitScanWeapon()
 
 void UCombatComponent::FireShotgun()
 {
-    
+    const auto ShotgunWeapon = Cast<AShotgun>(EquippedWeapon);
+    if (!ShotgunWeapon) return;
+    TArray<FVector> HitTargets;
+    ShotgunWeapon->ShotgunTraceEndWithScatter(HitTarget, HitTargets);
+    for (const auto Target : HitTargets)
+    {
+        
+    }
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
