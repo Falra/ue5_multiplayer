@@ -536,7 +536,7 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     if (!AnimInstance) return;
     AnimInstance->Montage_Play(FireWeaponMontage);
-    const FName SectionName = bAiming ? FName("RifleName") : FName("RifleHip");
+    const FName SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
     AnimInstance->Montage_JumpToSection(SectionName);
 }
 
