@@ -32,7 +32,8 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     TurningInPlace = BlasterCharacter->GetTurningInPlace();
     bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
     bEliminated = BlasterCharacter->IsEliminated();
-    bUseFABRIK = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied;
+    const bool bIsLocalAndReloading = BlasterCharacter->IsLocallyControlled() && BlasterCharacter->IsLocallyReloading();
+    bUseFABRIK = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !bIsLocalAndReloading;
     bUseAimOffsets = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->bDisableGameplay;
     bTransformRightHand = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->bDisableGameplay;
         

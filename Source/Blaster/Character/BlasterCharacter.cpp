@@ -524,6 +524,11 @@ ECombatState ABlasterCharacter::GetCombatState() const
     return CombatComponent->CombatState;
 }
 
+bool ABlasterCharacter::IsLocallyReloading() const
+{
+    return CombatComponent && CombatComponent->bLocallyReloading;
+}
+
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
 {
     if (!CombatComponent || !FireWeaponMontage || !CombatComponent->EquippedWeapon) return;

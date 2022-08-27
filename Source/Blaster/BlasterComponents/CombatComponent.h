@@ -39,6 +39,7 @@ public:
     UFUNCTION(Server, Reliable)
     void ServerLaunchGrenade(const FVector_NetQuantize& Target);
     void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
+    bool bLocallyReloading = false;
 protected:
     virtual void BeginPlay() override;
     void SetAiming(bool IsAiming);
