@@ -75,6 +75,16 @@ void UCombatComponent::SetAiming(bool IsAiming)
     {
         Character->ShowSniperScopeWidget(bIsAiming);
     }
+
+    if (Character->IsLocallyControlled()) bAimButtonPressed = bIsAiming;
+}
+
+void UCombatComponent::OnRep_Aiming()
+{
+    if (Character && Character->IsLocallyControlled())
+    {
+        bIsAiming = bAimButtonPressed;
+    }
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
