@@ -553,6 +553,8 @@ void UCombatComponent::Reload()
 {
     if (CarriedAmmo <= 0 || CombatState != ECombatState::ECS_Unoccupied
         || !EquippedWeapon || EquippedWeapon->IsFull()) return;
+
+    HandleReload();
     ServerReload();
 }
 
@@ -560,7 +562,10 @@ void UCombatComponent::ServerReload_Implementation()
 {
     if (!Character || !EquippedWeapon) return;
     CombatState = ECombatState::ECS_Reloading;
-    HandleReload();
+    if (!Character->IsLocallyControlled())
+    {
+        HandleReload();
+    }
 }
 
 void UCombatComponent::HandleReload()
@@ -646,7 +651,10 @@ void UCombatComponent::OnRep_CombatState()
     switch (CombatState)
     {
         case ECombatState::ECS_Reloading:
-            HandleReload();
+            if (Character && !Character->IsLocallyControlled())
+            {
+                HandleReload();
+            }
             break;
         case ECombatState::ECS_Unoccupied:
             if (bFireButtonPressed)
