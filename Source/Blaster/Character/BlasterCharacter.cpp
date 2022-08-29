@@ -5,6 +5,7 @@
 #include "Blaster/Blaster.h"
 #include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
+#include "Blaster/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
@@ -45,6 +46,8 @@ ABlasterCharacter::ABlasterCharacter()
 
     BuffComponent = CreateDefaultSubobject<UBuffComponent>("BuffComponent");
     BuffComponent->SetIsReplicated(true);
+
+    LagCompensationComponent = CreateDefaultSubobject<ULagCompensationComponent>("LagCompensationComponent");
     
     // Ignore other players when trace from Camera
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);

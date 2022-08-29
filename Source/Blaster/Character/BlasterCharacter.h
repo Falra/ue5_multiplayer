@@ -151,6 +151,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UBuffComponent* BuffComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class ULagCompensationComponent* LagCompensationComponent;
+
     UFUNCTION(Server, Reliable)
     void ServerEquipButtonPressed();
 
