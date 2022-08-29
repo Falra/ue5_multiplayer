@@ -110,7 +110,7 @@ ABlasterCharacter::ABlasterCharacter()
     backpack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     blanket = CreateDefaultSubobject<UBoxComponent>("blanket");
-    blanket->SetupAttachment(GetMesh(), FName("blanket"));
+    blanket->SetupAttachment(GetMesh(), FName("backpack"));
     blanket->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     thigh_l = CreateDefaultSubobject<UBoxComponent>("thigh_l");
