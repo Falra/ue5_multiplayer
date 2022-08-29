@@ -10,6 +10,7 @@
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -63,6 +64,79 @@ ABlasterCharacter::ABlasterCharacter()
     AttachedGrenade = CreateDefaultSubobject<UStaticMeshComponent>("AttachedGrenade");
     AttachedGrenade->SetupAttachment(GetMesh(), FName("GrenadeSocket"));
     AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    head = CreateDefaultSubobject<UBoxComponent>("head");
+    head->SetupAttachment(GetMesh(), FName("head"));
+    head->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    pelvis = CreateDefaultSubobject<UBoxComponent>("pelvis");
+    pelvis->SetupAttachment(GetMesh(), FName("pelvis"));
+    pelvis->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    spine_02 = CreateDefaultSubobject<UBoxComponent>("spine_02");
+    spine_02->SetupAttachment(GetMesh(), FName("spine_02"));
+    spine_02->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    spine_03 = CreateDefaultSubobject<UBoxComponent>("spine_03");
+    spine_03->SetupAttachment(GetMesh(), FName("spine_03"));
+    spine_03->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    upperarm_l = CreateDefaultSubobject<UBoxComponent>("upperarm_l");
+    upperarm_l->SetupAttachment(GetMesh(), FName("upperarm_l"));
+    upperarm_l->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    upperarm_r = CreateDefaultSubobject<UBoxComponent>("upperarm_r");
+    upperarm_r->SetupAttachment(GetMesh(), FName("upperarm_r"));
+    upperarm_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    lowerarm_l = CreateDefaultSubobject<UBoxComponent>("lowerarm_l");
+    lowerarm_l->SetupAttachment(GetMesh(), FName("lowerarm_l"));
+    lowerarm_l->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    lowerarm_r = CreateDefaultSubobject<UBoxComponent>("lowerarm_r");
+    lowerarm_r->SetupAttachment(GetMesh(), FName("lowerarm_r"));
+    lowerarm_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    hand_l = CreateDefaultSubobject<UBoxComponent>("hand_l");
+    hand_l->SetupAttachment(GetMesh(), FName("hand_l"));
+    hand_l->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    hand_r = CreateDefaultSubobject<UBoxComponent>("hand_r");
+    hand_r->SetupAttachment(GetMesh(), FName("hand_r"));
+    hand_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    backpack = CreateDefaultSubobject<UBoxComponent>("backpack");
+    backpack->SetupAttachment(GetMesh(), FName("backpack"));
+    backpack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    blanket = CreateDefaultSubobject<UBoxComponent>("blanket");
+    blanket->SetupAttachment(GetMesh(), FName("blanket"));
+    blanket->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    thigh_l = CreateDefaultSubobject<UBoxComponent>("thigh_l");
+    thigh_l->SetupAttachment(GetMesh(), FName("thigh_l"));
+    head->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    thigh_r = CreateDefaultSubobject<UBoxComponent>("thigh_r");
+    thigh_r->SetupAttachment(GetMesh(), FName("thigh_r"));
+    thigh_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    calf_l = CreateDefaultSubobject<UBoxComponent>("calf_l");
+    calf_l->SetupAttachment(GetMesh(), FName("calf_l"));
+    calf_l->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    calf_r = CreateDefaultSubobject<UBoxComponent>("calf_r");
+    calf_r->SetupAttachment(GetMesh(), FName("calf_r"));
+    calf_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    foot_l = CreateDefaultSubobject<UBoxComponent>("foot_l");
+    foot_l->SetupAttachment(GetMesh(), FName("foot_l"));
+    foot_l->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    foot_r = CreateDefaultSubobject<UBoxComponent>("foot_r");
+    foot_r->SetupAttachment(GetMesh(), FName("foot_r"));
+    foot_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
