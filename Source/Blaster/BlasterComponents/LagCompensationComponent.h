@@ -43,7 +43,7 @@ public:
     ULagCompensationComponent();
     friend class ABlasterCharacter;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-    void ShowFramePackage(const FFramePackage& Package, const FColor& Color);
+    void ShowFramePackage(const FFramePackage& Package, const FColor& Color) const;
 protected:
     virtual void BeginPlay() override;
     void SaveFramePackage(FFramePackage& Package);
@@ -52,5 +52,10 @@ private:
     ABlasterCharacter* Character;
 
     UPROPERTY()
-    class ABlasterPlayerController* Controller; 
+    class ABlasterPlayerController* Controller;
+
+    TDoubleLinkedList<FFramePackage> FrameHistory;
+
+    UPROPERTY(EditAnywhere)
+    float MaxRecordTime = 4.0f;
 };
