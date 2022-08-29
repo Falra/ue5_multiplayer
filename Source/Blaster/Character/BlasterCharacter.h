@@ -168,6 +168,8 @@ private:
 
     bool bHasInitialized = false;
 
+    void AddHitBox(UBoxComponent*& HitBox, const FName& BoxName);
+    
 #pragma region AnimationMontages   
 
     UPROPERTY(EditAnywhere, Category = "Montage")
