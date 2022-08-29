@@ -58,5 +58,5 @@ void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickTy
     SaveFramePackage(ThisFrame);
     FrameHistory.AddHead(ThisFrame);
     
-    ShowFramePackage(ThisFrame, FColor::Purple);
+    // ShowFramePackage(ThisFrame, FColor::Purple);
 }
