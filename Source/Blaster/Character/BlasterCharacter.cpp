@@ -269,6 +269,14 @@ void ABlasterCharacter::PostInitializeComponents()
         BuffComponent->SetInitialSpeed(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeedCrouched);
         BuffComponent->SetInitialJumpSpeed(GetCharacterMovement()->JumpZVelocity);
     }
+    if (LagCompensationComponent)
+    {
+        LagCompensationComponent->Character = this;
+        if (Controller)
+        {
+            LagCompensationComponent->Controller = Cast<ABlasterPlayerController>(Controller);
+        } 
+    }
 }
 
 void ABlasterCharacter::PossessedBy(AController* NewController)
