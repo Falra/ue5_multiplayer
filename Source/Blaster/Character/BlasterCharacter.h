@@ -95,6 +95,7 @@ public:
     UPROPERTY(EditAnywhere)
     UBoxComponent* foot_r;
 
+    TMap<FName, UBoxComponent*> HitCollisionBoxes;
 #pragma endregion 
     
 protected:

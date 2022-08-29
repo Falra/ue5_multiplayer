@@ -46,6 +46,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    void SaveFramePackage(FFramePackage& Package);
 private:
     UPROPERTY()
     ABlasterCharacter* Character;
