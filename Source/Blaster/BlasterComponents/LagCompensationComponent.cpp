@@ -15,6 +15,10 @@ ULagCompensationComponent::ULagCompensationComponent()
 void ULagCompensationComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    FFramePackage Package;
+    SaveFramePackage(Package);
+    ShowFramePackage(Package, FColor::Orange);
 }
 
 void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
@@ -29,6 +33,14 @@ void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
         BoxInformation.Rotation = BoxComponent->GetComponentRotation();
         BoxInformation.BoxExtent = BoxComponent->GetScaledBoxExtent();
         Package.HitBoxInfo.Add(BoxName, BoxInformation);
+    }
+}
+
+void ULagCompensationComponent::ShowFramePackage(const FFramePackage& Package, const FColor& Color)
+{
+    for (auto& [BoxName, BoxComponent]: Package.HitBoxInfo)
+    {
+        DrawDebugBox(GetWorld(), BoxComponent.Location, BoxComponent.BoxExtent, FQuat(BoxComponent.Rotation), Color, true);
     }
 }
 
