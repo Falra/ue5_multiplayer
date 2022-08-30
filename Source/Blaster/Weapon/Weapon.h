@@ -48,7 +48,7 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
     bool bUseScatter = false;
-
+    
     FVector TraceEndWithScatter(const FVector& HitTarget) const;
 protected:
     UFUNCTION()
@@ -87,6 +87,15 @@ protected:
 
     UPROPERTY(EditAnywhere)
     float Damage = 5.0f;
+
+    UPROPERTY(EditAnywhere)
+    bool bUseServerSideRewind = false;
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterCharacter* BlasterOwnerCharacter;
+
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterPlayerController* BlasterOwnerController;
     
 private:
     UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -133,12 +142,6 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Weapon Properties")
     bool bHasStrap = false;
-    
-    UPROPERTY(VisibleAnywhere)
-    class ABlasterCharacter* BlasterOwnerCharacter;
-
-    UPROPERTY(VisibleAnywhere)
-    class ABlasterPlayerController* BlasterOwnerController;
 
     UPROPERTY(EditAnywhere)
     EWeaponType WeaponType;

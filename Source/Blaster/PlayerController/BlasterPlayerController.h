@@ -35,6 +35,7 @@ public:
     void OnMatchStateSet(FName State);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void CheckPingSpeed();
+    float SingleTripTime = 0.0f;
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;

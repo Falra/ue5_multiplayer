@@ -3,7 +3,9 @@
 
 #include "HitScanWeapon.h"
 
+#include "Blaster/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -30,17 +32,29 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
         const FVector Start = SocketTransform.GetLocation();
         FHitResult FireHit;
         WeaponTraceHit(Start, HitTarget, FireHit);
-        
-        if (FireHit.bBlockingHit)
+
+        if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()); BlasterCharacter && InstigatorController)
         {
-            if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()); BlasterCharacter && HasAuthority() && InstigatorController)
+            if (HasAuthority() && !bUseServerSideRewind)
             {
                 UGameplayStatics::ApplyDamage(BlasterCharacter, Damage, InstigatorController, this, UDamageType::StaticClass());
             }
-
-            ApplyHitEffects(FireHit);
+            else if (!HasAuthority() && bUseServerSideRewind)
+            {
+                BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+                BlasterOwnerController = !BlasterOwnerController
+                                             ? Cast<ABlasterPlayerController>(InstigatorController)
+                                             : BlasterOwnerController;
+                if (BlasterOwnerCharacter && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensationComponent())
+                {
+                    BlasterOwnerCharacter->GetLagCompensationComponent()->ServerScoreRequest(BlasterCharacter, Start, HitTarget,
+                        BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, this);
+                }
+            }
         }
 
+        ApplyHitEffects(FireHit);
+       
         if (MuzzleFlash)
         {
             UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, SocketTransform);
