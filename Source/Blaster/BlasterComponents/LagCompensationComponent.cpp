@@ -40,6 +40,58 @@ void ULagCompensationComponent::ShowFramePackage(const FFramePackage& Package, c
     }
 }
 
+void ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+    const FVector_NetQuantize& HitLocation, float HitTime)
+{
+    if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return;
+
+    const auto LagComponent = HitCharacter->GetLagCompensationComponent();
+    const auto& History = LagComponent->FrameHistory;
+    if (!History.GetHead() || !History.GetTail()) return;
+
+    FFramePackage FrameToCheck;
+    const float OldestHistoryTime = History.GetTail()->GetValue().Time;
+    const float NewestHistoryTime = History.GetHead()->GetValue().Time;
+    
+    if (OldestHistoryTime > HitTime) return; // history is to old
+
+    bool bShouldInterpolate = true;
+    if (OldestHistoryTime == HitTime)
+    {
+        FrameToCheck = History.GetTail()->GetValue();
+        bShouldInterpolate = false;
+    }
+    else if (NewestHistoryTime <= HitTime)
+    {
+        FrameToCheck = History.GetHead()->GetValue();
+        bShouldInterpolate = false;
+    }
+
+    auto Younger = History.GetHead();
+    auto Older = Younger;
+    while (Older->GetValue().Time > HitTime)
+    {
+        if (!Older->GetNextNode()) break;
+        Older = Older->GetNextNode();
+        if ((Older->GetValue().Time > HitTime))
+        {
+            Younger = Older;
+        }
+    }
+
+    if (Older->GetValue().Time == HitTime)
+    {
+        FrameToCheck = Older->GetValue();
+        bShouldInterpolate = false;
+    }
+
+    if (bShouldInterpolate)
+    {
+        // TODO: Interpolate b/w older and younger frames
+    }
+
+}
+
 void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
