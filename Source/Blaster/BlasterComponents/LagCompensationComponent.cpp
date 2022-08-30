@@ -40,20 +40,20 @@ void ULagCompensationComponent::ShowFramePackage(const FFramePackage& Package, c
     }
 }
 
-void ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
     const FVector_NetQuantize& HitLocation, float HitTime)
 {
-    if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return;
+    if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return FServerSideRewindResult {};
 
     const auto LagComponent = HitCharacter->GetLagCompensationComponent();
     const auto& History = LagComponent->FrameHistory;
-    if (!History.GetHead() || !History.GetTail()) return;
+    if (!History.GetHead() || !History.GetTail()) return FServerSideRewindResult {};
 
     FFramePackage FrameToCheck;
     const float OldestHistoryTime = History.GetTail()->GetValue().Time;
     const float NewestHistoryTime = History.GetHead()->GetValue().Time;
     
-    if (OldestHistoryTime > HitTime) return; // history is to old
+    if (OldestHistoryTime > HitTime) return FServerSideRewindResult {}; // history is to old
 
     bool bShouldInterpolate = true;
     if (OldestHistoryTime == HitTime)
@@ -90,6 +90,7 @@ void ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter
         FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
     }
 
+    return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
 }
 
 FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame,
@@ -117,7 +118,7 @@ FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage
 }
 
 FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter,
-    const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation)
+    const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation) const
 {
     if (!HitCharacter || GetWorld()) return FServerSideRewindResult();
 

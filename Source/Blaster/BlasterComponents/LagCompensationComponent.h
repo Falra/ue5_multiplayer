@@ -55,12 +55,12 @@ public:
     friend class ABlasterCharacter;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void ShowFramePackage(const FFramePackage& Package, const FColor& Color) const;
-    void ServerSideRewind(class ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation, float HitTime);
+    FServerSideRewindResult ServerSideRewind(class ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation, float HitTime);
 protected:
     virtual void BeginPlay() override;
     void SaveFramePackage(FFramePackage& Package);
     FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime) const;
-    FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation);
+    FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation) const;
     static void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
     static void MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
     static void ResetHitBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
