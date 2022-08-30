@@ -87,9 +87,33 @@ void ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter
 
     if (bShouldInterpolate)
     {
-        // TODO: Interpolate b/w older and younger frames
+        FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
     }
 
+}
+
+FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame,
+    float HitTime) const
+{
+    const float Distance = YoungerFrame.Time - OlderFrame.Time;
+    const float InterpFraction = FMath::Clamp((HitTime - OlderFrame.Time) / Distance, 0.0f, 1.0f);
+
+    FFramePackage InterpFramePackage;
+    InterpFramePackage.Time = HitTime;
+
+    for (const auto& [BoxInfoName, YoungerBoxInfo] : YoungerFrame.HitBoxInfo)
+    {
+        const auto& OlderBoxInfo = OlderFrame.HitBoxInfo[BoxInfoName];
+
+        FBoxInformation InterpBoxInfo;
+        
+        InterpBoxInfo.Location = FMath::VInterpTo(OlderBoxInfo.Location, YoungerBoxInfo.Location, 1.0f, InterpFraction);
+        InterpBoxInfo.Rotation = FMath::RInterpTo(OlderBoxInfo.Rotation, YoungerBoxInfo.Rotation, 1.0f, InterpFraction);
+        InterpBoxInfo.BoxExtent = YoungerBoxInfo.BoxExtent;
+        
+        InterpFramePackage.HitBoxInfo.Add(BoxInfoName, InterpBoxInfo);
+    }
+    return InterpFramePackage;
 }
 
 void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
