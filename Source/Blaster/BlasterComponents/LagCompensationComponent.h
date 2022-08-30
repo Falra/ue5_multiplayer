@@ -78,4 +78,6 @@ private:
 
     UPROPERTY(EditAnywhere)
     float MaxRecordTime = 4.0f;
+
+    void SaveFramePackageOnTick();
 };

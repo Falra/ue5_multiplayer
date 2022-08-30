@@ -22,7 +22,14 @@ void ULagCompensationComponent::BeginPlay()
 void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    
+    SaveFramePackageOnTick();
+}
 
+void ULagCompensationComponent::SaveFramePackageOnTick()
+{
+    if (!Character || !Character->HasAuthority()) return;
+    
     if (FrameHistory.Num() > 1)
     {
         float HistoryLenght = FrameHistory.GetHead()->GetValue().Time - FrameHistory.GetTail()->GetValue().Time;
