@@ -33,6 +33,17 @@ struct FFramePackage
     TMap<FName, FBoxInformation> HitBoxInfo;
 };
 
+USTRUCT(BlueprintType)
+struct FServerSideRewindResult
+{
+    GENERATED_BODY()
+
+    UPROPERTY()
+    bool bHitConfirmed;
+
+    UPROPERTY()
+    bool bHeadShot;
+};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BLASTER_API ULagCompensationComponent : public UActorComponent
