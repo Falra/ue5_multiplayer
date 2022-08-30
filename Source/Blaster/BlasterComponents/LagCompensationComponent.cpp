@@ -119,13 +119,27 @@ FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage
 FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter,
     const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation)
 {
-    if (!HitCharacter) return FServerSideRewindResult();
+    if (!HitCharacter || GetWorld()) return FServerSideRewindResult();
 
     FFramePackage CurrentFramePackage;
     CacheBoxPosition(HitCharacter, CurrentFramePackage);
     MoveBoxes(HitCharacter, Package);
+
+    // Enable collision for the head first
+    const auto HeadBox = HitCharacter->HitCollisionBoxes[FName("head")];
+    HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    FHitResult ConfirmHitResult;
+    const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
+    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+    if (ConfirmHitResult.bBlockingHit)
+    {
+        ResetHitBoxes(HitCharacter, CurrentFramePackage);
+        
+        return FServerSideRewindResult {true, true};
+    }
     
-    return FServerSideRewindResult();
+    return FServerSideRewindResult {false, false};
 }
 
 void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage)
@@ -152,6 +166,20 @@ void ULagCompensationComponent::MoveBoxes(ABlasterCharacter* HitCharacter, const
         HitBox->SetWorldLocation(Location);
         HitBox->SetWorldRotation(Rotation);
         HitBox->SetBoxExtent(BoxExtent);
+    }
+}
+
+void ULagCompensationComponent::ResetHitBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package)
+{
+    if (!HitCharacter) return;
+    for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
+    {
+        if (!HitBox) continue;
+        const auto& [Location, Rotation, BoxExtent] = Package.HitBoxInfo[HitBoxName];
+        HitBox->SetWorldLocation(Location);
+        HitBox->SetWorldRotation(Rotation);
+        HitBox->SetBoxExtent(BoxExtent);
+        HitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
 }
 
