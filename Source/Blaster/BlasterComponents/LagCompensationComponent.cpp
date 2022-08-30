@@ -116,6 +116,31 @@ FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage
     return InterpFramePackage;
 }
 
+FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter,
+    const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation)
+{
+    if (!HitCharacter) return FServerSideRewindResult();
+
+    FFramePackage CurrentFramePackage;
+    CacheBoxPosition(HitCharacter, CurrentFramePackage);
+
+    return FServerSideRewindResult();
+}
+
+void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage) const
+{
+    if (!HitCharacter) return;
+    for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
+    {
+        if (!HitBox) continue;
+        FBoxInformation BoxInfo;
+        BoxInfo.Location = HitBox->GetComponentLocation();
+        BoxInfo.Rotation = HitBox->GetComponentRotation();
+        BoxInfo.BoxExtent = HitBox->GetScaledBoxExtent();
+        OutFramePackage.HitBoxInfo.Add(HitBoxName, BoxInfo);
+    }
+}
+
 void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

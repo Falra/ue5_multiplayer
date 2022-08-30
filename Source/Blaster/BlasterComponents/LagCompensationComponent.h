@@ -60,6 +60,8 @@ protected:
     virtual void BeginPlay() override;
     void SaveFramePackage(FFramePackage& Package);
     FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime) const;
+    FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation);
+    void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage) const;
 private:
     UPROPERTY()
     ABlasterCharacter* Character;
