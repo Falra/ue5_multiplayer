@@ -61,7 +61,8 @@ protected:
     void SaveFramePackage(FFramePackage& Package);
     FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime) const;
     FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation);
-    void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage) const;
+    static void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
+    static void MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
 private:
     UPROPERTY()
     ABlasterCharacter* Character;

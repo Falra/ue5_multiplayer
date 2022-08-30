@@ -123,11 +123,12 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
 
     FFramePackage CurrentFramePackage;
     CacheBoxPosition(HitCharacter, CurrentFramePackage);
-
+    MoveBoxes(HitCharacter, Package);
+    
     return FServerSideRewindResult();
 }
 
-void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage) const
+void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage)
 {
     if (!HitCharacter) return;
     for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
@@ -138,6 +139,19 @@ void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter
         BoxInfo.Rotation = HitBox->GetComponentRotation();
         BoxInfo.BoxExtent = HitBox->GetScaledBoxExtent();
         OutFramePackage.HitBoxInfo.Add(HitBoxName, BoxInfo);
+    }
+}
+
+void ULagCompensationComponent::MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package)
+{
+    if (!HitCharacter) return;
+    for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
+    {
+        if (!HitBox) continue;
+        const auto& [Location, Rotation, BoxExtent] = Package.HitBoxInfo[HitBoxName];
+        HitBox->SetWorldLocation(Location);
+        HitBox->SetWorldRotation(Rotation);
+        HitBox->SetBoxExtent(BoxExtent);
     }
 }
 
