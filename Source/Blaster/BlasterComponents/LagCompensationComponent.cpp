@@ -125,6 +125,8 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     CacheBoxPosition(HitCharacter, CurrentFramePackage);
     MoveBoxes(HitCharacter, Package);
 
+    HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
     // Enable collision for the head first
     const auto HeadBox = HitCharacter->HitCollisionBoxes[FName("head")];
     HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -135,8 +137,25 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     if (ConfirmHitResult.bBlockingHit)
     {
         ResetHitBoxes(HitCharacter, CurrentFramePackage);
-        
+        HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         return FServerSideRewindResult {true, true};
+    }
+
+    // Check for rest of the boxes
+    for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
+    {
+        if (!HitBox) continue;
+        HitBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        HitBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    }
+    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+
+    ResetHitBoxes(HitCharacter, CurrentFramePackage);
+    HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        
+    if (ConfirmHitResult.bBlockingHit)
+    {
+        return FServerSideRewindResult {true, false};
     }
     
     return FServerSideRewindResult {false, false};
