@@ -33,16 +33,11 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
         {
             FHitResult FireHit;
             WeaponTraceHit(Start, HitTarget, FireHit);
-            if (FireHit.bBlockingHit)
+            if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()))
             {
-                if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
-                    BlasterCharacter && HasAuthority() && InstigatorController)
-                {
-                    HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
-                }
-
-                ApplyHitEffects(FireHit);
+                HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
             }
+            ApplyHitEffects(FireHit);
         }
 
         if (!InstigatorController) return;
