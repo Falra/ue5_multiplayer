@@ -144,13 +144,40 @@ FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitC
 void ULagCompensationComponent::ServerScoreRequest_Implementation(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
     const FVector_NetQuantize& HitLocation, float HitTime, AWeapon* DamageCauser)
 {
-    if (!HitCharacter || !DamageCauser) return;
+    if (!Character || !HitCharacter || !DamageCauser) return;
 
     if (const FServerSideRewindResult Confirm = ServerSideRewind(HitCharacter, TraceStart, HitLocation, HitTime); !Confirm.bHitConfirmed)
         return;
 
     UGameplayStatics::ApplyDamage(HitCharacter, DamageCauser->GetDamage(), Character->Controller, DamageCauser, UDamageType::StaticClass());
 }
+
+void ULagCompensationComponent::ShotgunServerScoreRequest_Implementation(const TArray<ABlasterCharacter*>& HitCharacters,
+    const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime, AWeapon* DamageCauser)
+{
+    if (!Character || !DamageCauser) return;
+
+    const FShotgunServerSideRewindResult Confirm = ShotgunServerSideRewind(HitCharacters, TraceStart, HitLocations, HitTime);
+
+    for (auto& HitCharacter : HitCharacters)
+    {
+        if (!HitCharacter) continue;
+        float TotalDamage = 0.0f;
+        if (Confirm.HeadShots.Contains(HitCharacter))
+        {
+            TotalDamage += Confirm.HeadShots[HitCharacter] * DamageCauser->GetDamage();
+        }
+        if (Confirm.BodyShots.Contains(HitCharacter))
+        {
+            TotalDamage += Confirm.BodyShots[HitCharacter] * DamageCauser->GetDamage();
+        }
+        if (TotalDamage == 0.0f) continue;
+
+        UGameplayStatics::ApplyDamage(HitCharacter, TotalDamage, Character->Controller, DamageCauser, UDamageType::StaticClass());
+    }
+    
+}
+
 
 FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame,
     float HitTime)
