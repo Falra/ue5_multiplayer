@@ -225,6 +225,18 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
 FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(const TArray<FFramePackage>& Packages,
     const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations) const
 {
+    FShotgunServerSideRewindResult ShotgunResult;
+    TArray<FFramePackage> CurrentFrames;
+    for (auto& FramePackage : Packages)
+    {
+        FFramePackage CurrentFramePackage;
+        CacheBoxPosition(FramePackage.Character, CurrentFramePackage);
+        MoveBoxes(FramePackage.Character, FramePackage);
+        FramePackage.Character->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+        CurrentFrames.Add(CurrentFramePackage);
+    }
+    
     return FShotgunServerSideRewindResult{};
 }
 
