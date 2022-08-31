@@ -73,14 +73,26 @@ void ULagCompensationComponent::ShowFramePackage(const FFramePackage& Package, c
 FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
     const FVector_NetQuantize& HitLocation, float HitTime) const
 {
-    if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return FServerSideRewindResult{};
-
     const FFramePackage FrameToCheck = GetFrameToCheck(HitCharacter, HitTime);
     return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
 }
 
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters,
+    const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime) const
+{
+    TArray<FFramePackage> FramesToCheck;
+    for (const auto HitCharacter : HitCharacters)
+    {
+        FramesToCheck.Add(GetFrameToCheck(HitCharacter, HitTime));
+    }
+    
+    return  FShotgunServerSideRewindResult {};
+}
+
 FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
 {
+    if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return FFramePackage{};
+    
     const auto LagComponent = HitCharacter->GetLagCompensationComponent();
     const auto& History = LagComponent->FrameHistory;
     if (!History.GetHead() || !History.GetTail()) return FFramePackage{};
@@ -140,7 +152,7 @@ void ULagCompensationComponent::ServerScoreRequest_Implementation(ABlasterCharac
 }
 
 FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame,
-    float HitTime) const
+    float HitTime)
 {
     const float Distance = YoungerFrame.Time - OlderFrame.Time;
     const float InterpFraction = FMath::Clamp((HitTime - OlderFrame.Time) / Distance, 0.0f, 1.0f);
