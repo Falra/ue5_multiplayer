@@ -12,8 +12,8 @@ AProjectileBullet::AProjectileBullet()
     ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
     ProjectileMovementComponent->bRotationFollowsVelocity = true;
     ProjectileMovementComponent->SetIsReplicated(true);
-    ProjectileMovementComponent->InitialSpeed = 3500.0f;
-    ProjectileMovementComponent->MaxSpeed = 3500.0f;
+    ProjectileMovementComponent->InitialSpeed = InitialSpeed;
+    ProjectileMovementComponent->MaxSpeed = InitialSpeed;
 }
 
 void AProjectileBullet::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
@@ -39,7 +39,7 @@ void AProjectileBullet::BeginPlay()
     PredictParams.bTraceWithCollision = true;
     PredictParams.DrawDebugTime = 5.0f;
     PredictParams.DrawDebugType = EDrawDebugTrace::ForDuration;
-    PredictParams.LaunchVelocity = GetActorForwardVector() * 3500.0f;
+    PredictParams.LaunchVelocity = GetActorForwardVector() * InitialSpeed;
     PredictParams.MaxSimTime = 4.0f;
     PredictParams.ProjectileRadius = 5.0f;
     PredictParams.SimFrequency = 30.0f;

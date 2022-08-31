@@ -17,6 +17,19 @@ public:
     void SpawnDestroyEffects() const;
     virtual void Destroyed() override;
 
+#pragma region ServerSideRewind
+
+    UPROPERTY(EditAnywhere)
+    bool bUseServerSideRewind = false;
+
+    FVector_NetQuantize TraceStart;
+    FVector_NetQuantize100 InitialVelocity;
+
+    UPROPERTY(EditAnywhere)
+    float InitialSpeed = 15000.0f;
+
+#pragma endregion
+    
 protected:
     virtual void BeginPlay() override;
     void CheckIfHitPlayer(AActor* OtherActor);
