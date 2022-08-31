@@ -180,7 +180,7 @@ FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage
 FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter,
     const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation) const
 {
-    if (!HitCharacter || GetWorld()) return FServerSideRewindResult();
+    if (!HitCharacter || !GetWorld()) return FServerSideRewindResult();
 
     FFramePackage CurrentFramePackage;
     CacheBoxPosition(HitCharacter, CurrentFramePackage);
@@ -225,19 +225,82 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
 FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(const TArray<FFramePackage>& Packages,
     const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations) const
 {
+    if (!GetWorld()) return FShotgunServerSideRewindResult{};
+    
     FShotgunServerSideRewindResult ShotgunResult;
     TArray<FFramePackage> CurrentFrames;
     for (auto& FramePackage : Packages)
     {
+        if (!FramePackage.Character) continue;
+        
         FFramePackage CurrentFramePackage;
+        CurrentFramePackage.Character = FramePackage.Character;
         CacheBoxPosition(FramePackage.Character, CurrentFramePackage);
         MoveBoxes(FramePackage.Character, FramePackage);
         FramePackage.Character->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
         CurrentFrames.Add(CurrentFramePackage);
     }
+
+    for (auto& FramePackage : Packages)
+    {
+        if (!FramePackage.Character) continue;
+        
+        // Enable collision for the head first
+        const auto HeadBox = FramePackage.Character->HitCollisionBoxes[FName("head")];
+        HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    }
+
+    // check for headshots
+    for (auto& HitLocation : HitLocations)
+    {
+        FHitResult ConfirmHitResult;
+        const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
+        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+
+        if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
+        {
+            auto& HitMap = ShotgunResult.HeadShots;
+            HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
+        }
+    }
+
+    // Check for rest of the boxes
+    for (auto& FramePackage : Packages)
+    {
+        for (auto& [HitBoxName, HitBox] : FramePackage.Character->HitCollisionBoxes)
+        {
+            if (!HitBox) continue;
+            HitBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            HitBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+        }
+        const auto HeadBox = FramePackage.Character->HitCollisionBoxes[FName("head")];
+        HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+
+    // check for body shots
+    for (auto& HitLocation : HitLocations)
+    {
+        FHitResult ConfirmHitResult;
+        const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
+        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+
+        if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
+        {
+            auto& HitMap = ShotgunResult.BodyShots;
+            HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
+        }
+    }
+
+    // Reset positions
+    for (auto& CurrentFramePackage : CurrentFrames)
+    {
+        ResetHitBoxes(CurrentFramePackage.Character, CurrentFramePackage);
+        CurrentFramePackage.Character->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    }
     
-    return FShotgunServerSideRewindResult{};
+    return ShotgunResult;
 }
 
 void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage)
