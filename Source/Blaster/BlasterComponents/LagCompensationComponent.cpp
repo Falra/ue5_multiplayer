@@ -22,14 +22,14 @@ void ULagCompensationComponent::BeginPlay()
 void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    
+
     SaveFramePackageOnTick();
 }
 
 void ULagCompensationComponent::SaveFramePackageOnTick()
 {
     if (!Character || !Character->HasAuthority()) return;
-    
+
     if (FrameHistory.Num() > 1)
     {
         float HistoryLenght = FrameHistory.GetHead()->GetValue().Time - FrameHistory.GetTail()->GetValue().Time;
@@ -52,6 +52,7 @@ void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
     Character = !Character ? Cast<ABlasterCharacter>(GetOwner()) : Character;
     if (!Character) return;
     Package.Time = GetWorld()->GetTimeSeconds();
+    Package.Character = Character;
     for (auto& [BoxName, BoxComponent] : Character->HitCollisionBoxes)
     {
         FBoxInformation BoxInformation;
@@ -85,14 +86,14 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunServerSideRewin
     {
         FramesToCheck.Add(GetFrameToCheck(HitCharacter, HitTime));
     }
-    
-    return  FShotgunServerSideRewindResult {};
+
+    return FShotgunServerSideRewindResult{};
 }
 
 FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
 {
     if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return FFramePackage{};
-    
+
     const auto LagComponent = HitCharacter->GetLagCompensationComponent();
     const auto& History = LagComponent->FrameHistory;
     if (!History.GetHead() || !History.GetTail()) return FFramePackage{};
@@ -159,6 +160,7 @@ FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage
 
     FFramePackage InterpFramePackage;
     InterpFramePackage.Time = HitTime;
+    InterpFramePackage.Character = YoungerFrame.Character;
 
     for (const auto& [BoxInfoName, YoungerBoxInfo] : YoungerFrame.HitBoxInfo)
     {
@@ -218,6 +220,12 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     }
 
     return FServerSideRewindResult{false, false};
+}
+
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(const TArray<FFramePackage>& Packages,
+    const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations) const
+{
+    return FShotgunServerSideRewindResult{};
 }
 
 void ULagCompensationComponent::CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage)
