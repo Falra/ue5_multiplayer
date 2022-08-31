@@ -16,6 +16,22 @@ AProjectileBullet::AProjectileBullet()
     ProjectileMovementComponent->MaxSpeed = InitialSpeed;
 }
 
+#if WITH_EDITOR
+void AProjectileBullet::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    if (!PropertyChangedEvent.Property) return;
+
+    if (const FName PropertyName = PropertyChangedEvent.Property->GetFName();
+        PropertyName == GET_MEMBER_NAME_CHECKED(AProjectileBullet, InitialSpeed) && ProjectileMovementComponent)
+    {
+        ProjectileMovementComponent->InitialSpeed = InitialSpeed;
+        ProjectileMovementComponent->MaxSpeed = InitialSpeed;
+    }
+}
+#endif
+
 void AProjectileBullet::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
     const FHitResult& Hit)
 {
@@ -26,7 +42,7 @@ void AProjectileBullet::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
             UGameplayStatics::ApplyDamage(OtherActor, Damage, OwnerController, this, UDamageType::StaticClass());
         }
     }
-    
+
     Super::OnHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
 }
 
@@ -46,7 +62,7 @@ void AProjectileBullet::BeginPlay()
     PredictParams.StartLocation = GetActorLocation();
     PredictParams.TraceChannel = ECollisionChannel::ECC_Visibility;
     PredictParams.ActorsToIgnore.Add(this);
-    
+
     FPredictProjectilePathResult PredictResult;
     UGameplayStatics::PredictProjectilePath(this, PredictParams, PredictResult);
 }
