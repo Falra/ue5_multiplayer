@@ -75,15 +75,21 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 {
     if (!HitCharacter || !HitCharacter->GetLagCompensationComponent()) return FServerSideRewindResult{};
 
+    const FFramePackage FrameToCheck = GetFrameToCheck(HitCharacter, HitTime);
+    return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+}
+
+FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
+{
     const auto LagComponent = HitCharacter->GetLagCompensationComponent();
     const auto& History = LagComponent->FrameHistory;
-    if (!History.GetHead() || !History.GetTail()) return FServerSideRewindResult{};
+    if (!History.GetHead() || !History.GetTail()) return FFramePackage{};
 
     FFramePackage FrameToCheck;
     const float OldestHistoryTime = History.GetTail()->GetValue().Time;
     const float NewestHistoryTime = History.GetHead()->GetValue().Time;
 
-    if (OldestHistoryTime > HitTime) return FServerSideRewindResult{}; // history is to old
+    if (OldestHistoryTime > HitTime) return FFramePackage{}; // history is to old
 
     bool bShouldInterpolate = true;
     if (OldestHistoryTime == HitTime)
@@ -119,8 +125,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
     {
         FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
     }
-
-    return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+    return FrameToCheck;
 }
 
 void ULagCompensationComponent::ServerScoreRequest_Implementation(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,

@@ -27,7 +27,7 @@ struct FFramePackage
     GENERATED_BODY()
 
     UPROPERTY()
-    float Time;
+    float Time = 0.0f;
 
     UPROPERTY()
     TMap<FName, FBoxInformation> HitBoxInfo;
@@ -62,11 +62,12 @@ public:
 protected:
     virtual void BeginPlay() override;
     void SaveFramePackage(FFramePackage& Package);
-    FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime) const;
+    static FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime) const;
     FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation) const;
     static void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
     static void MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
     static void ResetHitBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
+    static FFramePackage GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime);
 private:
     UPROPERTY()
     ABlasterCharacter* Character;
