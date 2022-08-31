@@ -87,7 +87,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunServerSideRewin
         FramesToCheck.Add(GetFrameToCheck(HitCharacter, HitTime));
     }
 
-    return FShotgunServerSideRewindResult{};
+    return ShotgunConfirmHit(FramesToCheck, TraceStart, HitLocations);
 }
 
 FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
