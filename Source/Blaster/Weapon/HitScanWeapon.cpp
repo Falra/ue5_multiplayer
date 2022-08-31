@@ -25,7 +25,7 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
     APawn* OwnerPawn = Cast<APawn>(GetOwner());
     if (!OwnerPawn) return;
     AController* InstigatorController = OwnerPawn->GetController();
-    
+
     if (const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash"))
     {
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
@@ -45,7 +45,8 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
                 BlasterOwnerController = !BlasterOwnerController
                                              ? Cast<ABlasterPlayerController>(InstigatorController)
                                              : BlasterOwnerController;
-                if (BlasterOwnerCharacter && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensationComponent())
+                if (BlasterOwnerCharacter && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensationComponent() &&
+                    BlasterOwnerCharacter->IsLocallyControlled())
                 {
                     BlasterOwnerCharacter->GetLagCompensationComponent()->ServerScoreRequest(BlasterCharacter, Start, HitTarget,
                         BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, this);
@@ -54,7 +55,7 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
         }
 
         ApplyHitEffects(FireHit);
-       
+
         if (MuzzleFlash)
         {
             UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, SocketTransform);
@@ -79,7 +80,7 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
     }
 
     DrawDebugSphere(GetWorld(), BeamEnd, 16.0f, 12, FColor::Orange, true);
-    
+
     if (BeamParticle)
     {
         if (auto Beam = UGameplayStatics::SpawnEmitterAtLocation(World, BeamParticle, TraceStart, FRotator::ZeroRotator, true))

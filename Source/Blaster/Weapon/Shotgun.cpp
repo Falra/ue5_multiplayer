@@ -3,7 +3,9 @@
 
 #include "Shotgun.h"
 
+#include "Blaster/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -33,21 +35,42 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
             WeaponTraceHit(Start, HitTarget, FireHit);
             if (FireHit.bBlockingHit)
             {
-                if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()); BlasterCharacter && HasAuthority() && InstigatorController)
+                if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
+                    BlasterCharacter && HasAuthority() && InstigatorController)
                 {
                     HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
                 }
-                
+
                 ApplyHitEffects(FireHit);
             }
         }
 
-        if (!HasAuthority() || !InstigatorController) return;
-        
-        for (auto HitPair : HitMap)
+        if (!InstigatorController) return;
+
+        TArray<ABlasterCharacter*> HitCharacters;
+        for (auto& [HitCharacter, Hits] : HitMap)
         {
-            if (!HitPair.Key) continue;
-            UGameplayStatics::ApplyDamage(HitPair.Key, Damage * HitPair.Value, InstigatorController, this, UDamageType::StaticClass());
+            if (!HitCharacter) continue;
+
+            if (HasAuthority() && !bUseServerSideRewind)
+            {
+                UGameplayStatics::ApplyDamage(HitCharacter, Damage * Hits, InstigatorController, this, UDamageType::StaticClass());
+            }
+            HitCharacters.Add(HitCharacter);
+        }
+
+        if (!HasAuthority() && bUseServerSideRewind)
+        {
+            BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+            BlasterOwnerController = !BlasterOwnerController
+                                         ? Cast<ABlasterPlayerController>(InstigatorController)
+                                         : BlasterOwnerController;
+            if (BlasterOwnerCharacter && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensationComponent() &&
+                BlasterOwnerCharacter->IsLocallyControlled())
+            {
+                BlasterOwnerCharacter->GetLagCompensationComponent()->ShotgunServerScoreRequest(HitCharacters, Start, TraceHitTargets,
+                    BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, this);
+            }
         }
     }
 }
@@ -60,7 +83,7 @@ void AShotgun::ShotgunTraceEndWithScatter(const FVector& HitTarget, TArray<FVect
     const FVector TraceStart = SocketTransform.GetLocation();
     const FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
     const FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
-        
+
     for (uint32 i = 0; i < NumberOfPellets; ++i)
     {
         const FVector RandVector = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.0f, SphereRadius);
@@ -69,4 +92,4 @@ void AShotgun::ShotgunTraceEndWithScatter(const FVector& HitTarget, TArray<FVect
         const FVector Result = FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
         HitTargets.Add(Result);
     }
-} 
+}
