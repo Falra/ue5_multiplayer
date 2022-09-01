@@ -272,11 +272,6 @@ FServerSideRewindResult ULagCompensationComponent::ProjectileConfirmHit(const FF
 
     HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-    // Enable collision for the head first
-    const auto HeadBox = HitCharacter->HitCollisionBoxes[FName("head")];
-    HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    HeadBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
-
     FPredictProjectilePathParams PathParams;
     PathParams.bTraceWithChannel = true;
     PathParams.bTraceWithCollision = true;
@@ -291,6 +286,12 @@ FServerSideRewindResult ULagCompensationComponent::ProjectileConfirmHit(const FF
     PathParams.DrawDebugType = EDrawDebugTrace::ForDuration;
     
     FPredictProjectilePathResult PathResult;
+    
+    // Enable collision for the head first
+    const auto HeadBox = HitCharacter->HitCollisionBoxes[FName("head")];
+    HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    HeadBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
+    
     UGameplayStatics::PredictProjectilePath(this, PathParams, PathResult);
     if (PathResult.HitResult.bBlockingHit)
     {
@@ -300,7 +301,26 @@ FServerSideRewindResult ULagCompensationComponent::ProjectileConfirmHit(const FF
         HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         return FServerSideRewindResult{true, true};
     }
+
+    // Check for rest of the boxes
+    for (auto& [HitBoxName, HitBox] : HitCharacter->HitCollisionBoxes)
+    {
+        if (!HitBox) continue;
+        HitBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        HitBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
+    }
     
+    UGameplayStatics::PredictProjectilePath(this, PathParams, PathResult);
+    
+    ResetHitBoxes(HitCharacter, CurrentFramePackage);
+    HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+    if (PathResult.HitResult.bBlockingHit)
+    {
+        DrawDebugHitBox(PathResult.HitResult.Component, FColor::Blue);
+        
+        return FServerSideRewindResult{true, false};
+    }
     
     return FServerSideRewindResult{false, false};
 }
