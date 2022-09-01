@@ -72,6 +72,8 @@ public:
     void ShowFramePackage(const FFramePackage& Package, const FColor& Color) const;
     FServerSideRewindResult ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize& HitLocation, float HitTime) const;
+    FServerSideRewindResult ProjectileServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+         const FVector_NetQuantize100& InitialVelocity, float HitTime) const;
     FShotgunServerSideRewindResult ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters,
         const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime) const;
     UFUNCTION(Server, Reliable)
@@ -86,6 +88,8 @@ protected:
     static FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime);
     FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize& HitLocation) const;
+    FServerSideRewindResult ProjectileConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+        const FVector_NetQuantize100& InitialVelocity, float HitTime) const;
     FShotgunServerSideRewindResult ShotgunConfirmHit(const TArray<FFramePackage>& Packages, const FVector_NetQuantize& TraceStart,
         const TArray<FVector_NetQuantize>& HitLocations) const;
     static void CacheBoxPosition(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
@@ -105,4 +109,6 @@ private:
     float MaxRecordTime = 4.0f;
 
     void SaveFramePackageOnTick();
+    void DrawDebugHitBox(TWeakObjectPtr<UPrimitiveComponent> HitComponent, const FColor& DrawColor) const;
+    
 };

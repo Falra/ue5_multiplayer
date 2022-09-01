@@ -50,6 +50,7 @@ void AProjectileBullet::BeginPlay()
 {
     Super::BeginPlay();
 
+    /*
     FPredictProjectilePathParams PredictParams;
     PredictParams.bTraceWithChannel = true;
     PredictParams.bTraceWithCollision = true;
@@ -65,4 +66,5 @@ void AProjectileBullet::BeginPlay()
 
     FPredictProjectilePathResult PredictResult;
     UGameplayStatics::PredictProjectilePath(this, PredictParams, PredictResult);
+    */
 }
