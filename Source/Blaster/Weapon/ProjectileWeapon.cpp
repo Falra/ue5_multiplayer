@@ -25,7 +25,7 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
     SpawnParameters.Instigator = InstigatorPawn;
 
     AProjectile* SpawnedProjectile = nullptr;
-    if (bUseServerSideRewind )
+    if (bUseServerSideRewind)
     {
         if (InstigatorPawn->HasAuthority()) // server
         {
@@ -58,11 +58,13 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
             }
         }
     }
-    else
+    else // weapon w/o SSR
     {
-        
+        if (InstigatorPawn->HasAuthority())
+        {
+            SpawnedProjectile = World->SpawnActor<AProjectile>(ProjectileClass, SocketTransform.GetLocation(), TargetRotation, SpawnParameters);
+            SpawnedProjectile->bUseServerSideRewind = false;
+            SpawnedProjectile->Damage = Damage;
+        }
     }
-   
-
-    
 }
