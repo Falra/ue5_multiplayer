@@ -73,12 +73,15 @@ public:
     FServerSideRewindResult ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize& HitLocation, float HitTime) const;
     FServerSideRewindResult ProjectileServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
-         const FVector_NetQuantize100& InitialVelocity, float HitTime) const;
+        const FVector_NetQuantize100& InitialVelocity, float HitTime) const;
     FShotgunServerSideRewindResult ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters,
         const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime) const;
     UFUNCTION(Server, Reliable)
     void ServerScoreRequest(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation,
         float HitTime, class AWeapon* DamageCauser);
+    UFUNCTION(Server, Reliable)
+    void ProjectileServerScoreRequest(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+        const FVector_NetQuantize100& InitialVelocity, float HitTime, class AWeapon* DamageCauser);
     UFUNCTION(Server, Reliable)
     void ShotgunServerScoreRequest(const TArray<ABlasterCharacter*>& HitCharacters, const FVector_NetQuantize& TraceStart,
         const TArray<FVector_NetQuantize>& HitLocations, float HitTime, class AWeapon* DamageCauser);
@@ -88,7 +91,8 @@ protected:
     static FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime);
     FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize& HitLocation) const;
-    FServerSideRewindResult ProjectileConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+    FServerSideRewindResult ProjectileConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter,
+        const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize100& InitialVelocity, float HitTime) const;
     FShotgunServerSideRewindResult ShotgunConfirmHit(const TArray<FFramePackage>& Packages, const FVector_NetQuantize& TraceStart,
         const TArray<FVector_NetQuantize>& HitLocations) const;
@@ -110,5 +114,4 @@ private:
 
     void SaveFramePackageOnTick();
     void DrawDebugHitBox(TWeakObjectPtr<UPrimitiveComponent> HitComponent, const FColor& DrawColor) const;
-    
 };
