@@ -3,6 +3,7 @@
 
 #include "LagCompensationComponent.h"
 
+#include "Blaster/Blaster.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Weapon/Weapon.h"
@@ -218,10 +219,10 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     // Enable collision for the head first
     const auto HeadBox = HitCharacter->HitCollisionBoxes[FName("head")];
     HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    HeadBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
     FHitResult ConfirmHitResult;
     const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
-    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECC_HitBox);
     if (ConfirmHitResult.bBlockingHit)
     {
         ResetHitBoxes(HitCharacter, CurrentFramePackage);
@@ -234,9 +235,9 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     {
         if (!HitBox) continue;
         HitBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        HitBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+        HitBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
     }
-    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+    GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECC_HitBox);
 
     ResetHitBoxes(HitCharacter, CurrentFramePackage);
     HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -276,7 +277,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
         // Enable collision for the head first
         const auto HeadBox = FramePackage.Character->HitCollisionBoxes[FName("head")];
         HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+        HeadBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
     }
 
     // check for headshots
@@ -284,7 +285,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
     {
         FHitResult ConfirmHitResult;
         const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
-        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECC_HitBox);
 
         if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
         {
@@ -300,7 +301,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
         {
             if (!HitBox) continue;
             HitBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-            HitBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+            HitBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
         }
         const auto HeadBox = FramePackage.Character->HitCollisionBoxes[FName("head")];
         HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -311,7 +312,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
     {
         FHitResult ConfirmHitResult;
         const FVector TraceEnd = TraceStart + (HitLocation - TraceStart) * 1.25f;
-        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+        GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECC_HitBox);
 
         if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
         {

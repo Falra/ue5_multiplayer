@@ -85,18 +85,22 @@ ABlasterCharacter::ABlasterCharacter()
     AddHitBox(calf_r, FName("calf_r"));
     AddHitBox(foot_l, FName("foot_l"));
     AddHitBox(foot_r, FName("foot_r"));
-
     // blanket attached to backpack bone
-    blanket = CreateDefaultSubobject<UBoxComponent>("blanket");
-    blanket->SetupAttachment(GetMesh(), FName("backpack"));
-    blanket->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    HitCollisionBoxes.Add(FName("blanket"), blanket);
+    AddHitBox(foot_r, FName("blanket"), FName("backpack"));
 }
 
 void ABlasterCharacter::AddHitBox(UBoxComponent*& HitBox, const FName& BoxName)
 {
+    AddHitBox(HitBox, BoxName, BoxName);
+}
+
+void ABlasterCharacter::AddHitBox(UBoxComponent*& HitBox, const FName& BoxName, const FName& BoneName)
+{
     HitBox = CreateDefaultSubobject<UBoxComponent>(BoxName);
-    HitBox->SetupAttachment(GetMesh(), BoxName);
+    HitBox->SetupAttachment(GetMesh(), BoneName);
+    HitBox->SetCollisionObjectType(ECC_HitBox);
+    HitBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    HitBox->SetCollisionResponseToChannel(ECC_HitBox, ECollisionResponse::ECR_Block);
     HitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     HitCollisionBoxes.Add(BoxName, HitBox);
 }

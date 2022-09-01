@@ -169,6 +169,7 @@ private:
     bool bHasInitialized = false;
 
     void AddHitBox(UBoxComponent*& HitBox, const FName& BoxName);
+    void AddHitBox(UBoxComponent*& HitBox, const FName& BoxName, const FName& BoneName);
     
 #pragma region AnimationMontages   
 
