@@ -225,6 +225,15 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
     GetWorld()->LineTraceSingleByChannel(ConfirmHitResult, TraceStart, TraceEnd, ECC_HitBox);
     if (ConfirmHitResult.bBlockingHit)
     {
+        if (ConfirmHitResult.Component.IsValid())
+        {
+            UBoxComponent* Box = Cast<UBoxComponent>(ConfirmHitResult.Component);
+            if (Box)
+            {
+                DrawDebugBox(GetWorld(), Box->GetComponentLocation(), Box->GetScaledBoxExtent(), FQuat(Box->GetComponentRotation()), FColor::Red, false, 8.f);
+            }
+        }
+        
         ResetHitBoxes(HitCharacter, CurrentFramePackage);
         HitCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         return FServerSideRewindResult{true, true};
@@ -244,6 +253,14 @@ FServerSideRewindResult ULagCompensationComponent::ConfirmHit(const FFramePackag
 
     if (ConfirmHitResult.bBlockingHit)
     {
+        if (ConfirmHitResult.Component.IsValid())
+        {
+            UBoxComponent* Box = Cast<UBoxComponent>(ConfirmHitResult.Component);
+            if (Box)
+            {
+                DrawDebugBox(GetWorld(), Box->GetComponentLocation(), Box->GetScaledBoxExtent(), FQuat(Box->GetComponentRotation()), FColor::Blue, false, 8.f);
+            }
+        }
         return FServerSideRewindResult{true, false};
     }
 
@@ -289,6 +306,15 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 
         if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
         {
+            if (ConfirmHitResult.Component.IsValid())
+            {
+                UBoxComponent* Box = Cast<UBoxComponent>(ConfirmHitResult.Component);
+                if (Box)
+                {
+                    DrawDebugBox(GetWorld(), Box->GetComponentLocation(), Box->GetScaledBoxExtent(), FQuat(Box->GetComponentRotation()), FColor::Red, false, 8.f);
+                }
+            }
+            
             auto& HitMap = ShotgunResult.HeadShots;
             HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
         }
@@ -316,6 +342,15 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 
         if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor()))
         {
+            if (ConfirmHitResult.Component.IsValid())
+            {
+                UBoxComponent* Box = Cast<UBoxComponent>(ConfirmHitResult.Component);
+                if (Box)
+                {
+                    DrawDebugBox(GetWorld(), Box->GetComponentLocation(), Box->GetScaledBoxExtent(), FQuat(Box->GetComponentRotation()), FColor::Blue, false, 8.f);
+                }
+            }
+            
             auto& HitMap = ShotgunResult.BodyShots;
             HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
         }
