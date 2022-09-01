@@ -29,6 +29,9 @@ public:
     float InitialSpeed = 15000.0f;
 
 #pragma endregion
+
+    UPROPERTY(EditAnywhere)
+    float Damage = 10.0f;
     
 protected:
     virtual void BeginPlay() override;
@@ -43,9 +46,6 @@ protected:
 
     UPROPERTY(EditAnywhere)
     class UBoxComponent* CollisionBox;
-    
-    UPROPERTY(EditAnywhere)
-    float Damage = 10.0f;
 
     UPROPERTY(EditAnywhere)
     class UParticleSystem* ImpactParticles;
