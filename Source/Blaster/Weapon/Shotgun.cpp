@@ -47,7 +47,8 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
         {
             if (!HitCharacter) continue;
 
-            if (HasAuthority() && !bUseServerSideRewind)
+            bool bCauseAuthDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
+            if (HasAuthority() && bCauseAuthDamage)
             {
                 UGameplayStatics::ApplyDamage(HitCharacter, Damage * Hits, InstigatorController, this, UDamageType::StaticClass());
             }
