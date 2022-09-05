@@ -442,7 +442,7 @@ void UCombatComponent::ShotgunShellReload()
     }
 }
 
-void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget, float FireDelay)
 {
     MulticastFire(TraceHitTarget);
 }
@@ -454,7 +454,7 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
     LocalFire(TraceHitTarget);
 }
 
-void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets)
+void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay)
 {
     MulticastShotgunFire(TraceHitTargets);
 }
