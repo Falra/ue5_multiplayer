@@ -292,6 +292,11 @@ void ABlasterCharacter::EquipButtonPressed()
     if (CombatComponent)
     {
         ServerEquipButtonPressed();
+        if (CombatComponent->ShouldSwapWeapons() && HasAuthority())
+        {
+            PlaySwapWeaponMontage();
+            CombatComponent->CombatState = ECombatState::ECS_SwappingWeapons;
+        }
     }
 }
 
@@ -831,6 +836,15 @@ void ABlasterCharacter::PlayThrowGrenadeMontage()
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     if (!AnimInstance) return;
     AnimInstance->Montage_Play(ThrowGrenadeMontage);
+}
+
+void ABlasterCharacter::PlaySwapWeaponMontage()
+{
+    if (!SwapWeaponMontage) return;
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance) return;
+    AnimInstance->Montage_Play(SwapWeaponMontage);
 }
 
 void ABlasterCharacter::SpawnEliminationBot()

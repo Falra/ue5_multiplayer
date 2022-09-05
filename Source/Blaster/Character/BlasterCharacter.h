@@ -23,14 +23,15 @@ public:
     virtual void PostInitializeComponents() override;
     virtual void PossessedBy(AController* NewController) override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-    void PlayFireMontage(bool bAiming);
-    void PlayReloadMontage();
-    virtual void OnRep_ReplicatedMovement() override;
+   virtual void OnRep_ReplicatedMovement() override;
     void Eliminate();
     UFUNCTION(NetMulticast, Reliable)
     void MulticastEliminate();
+    void PlayFireMontage(bool bAiming);
+    void PlayReloadMontage();
     void PlayEliminatedMontage();
     void PlayThrowGrenadeMontage();
+    void PlaySwapWeaponMontage();
     UPROPERTY(Replicated)
     bool bDisableGameplay = false;
 
@@ -187,6 +188,9 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     UAnimMontage* ThrowGrenadeMontage;
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    UAnimMontage* SwapWeaponMontage;
 
 #pragma endregion 
     

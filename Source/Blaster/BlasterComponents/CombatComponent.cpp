@@ -258,7 +258,10 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 void UCombatComponent::SwapWeapons()
 {
-    if (CombatState != ECombatState::ECS_Unoccupied) return;
+    if (CombatState != ECombatState::ECS_Unoccupied || !Character) return;
+
+    Character->PlaySwapWeaponMontage();
+    CombatState = ECombatState::ECS_SwappingWeapons;
     
     AWeapon* TempWeapon = EquippedWeapon;
     EquippedWeapon = SecondaryWeapon;
@@ -670,6 +673,12 @@ void UCombatComponent::OnRep_CombatState()
                 Character->PlayThrowGrenadeMontage();
                 AttachActorToLeftHand(EquippedWeapon);
                 ShowAttachedGrenade(true);
+            }
+            break;
+        case ECombatState::ECS_SwappingWeapons:
+            if (Character && !Character->IsLocallyControlled())
+            {
+                Character->PlaySwapWeaponMontage();
             }
             break;
     }
