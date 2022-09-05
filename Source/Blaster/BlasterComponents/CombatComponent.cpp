@@ -405,14 +405,14 @@ void UCombatComponent::FireProjectileWeapon()
 {
     HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
     if (Character && !Character->HasAuthority()) LocalFire(HitTarget);
-    ServerFire(HitTarget);
+    ServerFire(HitTarget, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireHitScanWeapon()
 {
     HitTarget = EquippedWeapon->bUseScatter ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
     if (Character && !Character->HasAuthority()) LocalFire(HitTarget);
-    ServerFire(HitTarget);
+    ServerFire(HitTarget, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireShotgun()
@@ -422,7 +422,7 @@ void UCombatComponent::FireShotgun()
     TArray<FVector_NetQuantize> HitTargets;
     ShotgunWeapon->ShotgunTraceEndWithScatter(HitTarget, HitTargets);
     if (Character && !Character->HasAuthority()) LocalShotgunFire(HitTargets);
-    ServerShotgunFire(HitTargets);
+    ServerShotgunFire(HitTargets, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
@@ -442,6 +442,15 @@ void UCombatComponent::ShotgunShellReload()
     }
 }
 
+bool UCombatComponent::ServerFire_Validate(const FVector_NetQuantize& TraceHitTarget, float FireDelay)
+{
+    if (EquippedWeapon && !FMath::IsNearlyEqual(EquippedWeapon->FireDelay, FireDelay, 0.001f))
+    {
+        return false;
+    }
+    return true;
+}
+
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget, float FireDelay)
 {
     MulticastFire(TraceHitTarget);
@@ -452,6 +461,15 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
     if (Character && Character->IsLocallyControlled() && !Character->HasAuthority()) return;
     
     LocalFire(TraceHitTarget);
+}
+
+bool UCombatComponent::ServerShotgunFire_Validate(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay)
+{
+    if (EquippedWeapon && !FMath::IsNearlyEqual(EquippedWeapon->FireDelay, FireDelay, 0.001f))
+    {
+        return false;
+    }
+    return true;
 }
 
 void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay)

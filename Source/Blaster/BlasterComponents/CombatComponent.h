@@ -67,7 +67,7 @@ protected:
     void FireHitScanWeapon();
     void FireShotgun();
     
-    UFUNCTION(Server, Reliable)
+    UFUNCTION(Server, Reliable, WithValidation)
     void ServerFire(const FVector_NetQuantize& TraceHitTarget, float FireDelay = 0.0f);
 
     UFUNCTION(NetMulticast, Reliable)
@@ -75,7 +75,7 @@ protected:
 
     void LocalFire(const FVector_NetQuantize& TraceHitTarget);
 
-    UFUNCTION(Server, Reliable)
+    UFUNCTION(Server, Reliable, WithValidation)
     void ServerShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay = 0.0f);
 
     UFUNCTION(NetMulticast, Reliable)
