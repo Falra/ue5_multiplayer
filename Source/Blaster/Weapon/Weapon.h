@@ -96,7 +96,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerController* BlasterOwnerController;
-    
+
+    UFUNCTION()
+    void OnPingTooHigh(bool bPingTooHigh);
 private:
     UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
     USkeletalMeshComponent* WeaponMesh;

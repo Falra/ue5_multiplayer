@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerController.h"
 #include "BlasterPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighPingDelegate, bool, bPingTooHigh);
+
 /**
  * 
  */
@@ -36,6 +38,7 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void CheckPingSpeed();
     float SingleTripTime = 0.0f;
+    FHighPingDelegate HighPingDelegate;
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
@@ -129,4 +132,7 @@ private:
     float CheckPingFrequency = 20.0f;
     UPROPERTY(EditAnywhere)
     float HighPingThreshold = 50.0f;
+
+    UFUNCTION(Server, Reliable)
+    void ServerReportPingStatus(bool bHighPing);
 };

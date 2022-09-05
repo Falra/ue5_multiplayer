@@ -105,6 +105,11 @@ void AWeapon::SetWeaponState(EWeaponState State)
     OnSetWeaponState();
 }
 
+void AWeapon::OnPingTooHigh(bool bPingTooHigh)
+{
+    bUseServerSideRewind = !bPingTooHigh;
+}
+
 void AWeapon::OnRep_WeaponState()
 {
     OnSetWeaponState();
@@ -131,6 +136,13 @@ void AWeapon::OnEquipped()
     ShowPickupWidget(false);
     AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     SetWeaponMeshState(false);
+
+    BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+    BlasterOwnerController = (!BlasterOwnerController && BlasterOwnerCharacter) ? BlasterOwnerCharacter->GetController<ABlasterPlayerController>() : BlasterOwnerController;
+    if (BlasterOwnerController && bUseServerSideRewind && HasAuthority() && !BlasterOwnerController->HighPingDelegate.IsBound())
+    {
+        BlasterOwnerController->HighPingDelegate.AddDynamic(this, &AWeapon::OnPingTooHigh);
+    }
 }
 
 void AWeapon::OnDropped()
@@ -140,6 +152,13 @@ void AWeapon::OnDropped()
         AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     }
     SetWeaponMeshState(true);
+
+    BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+    BlasterOwnerController = (!BlasterOwnerController && BlasterOwnerCharacter) ? BlasterOwnerCharacter->GetController<ABlasterPlayerController>() : BlasterOwnerController;
+    if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound())
+    {
+        BlasterOwnerController->HighPingDelegate.RemoveDynamic(this, &AWeapon::OnPingTooHigh);
+    }
 }
 
 void AWeapon::OnEquippedSecondary()
@@ -147,6 +166,13 @@ void AWeapon::OnEquippedSecondary()
     ShowPickupWidget(false);
     AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     SetWeaponMeshState(false, true);
+
+    BlasterOwnerCharacter = !BlasterOwnerCharacter ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+    BlasterOwnerController = (!BlasterOwnerController && BlasterOwnerCharacter) ? BlasterOwnerCharacter->GetController<ABlasterPlayerController>() : BlasterOwnerController;
+    if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound())
+    {
+        BlasterOwnerController->HighPingDelegate.RemoveDynamic(this, &AWeapon::OnPingTooHigh);
+    }
 }
 
 void AWeapon::CheckUpdateController()

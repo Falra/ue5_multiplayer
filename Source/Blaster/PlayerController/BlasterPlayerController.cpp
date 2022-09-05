@@ -42,9 +42,19 @@ void ABlasterPlayerController::CheckPingSpeed()
     if (PlayerState && PlayerState->GetPingInMilliseconds() > HighPingThreshold)
     {
         HighPingWarning();
+        ServerReportPingStatus(true);
         FTimerHandle TurnOffHandle;
         GetWorldTimerManager().SetTimer(TurnOffHandle, this, &ABlasterPlayerController::StopHighPingWarning, HighPingDuration);
     }
+    else
+    {
+        ServerReportPingStatus(false);
+    }
+}
+
+void ABlasterPlayerController::ServerReportPingStatus_Implementation(bool bHighPing)
+{
+    HighPingDelegate.Broadcast(bHighPing);
 }
 
 void ABlasterPlayerController::Tick(float DeltaSeconds)
