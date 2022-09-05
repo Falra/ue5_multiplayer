@@ -22,8 +22,16 @@ public:
     void EquipWeapon(class AWeapon* WeaponToEquip);
     void SwapWeapons();
     void Reload();
+
     UFUNCTION(BlueprintCallable)
     void FinishReloading();
+
+    UFUNCTION(BlueprintCallable)
+    void FinishSwapWeapons();
+
+    UFUNCTION(BlueprintCallable)
+    void FinishSwapAttachWeapons();
+    
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void FireButtonPressed(bool bPressed);

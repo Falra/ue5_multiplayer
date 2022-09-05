@@ -266,19 +266,6 @@ void UCombatComponent::SwapWeapons()
     AWeapon* TempWeapon = EquippedWeapon;
     EquippedWeapon = SecondaryWeapon;
     SecondaryWeapon = TempWeapon;
-
-    EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-    AttachActorToRightHand(EquippedWeapon);
-    EquippedWeapon->ShowWeaponAmmo();
-    UpdateCarriedAmmo();
-    PlayEquipEffects(EquippedWeapon);
-    if (Controller)
-    {
-        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
-    }
-    
-    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
-    AttachActorToBackpack(SecondaryWeapon);
 }
 
 void UCombatComponent::DropEquippedWeapon()
@@ -651,6 +638,30 @@ void UCombatComponent::FinishReloading()
 
 #pragma endregion 
 
+void UCombatComponent::FinishSwapWeapons()
+{
+    if (Character && Character->HasAuthority())
+    {
+        CombatState = ECombatState::ECS_Unoccupied;
+    }
+}
+
+void UCombatComponent::FinishSwapAttachWeapons()
+{
+    EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+    AttachActorToRightHand(EquippedWeapon);
+    EquippedWeapon->ShowWeaponAmmo();
+    UpdateCarriedAmmo();
+    PlayEquipEffects(EquippedWeapon);
+    if (Controller)
+    {
+        Controller->SetHUDWeaponType(EquippedWeapon->GetWeaponType());
+    }
+    
+    SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
+    AttachActorToBackpack(SecondaryWeapon);
+}
+
 void UCombatComponent::OnRep_CombatState()
 {
     switch (CombatState)
@@ -740,7 +751,7 @@ void UCombatComponent::UpdateHUDGrenades()
 
 bool UCombatComponent::ShouldSwapWeapons() const
 {
-    return EquippedWeapon && SecondaryWeapon;
+    return EquippedWeapon && SecondaryWeapon && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UCombatComponent::JumpToShotgunEnd() const
