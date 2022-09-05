@@ -88,7 +88,7 @@ protected:
     UPROPERTY(EditAnywhere)
     float Damage = 5.0f;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(Replicated, EditAnywhere)
     bool bUseServerSideRewind = false;
 
     UPROPERTY(VisibleAnywhere)
