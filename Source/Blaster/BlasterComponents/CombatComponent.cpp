@@ -261,6 +261,7 @@ void UCombatComponent::SwapWeapons()
     if (CombatState != ECombatState::ECS_Unoccupied || !Character) return;
 
     Character->PlaySwapWeaponMontage();
+    Character->bFinishSwapping = false;
     CombatState = ECombatState::ECS_SwappingWeapons;
     
     AWeapon* TempWeapon = EquippedWeapon;
@@ -643,6 +644,10 @@ void UCombatComponent::FinishSwapWeapons()
     if (Character && Character->HasAuthority())
     {
         CombatState = ECombatState::ECS_Unoccupied;
+    }
+    if (Character)
+    {
+        Character->bFinishSwapping = true;
     }
 }
 

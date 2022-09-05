@@ -292,10 +292,11 @@ void ABlasterCharacter::EquipButtonPressed()
     if (CombatComponent)
     {
         ServerEquipButtonPressed();
-        if (CombatComponent->ShouldSwapWeapons() && HasAuthority())
+        if (CombatComponent->ShouldSwapWeapons() && !OverlappingWeapon && !HasAuthority())
         {
             PlaySwapWeaponMontage();
             CombatComponent->CombatState = ECombatState::ECS_SwappingWeapons;
+            bFinishSwapping = false;
         }
     }
 }

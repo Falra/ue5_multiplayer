@@ -32,8 +32,14 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     TurningInPlace = BlasterCharacter->GetTurningInPlace();
     bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
     bEliminated = BlasterCharacter->IsEliminated();
-    const bool bIsLocalAndReloading = BlasterCharacter->IsLocallyControlled() && BlasterCharacter->IsLocallyReloading();
-    bUseFABRIK = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !bIsLocalAndReloading;
+    bUseFABRIK = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied;
+    const bool bFABRIKOverride = BlasterCharacter->IsLocallyControlled() &&
+                           BlasterCharacter->GetCombatState() != ECombatState::ECS_ThrowingGrenade &&
+                           BlasterCharacter->bFinishSwapping;
+    if (bFABRIKOverride)
+    {
+        bUseFABRIK = !BlasterCharacter->IsLocallyReloading();
+    }
     bUseAimOffsets = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->bDisableGameplay;
     bTransformRightHand = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->bDisableGameplay;
         

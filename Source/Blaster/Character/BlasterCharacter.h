@@ -40,6 +40,8 @@ public:
 
     void SpawnDefaultWeapon();
 
+    bool bFinishSwapping = true;
+
 #pragma region HitBoxes
 
     UPROPERTY(EditAnywhere)
