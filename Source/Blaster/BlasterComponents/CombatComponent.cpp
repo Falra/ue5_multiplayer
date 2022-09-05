@@ -267,6 +267,8 @@ void UCombatComponent::SwapWeapons()
     AWeapon* TempWeapon = EquippedWeapon;
     EquippedWeapon = SecondaryWeapon;
     SecondaryWeapon = TempWeapon;
+
+    if (SecondaryWeapon) SecondaryWeapon->EnableCustomDepth(false);
 }
 
 void UCombatComponent::DropEquippedWeapon()
@@ -649,6 +651,7 @@ void UCombatComponent::FinishSwapWeapons()
     {
         Character->bFinishSwapping = true;
     }
+    if (SecondaryWeapon) SecondaryWeapon->EnableCustomDepth(true);
 }
 
 void UCombatComponent::FinishSwapAttachWeapons()
