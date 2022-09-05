@@ -13,4 +13,16 @@ UCLASS()
 class BLASTER_API UReturnToMainMenu : public UUserWidget
 {
     GENERATED_BODY()
+
+public:
+    void MenuSetup();
+    void MenuTearDown();
+protected:
+    virtual bool Initialize() override;
+private:
+    UPROPERTY(meta = (BindWidget))
+    class UButton* ReturnButton;
+
+    UFUNCTION()
+    void ReturnButtonClicked();
 };
