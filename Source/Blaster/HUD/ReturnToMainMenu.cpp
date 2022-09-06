@@ -24,7 +24,7 @@ void UReturnToMainMenu::MenuSetup()
         }
     }
 
-    if (ReturnButton)
+    if (ReturnButton && !ReturnButton->OnClicked.IsBound())
     {
         ReturnButton->OnClicked.AddDynamic(this, &UReturnToMainMenu::ReturnButtonClicked);
     }
@@ -52,12 +52,25 @@ bool UReturnToMainMenu::Initialize()
 void UReturnToMainMenu::MenuTearDown()
 {
     RemoveFromParent();
-    const UWorld* World = GetWorld();
-    if (!World) return;
-    PlayerController = !PlayerController ? World->GetFirstPlayerController() : PlayerController;
-    if (!PlayerController) return;
-    PlayerController->SetInputMode(FInputModeGameOnly());
-    PlayerController->SetShowMouseCursor(false);
+    if (const UWorld* World = GetWorld())
+    {
+        PlayerController = !PlayerController ? World->GetFirstPlayerController() : PlayerController;
+        if (PlayerController)
+        {
+            PlayerController->SetInputMode(FInputModeGameOnly());
+            PlayerController->SetShowMouseCursor(false);
+        }
+    }
+
+    if (ReturnButton && ReturnButton->OnClicked.IsBound())
+    {
+        ReturnButton->OnClicked.RemoveDynamic(this, &UReturnToMainMenu::ReturnButtonClicked);
+    }
+
+    if (MultiplayerSessionsSubsystem)
+    {
+        MultiplayerSessionsSubsystem->MultiplayerOnDestroySessionComplete.RemoveDynamic(this, &UReturnToMainMenu::OnDestroySession);
+    }
 }
 
 void UReturnToMainMenu::ReturnButtonClicked()
