@@ -72,16 +72,26 @@ protected:
 
     void HighPingWarning();
     void StopHighPingWarning();
-    
+
+    virtual void SetupInputComponent() override;
+    void ShowReturnToMainMenu();
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;
-
+    
     UPROPERTY(VisibleAnywhere)
     class ABlasterGameMode* BlasterGameMode;
 
     UPROPERTY(VisibleAnywhere)
     class UCharacterOverlay* CharacterOverlay;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<UUserWidget> ReturnToMainMenuWidgetClass;
+
+    UPROPERTY()
+    class UReturnToMainMenu* ReturnToMainMenuWidget;
+
+    bool bReturnToMainMenuOpen = false;
     
     bool IsHUDValid();
 

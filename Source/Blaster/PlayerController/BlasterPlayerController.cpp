@@ -10,6 +10,7 @@
 #include "Blaster/HUD/Announcement.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
+#include "Blaster/HUD/ReturnToMainMenu.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
@@ -50,6 +51,28 @@ void ABlasterPlayerController::CheckPingSpeed()
     {
         ServerReportPingStatus(false);
     }
+}
+
+void ABlasterPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+    if (!InputComponent) return;
+
+    InputComponent->BindAction("Quit", IE_Pressed, this, &ABlasterPlayerController::ShowReturnToMainMenu);
+}
+
+void ABlasterPlayerController::ShowReturnToMainMenu()
+{
+    if (!ReturnToMainMenuWidgetClass) return;
+
+    if (!ReturnToMainMenuWidget)
+    {
+        ReturnToMainMenuWidget = CreateWidget<UReturnToMainMenu>(this, ReturnToMainMenuWidgetClass);
+    }
+    if (!ReturnToMainMenuWidget) return;
+
+    bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
+    bReturnToMainMenuOpen ? ReturnToMainMenuWidget->MenuSetup() : ReturnToMainMenuWidget->MenuTearDown();
 }
 
 void ABlasterPlayerController::ServerReportPingStatus_Implementation(bool bHighPing)
