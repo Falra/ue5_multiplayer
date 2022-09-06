@@ -758,7 +758,6 @@ void ABlasterCharacter::ServerLeaveGame_Implementation()
 void ABlasterCharacter::Eliminate(bool bPlayerLeftGame)
 {
     MulticastEliminate(bPlayerLeftGame);
-    GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
     if (CombatComponent)
     {
         DropOrDestroyWeapon(CombatComponent->EquippedWeapon);
@@ -783,6 +782,7 @@ void ABlasterCharacter::MulticastEliminate_Implementation(bool bPlayerLeftGame)
     {
         ShowSniperScopeWidget(false); 
     }
+    GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
 }
 
 void ABlasterCharacter::EliminationTimerFinished()
