@@ -751,7 +751,7 @@ void ABlasterCharacter::ServerLeaveGame_Implementation()
 {
     if (const auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
     {
-        BlasterGameMode->PlayerLeftGame();
+        BlasterGameMode->PlayerLeftGame(BlasterPlayerState);
     }
 }
 

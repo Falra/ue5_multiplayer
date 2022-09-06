@@ -114,7 +114,15 @@ void ABlasterGameMode::RequestRespawn(ACharacter* EliminatedCharacter, AControll
     }
 }
 
-void ABlasterGameMode::PlayerLeftGame()
+void ABlasterGameMode::PlayerLeftGame(ABlasterPlayerState* PlayerLeaving)
 {
-    
+    if (!PlayerLeaving) return;
+
+    ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
+    if (!BlasterGameState) return;
+
+    if (BlasterGameState->TopScoringPlayers.Contains(PlayerLeaving))
+    {
+        BlasterGameState->TopScoringPlayers.Remove(PlayerLeaving);
+    }
 }
