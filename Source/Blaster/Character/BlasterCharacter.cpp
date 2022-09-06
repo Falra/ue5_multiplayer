@@ -789,7 +789,7 @@ void ABlasterCharacter::EliminationTimerFinished()
 {
     if (bLeftGame)
     {
-        OnLeftGame.Broadcast();
+        if (IsLocallyControlled()) OnLeftGame.Broadcast();
         return;
     }
     

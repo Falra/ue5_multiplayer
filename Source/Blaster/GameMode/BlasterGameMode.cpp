@@ -94,7 +94,7 @@ void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, 
 
     if (EliminatedCharacter)
     {
-        EliminatedCharacter->Eliminate();
+        EliminatedCharacter->Eliminate(false);
     }
 }
 
@@ -125,4 +125,7 @@ void ABlasterGameMode::PlayerLeftGame(ABlasterPlayerState* PlayerLeaving)
     {
         BlasterGameState->TopScoringPlayers.Remove(PlayerLeaving);
     }
+    ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(PlayerLeaving->GetPawn());
+    if (BlasterCharacter) return;
+    BlasterCharacter->Eliminate(true);
 }
