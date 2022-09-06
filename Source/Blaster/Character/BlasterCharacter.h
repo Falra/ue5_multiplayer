@@ -102,6 +102,11 @@ public:
 
     TMap<FName, UBoxComponent*> HitCollisionBoxes;
 #pragma endregion 
+
+    FOnLeftGame OnLeftGame;
+
+    UFUNCTION(Server, Reliable)
+    void ServerLeaveGame();
     
 protected:
     virtual void BeginPlay() override;
@@ -241,11 +246,6 @@ private:
     void DropOrDestroyWeapon(AWeapon* Weapon);
 
     bool bLeftGame = false;
-
-    FOnLeftGame OnLeftGame;
-
-    UFUNCTION(Server, Reliable)
-    void ServerLeaveGame();
 
 #pragma region DissolveEffect
     
