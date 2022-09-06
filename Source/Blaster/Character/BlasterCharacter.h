@@ -10,6 +10,8 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame)
+
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
 {
@@ -24,9 +26,9 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
    virtual void OnRep_ReplicatedMovement() override;
-    void Eliminate();
+    void Eliminate(bool bPlayerLeftGame = false);
     UFUNCTION(NetMulticast, Reliable)
-    void MulticastEliminate();
+    void MulticastEliminate(bool bPlayerLeftGame = false);
     void PlayFireMontage(bool bAiming);
     void PlayReloadMontage();
     void PlayEliminatedMontage();
@@ -237,7 +239,14 @@ private:
     void EliminationTimerFinished();
 
     void DropOrDestroyWeapon(AWeapon* Weapon);
-    
+
+    bool bLeftGame = false;
+
+    FOnLeftGame OnLeftGame;
+
+    UFUNCTION(Server, Reliable)
+    void ServerLeaveGame();
+
 #pragma region DissolveEffect
     
     UPROPERTY(VisibleAnywhere, Category = "Elimination")

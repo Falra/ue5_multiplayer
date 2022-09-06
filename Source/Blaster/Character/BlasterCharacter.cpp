@@ -747,9 +747,17 @@ void ABlasterCharacter::DropOrDestroyWeapon(AWeapon* Weapon)
     }
 }
 
-void ABlasterCharacter::Eliminate()
+void ABlasterCharacter::ServerLeaveGame_Implementation()
 {
-    MulticastEliminate();
+    if (const auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+    {
+        BlasterGameMode->PlayerLeftGame();
+    }
+}
+
+void ABlasterCharacter::Eliminate(bool bPlayerLeftGame)
+{
+    MulticastEliminate(bPlayerLeftGame);
     GetWorldTimerManager().SetTimer(EliminationTimer, this, &ABlasterCharacter::EliminationTimerFinished, EliminationDelay);
     if (CombatComponent)
     {
@@ -758,9 +766,10 @@ void ABlasterCharacter::Eliminate()
     }
 }
 
-void ABlasterCharacter::MulticastEliminate_Implementation()
+void ABlasterCharacter::MulticastEliminate_Implementation(bool bPlayerLeftGame)
 {
     bEliminated = true;
+    bLeftGame = bPlayerLeftGame;
     PlayEliminatedMontage();
     StartDissolve();
     StopMovementAndCollision();
@@ -778,7 +787,13 @@ void ABlasterCharacter::MulticastEliminate_Implementation()
 
 void ABlasterCharacter::EliminationTimerFinished()
 {
-    if (auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+    if (bLeftGame)
+    {
+        OnLeftGame.Broadcast();
+        return;
+    }
+    
+    if (const auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
     {
         BlasterGameMode->RequestRespawn(this, Controller);
     }

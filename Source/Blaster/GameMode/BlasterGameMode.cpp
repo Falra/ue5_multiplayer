@@ -113,3 +113,8 @@ void ABlasterGameMode::RequestRespawn(ACharacter* EliminatedCharacter, AControll
         RestartPlayerAtPlayerStart(EliminatedController, PlayerStarts[Selection]);
     }
 }
+
+void ABlasterGameMode::PlayerLeftGame()
+{
+    
+}
