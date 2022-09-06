@@ -19,10 +19,18 @@ public:
     void MenuTearDown();
 protected:
     virtual bool Initialize() override;
+    UFUNCTION()
+    void OnDestroySession(bool bWasSuccessful);
 private:
     UPROPERTY(meta = (BindWidget))
     class UButton* ReturnButton;
 
     UFUNCTION()
     void ReturnButtonClicked();
+
+    UPROPERTY()
+    class UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
+
+    UPROPERTY()
+    class APlayerController* PlayerController;
 };

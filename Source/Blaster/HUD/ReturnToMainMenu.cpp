@@ -2,8 +2,9 @@
 
 
 #include "ReturnToMainMenu.h"
-
 #include "Components/Button.h"
+#include "MultiplayerSessionsSubsystem.h"
+#include "GameFramework/GameModeBase.h"
 
 void UReturnToMainMenu::MenuSetup()
 {
@@ -11,14 +12,31 @@ void UReturnToMainMenu::MenuSetup()
     SetVisibility(ESlateVisibility::Visible);
     bIsFocusable = true;
 
-    const UWorld* World = GetWorld();
-    if (!World) return;
-    APlayerController* PlayerController = World->GetFirstPlayerController();
-    if (!PlayerController) return;
-    FInputModeGameAndUI InputModeData;
-    InputModeData.SetWidgetToFocus(TakeWidget());
-    PlayerController->SetInputMode(InputModeData);
-    PlayerController->SetShowMouseCursor(true);
+    if (const UWorld* World = GetWorld())
+    {
+        PlayerController = !PlayerController ? World->GetFirstPlayerController() : PlayerController;
+        if (PlayerController)
+        {
+            FInputModeGameAndUI InputModeData;
+            InputModeData.SetWidgetToFocus(TakeWidget());
+            PlayerController->SetInputMode(InputModeData);
+            PlayerController->SetShowMouseCursor(true);
+        }
+    }
+
+    if (ReturnButton)
+    {
+        ReturnButton->OnClicked.AddDynamic(this, &UReturnToMainMenu::ReturnButtonClicked);
+    }
+
+    if (const UGameInstance* GameInstance = GetGameInstance())
+    {
+        MultiplayerSessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
+        if (MultiplayerSessionsSubsystem)
+        {
+            MultiplayerSessionsSubsystem->MultiplayerOnDestroySessionComplete.AddDynamic(this, &UReturnToMainMenu::OnDestroySession);
+        }
+    }
 }
 
 bool UReturnToMainMenu::Initialize()
@@ -27,11 +45,7 @@ bool UReturnToMainMenu::Initialize()
     {
         return false;
     }
-
-    if (ReturnButton)
-    {
-        ReturnButton->OnClicked.AddDynamic(this, &UReturnToMainMenu::ReturnButtonClicked);
-    }
+    
     return true;
 }
 
@@ -40,14 +54,41 @@ void UReturnToMainMenu::MenuTearDown()
     RemoveFromParent();
     const UWorld* World = GetWorld();
     if (!World) return;
-    APlayerController* PlayerController = World->GetFirstPlayerController();
+    PlayerController = !PlayerController ? World->GetFirstPlayerController() : PlayerController;
     if (!PlayerController) return;
     PlayerController->SetInputMode(FInputModeGameOnly());
     PlayerController->SetShowMouseCursor(false);
 }
 
-
 void UReturnToMainMenu::ReturnButtonClicked()
 {
+    ReturnButton->SetIsEnabled(false);
     
+    if (MultiplayerSessionsSubsystem)
+    {
+        MultiplayerSessionsSubsystem->DestroySession();
+    }
+}
+
+void UReturnToMainMenu::OnDestroySession(bool bWasSuccessful)
+{
+    if (!bWasSuccessful)
+    {
+        ReturnButton->SetIsEnabled(true);
+        return;
+    }
+    
+    if (const UWorld* World = GetWorld())
+    {
+        if (AGameModeBase* GameMode = World->GetAuthGameMode<AGameModeBase>())
+        {
+            GameMode->ReturnToMainMenuHost();
+        }
+        else
+        {
+            PlayerController = !PlayerController ? World->GetFirstPlayerController() : PlayerController;
+            if (!PlayerController) return;
+            PlayerController->ClientReturnToMainMenuWithTextReason(FText());
+        }
+    }
 }
