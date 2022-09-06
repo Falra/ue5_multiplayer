@@ -89,7 +89,7 @@ void UReturnToMainMenu::ReturnButtonClicked()
                 ReturnButton->SetIsEnabled(true);
                 return;
             }
-            // BlasterCharacter->OnLeftGame.AddDynamic(this, &UReturnToMainMenu::OnPlayerLeftGame);
+            BlasterCharacter->OnLeftGame.AddDynamic(this, &UReturnToMainMenu::OnPlayerLeftGame);
             BlasterCharacter->ServerLeaveGame();
         }
     }

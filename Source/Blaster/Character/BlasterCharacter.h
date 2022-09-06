@@ -10,7 +10,7 @@
 #include "GameFramework/Character.h"
 #include "BlasterCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
