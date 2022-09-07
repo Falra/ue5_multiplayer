@@ -77,14 +77,14 @@ public:
     FShotgunServerSideRewindResult ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters,
         const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime) const;
     UFUNCTION(Server, Reliable)
-    void ServerScoreRequest(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation,
-        float HitTime, class AWeapon* DamageCauser);
+    void ServerScoreRequest(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
+        const FVector_NetQuantize& HitLocation, float HitTime);
     UFUNCTION(Server, Reliable)
     void ProjectileServerScoreRequest(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart,
         const FVector_NetQuantize100& InitialVelocity, float HitTime);
     UFUNCTION(Server, Reliable)
     void ShotgunServerScoreRequest(const TArray<ABlasterCharacter*>& HitCharacters, const FVector_NetQuantize& TraceStart,
-        const TArray<FVector_NetQuantize>& HitLocations, float HitTime, AWeapon* DamageCauser);
+        const TArray<FVector_NetQuantize>& HitLocations, float HitTime);
 protected:
     virtual void BeginPlay() override;
     void SaveFramePackage(FFramePackage& Package);

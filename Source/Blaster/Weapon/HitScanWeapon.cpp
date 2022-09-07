@@ -52,7 +52,7 @@ void AHitScanWeapon::HitScanFire(const FVector& HitTarget)
                     BlasterOwnerCharacter->IsLocallyControlled())
                 {
                     BlasterOwnerCharacter->GetLagCompensationComponent()->ServerScoreRequest(BlasterCharacter, Start, HitTarget,
-                        BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, this);
+                        BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime);
                 }
             }
         }

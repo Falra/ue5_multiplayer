@@ -66,7 +66,7 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
                 BlasterOwnerCharacter->IsLocallyControlled())
             {
                 BlasterOwnerCharacter->GetLagCompensationComponent()->ShotgunServerScoreRequest(HitCharacters, Start, TraceHitTargets,
-                    BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, this);
+                    BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime);
             }
         }
     }
