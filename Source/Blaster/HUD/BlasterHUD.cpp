@@ -5,6 +5,7 @@
 
 #include "Announcement.h"
 #include "CharacterOverlay.h"
+#include "ElimAnnouncement.h"
 #include "Blueprint/UserWidget.h"
 
 void ABlasterHUD::DrawHUD()
@@ -44,6 +45,18 @@ void ABlasterHUD::AddAnnouncementWidget()
     if (!PlayerController || !AnnouncementWidgetClass || AnnouncementWidget) return;
     AnnouncementWidget = CreateWidget<UAnnouncement>(PlayerController, AnnouncementWidgetClass);
     AnnouncementWidget->AddToViewport();
+}
+
+void ABlasterHUD::AddElimAnnouncementWidget(FString AttackerName, FString VictimName)
+{
+    OwningPlayer = !OwningPlayer ? GetOwningPlayerController() : OwningPlayer;
+    if (!OwningPlayer || !ElimAnnouncementWidgetClass) return;
+    UElimAnnouncement* ElimAnnouncement = CreateWidget<UElimAnnouncement>(OwningPlayer, ElimAnnouncementWidgetClass);
+    if (ElimAnnouncement)
+    {
+        ElimAnnouncement->SetElimAnnouncement(AttackerName, VictimName);
+        ElimAnnouncement->AddToViewport();
+    }
 }
 
 void ABlasterHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread, FLinearColor CrosshairsColor)

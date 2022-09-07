@@ -43,6 +43,7 @@ public:
     virtual void DrawHUD() override;
     void AddCharacterOverlay();
     void AddAnnouncementWidget();
+    void AddElimAnnouncementWidget(FString AttackerName, FString VictimName);
     
     UPROPERTY(EditAnywhere, Category = "Player stats")
     TSubclassOf<UUserWidget> CharacterOverlayClass;
@@ -52,14 +53,20 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Announcement")
     TSubclassOf<UUserWidget> AnnouncementWidgetClass;
-    
+
     UPROPERTY(VisibleAnywhere, Category = "Announcement")
     class UAnnouncement* AnnouncementWidget;
 
+    UPROPERTY(EditAnywhere, Category = "Elim Announcement")
+    TSubclassOf<UUserWidget> ElimAnnouncementWidgetClass;
+    
 protected:
     virtual void BeginPlay() override;
     
 private:
+    UPROPERTY()
+    class APlayerController* OwningPlayer;
+
     FHUDPackage HUDPackage;
 
     void DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread, FLinearColor CrosshairsColor);
