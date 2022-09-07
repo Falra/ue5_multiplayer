@@ -105,6 +105,12 @@ public:
 
     FOnLeftGame OnLeftGame;
 
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastGainTheLead();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastLostTheLead();
+    
     UFUNCTION(Server, Reliable)
     void ServerLeaveGame();
     
@@ -299,6 +305,13 @@ private:
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<AWeapon> DefaultWeaponClass;
+
+    UPROPERTY(EditAnywhere)
+    class UNiagaraSystem* CrownSystem;
+
+    UPROPERTY()
+    class UNiagaraComponent* CrownComponent;
+    
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);
     bool IsWeaponEquipped() const;

@@ -2,6 +2,8 @@
 
 #include "BlasterCharacter.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Blaster/Blaster.h"
 #include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
@@ -871,6 +873,30 @@ void ABlasterCharacter::SpawnEliminationBot()
 
     if (!EliminationSound) return;
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), EliminationSound, BotSpawnPoint);
+}
+
+void ABlasterCharacter::MulticastGainTheLead_Implementation()
+{
+    if (!CrownSystem) return;
+
+    if (!CrownComponent)
+    {
+        CrownComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(CrownSystem, GetCapsuleComponent(), FName(),
+       GetActorLocation() + FVector(0.0f, 0.0f, 110.0f), GetActorRotation(), EAttachLocation::KeepWorldPosition, false);
+    }
+    
+    if (CrownComponent)
+    {
+        CrownComponent->Activate();
+    }
+}
+
+void ABlasterCharacter::MulticastLostTheLead_Implementation()
+{
+    if (CrownComponent)
+    {
+        CrownComponent->DestroyComponent();
+    }
 }
 
 void ABlasterCharacter::PollInit()
