@@ -7,6 +7,9 @@
 #include "CharacterOverlay.h"
 #include "ElimAnnouncement.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/HorizontalBox.h"
 
 void ABlasterHUD::DrawHUD()
 {
@@ -57,6 +60,17 @@ void ABlasterHUD::AddElimAnnouncementWidget(FString AttackerName, FString Victim
         ElimAnnouncement->SetElimAnnouncement(AttackerName, VictimName);
         ElimAnnouncement->AddToViewport();
 
+        for (const auto Msg : ElimMessages)
+        {
+            if (!Msg || !Msg->AnnouncementBox) continue;
+            UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(Msg->AnnouncementBox);
+            if (!CanvasSlot) continue;
+            const FVector2D Position = CanvasSlot->GetPosition();
+            const FVector2D NewPosition(Position.X, Position.Y - CanvasSlot->GetSize().Y);
+            CanvasSlot->SetPosition(NewPosition);
+        }
+        ElimMessages.Add(ElimAnnouncement);
+        
         FTimerHandle ElimMsgTimer;
         FTimerDelegate ElimMsgDelegate;
         ElimMsgDelegate.BindUFunction(this, FName("ElimAnnouncementTimerFinished"), ElimAnnouncement);

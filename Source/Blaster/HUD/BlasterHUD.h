@@ -79,6 +79,9 @@ private:
 
     UFUNCTION()
     void ElimAnnouncementTimerFinished(class UElimAnnouncement* MsgToRemove);
+
+    UPROPERTY()
+    TArray<UElimAnnouncement*> ElimMessages;
 public:
     FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };
