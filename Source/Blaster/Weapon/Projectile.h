@@ -30,8 +30,13 @@ public:
 
 #pragma endregion
 
+    // Only set this for Grenades and Rockets
     UPROPERTY(EditAnywhere)
-    float Damage = 10.0f;
+    float Damage = 20.0f;
+
+    // Doesn't matter for Grenades and Rockets
+    UPROPERTY(EditAnywhere)
+    float HeadShotDamage = 40.0f;
     
 protected:
     virtual void BeginPlay() override;
