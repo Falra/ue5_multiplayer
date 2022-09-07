@@ -56,6 +56,19 @@ void ABlasterHUD::AddElimAnnouncementWidget(FString AttackerName, FString Victim
     {
         ElimAnnouncement->SetElimAnnouncement(AttackerName, VictimName);
         ElimAnnouncement->AddToViewport();
+
+        FTimerHandle ElimMsgTimer;
+        FTimerDelegate ElimMsgDelegate;
+        ElimMsgDelegate.BindUFunction(this, FName("ElimAnnouncementTimerFinished"), ElimAnnouncement);
+        GetWorldTimerManager().SetTimer(ElimMsgTimer, ElimMsgDelegate, ElimAnnouncementTime, false);
+    }
+}
+
+void ABlasterHUD::ElimAnnouncementTimerFinished(UElimAnnouncement* MsgToRemove)
+{
+    if (MsgToRemove)
+    {
+        MsgToRemove->RemoveFromParent();
     }
 }
 

@@ -73,6 +73,12 @@ private:
 
     UPROPERTY(EditAnywhere)
     float CrosshairSpreadMax = 16.0f;
+
+    UPROPERTY(EditAnywhere)
+    float ElimAnnouncementTime = 2.5f;
+
+    UFUNCTION()
+    void ElimAnnouncementTimerFinished(class UElimAnnouncement* MsgToRemove);
 public:
     FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };
