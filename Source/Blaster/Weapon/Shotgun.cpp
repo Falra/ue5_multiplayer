@@ -28,14 +28,15 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
         const FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         const FVector Start = SocketTransform.GetLocation();
 
-        TMap<ABlasterCharacter*, uint32> HitMap;
+        TMap<ABlasterCharacter*, float> HitMap;
         for (auto HitTarget : TraceHitTargets)
         {
             FHitResult FireHit;
             WeaponTraceHit(Start, HitTarget, FireHit);
             if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor()))
             {
-                HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter]++ : HitMap.Emplace(BlasterCharacter, 1);
+                const float DamageToApply = FireHit.BoneName.ToString() == FString("head") ? HeadShotDamage : Damage;
+                HitMap.Contains(BlasterCharacter) ? HitMap[BlasterCharacter] += DamageToApply : HitMap.Emplace(BlasterCharacter, DamageToApply);
             }
             ApplyHitEffects(FireHit);
         }
@@ -43,14 +44,14 @@ void AShotgun::ShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets)
         if (!InstigatorController) return;
 
         TArray<ABlasterCharacter*> HitCharacters;
-        for (auto& [HitCharacter, Hits] : HitMap)
+        for (auto& [HitCharacter, DamageToApply] : HitMap)
         {
             if (!HitCharacter) continue;
 
             bool bCauseAuthDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
             if (HasAuthority() && bCauseAuthDamage)
             {
-                UGameplayStatics::ApplyDamage(HitCharacter, Damage * Hits, InstigatorController, this, UDamageType::StaticClass());
+                UGameplayStatics::ApplyDamage(HitCharacter, DamageToApply, InstigatorController, this, UDamageType::StaticClass());
             }
             HitCharacters.Add(HitCharacter);
         }
