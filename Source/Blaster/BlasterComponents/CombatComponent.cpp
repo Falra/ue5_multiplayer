@@ -500,6 +500,7 @@ void UCombatComponent::LocalShotgunFire(const TArray<FVector_NetQuantize>& Trace
     if (!EquippedWeapon || !Character) return;
     if (CombatState == ECombatState::ECS_Unoccupied || CombatState == ECombatState::ECS_Reloading)
     {
+        bLocallyReloading = false;
         const auto ShotgunWeapon = Cast<AShotgun>(EquippedWeapon);
         if (!ShotgunWeapon) return;
         Character->PlayFireMontage(bIsAiming);
