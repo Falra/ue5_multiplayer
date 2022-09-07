@@ -9,6 +9,7 @@
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "Blaster/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
+#include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/Weapon/Weapon.h"
@@ -908,6 +909,11 @@ void ABlasterCharacter::PollInit()
         {
             BlasterPlayerState->AddToScore(0.0f);
             BlasterPlayerState->AddToDefeats(0);
+            ABlasterGameState* GameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
+            if (GameState && GameState->TopScoringPlayers.Contains(BlasterPlayerState))
+            {
+                MulticastGainTheLead();
+            }
         }
     }
 }
