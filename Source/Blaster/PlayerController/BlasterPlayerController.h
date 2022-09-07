@@ -36,9 +36,13 @@ public:
     void HandleStateChange();
     void OnMatchStateSet(FName State);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
     void CheckPingSpeed();
     float SingleTripTime = 0.0f;
     FHighPingDelegate HighPingDelegate;
+
+    void BroadcastElimination(APlayerState* Attacker, APlayerState* Victim);
+    
 protected:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void BeginPlay() override;
@@ -75,6 +79,9 @@ protected:
 
     virtual void SetupInputComponent() override;
     void ShowReturnToMainMenu();
+
+    UFUNCTION(Client, Reliable)
+    void ClientEliminationAnnouncement(APlayerState* Attacker, APlayerState* Victim);
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;

@@ -118,6 +118,16 @@ void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, 
     {
         EliminatedCharacter->Eliminate(false);
     }
+
+    if (AttackerPlayerState && VictimPlayerState)
+    {
+        for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+        {
+            const auto BlasterPlayer = Cast<ABlasterPlayerController>(It->Get());
+            if (!BlasterPlayer) continue;
+            BlasterPlayer->BroadcastElimination(AttackerPlayerState, VictimPlayerState);
+        }
+    }
 }
 
 void ABlasterGameMode::RequestRespawn(ACharacter* EliminatedCharacter, AController* EliminatedController)

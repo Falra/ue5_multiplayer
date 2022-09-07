@@ -199,6 +199,38 @@ void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName State, flo
     }
 }
 
+void ABlasterPlayerController::BroadcastElimination(APlayerState* Attacker, APlayerState* Victim)
+{
+    ClientEliminationAnnouncement(Attacker, Victim);
+}
+
+void ABlasterPlayerController::ClientEliminationAnnouncement_Implementation(APlayerState* Attacker, APlayerState* Victim)
+{
+    const APlayerState* SelfPlayerState = GetPlayerState<APlayerState>();
+    if (!Attacker || !Victim || !SelfPlayerState || !IsHUDValid()) return;
+
+    if (Attacker == SelfPlayerState && Victim == SelfPlayerState)
+    {
+        BlasterHUD->AddElimAnnouncementWidget("You", "yourself");
+    }
+    else if (Attacker == SelfPlayerState)
+    {
+        BlasterHUD->AddElimAnnouncementWidget("You", Victim->GetPlayerName());
+    }
+    else if (Victim == SelfPlayerState)
+    {
+        BlasterHUD->AddElimAnnouncementWidget(Attacker->GetPlayerName(), "you");
+    }
+    else if (Attacker == Victim)
+    {
+        BlasterHUD->AddElimAnnouncementWidget(Attacker->GetPlayerName(), "self");
+    }
+    else
+    {
+        BlasterHUD->AddElimAnnouncementWidget(Attacker->GetPlayerName(), Victim->GetPlayerName());
+    }
+}
+
 void ABlasterPlayerController::OnPossess(APawn* aPawn)
 {
     Super::OnPossess(aPawn);
