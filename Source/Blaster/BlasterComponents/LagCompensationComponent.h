@@ -112,6 +112,9 @@ private:
     UPROPERTY(EditAnywhere)
     float MaxRecordTime = 4.0f;
 
+    UPROPERTY(EditAnywhere)
+    bool bDrawDebug = false;
+    
     void SaveFramePackageOnTick();
     void DrawDebugHitBox(TWeakObjectPtr<UPrimitiveComponent> HitComponent, const FColor& DrawColor) const;
 };

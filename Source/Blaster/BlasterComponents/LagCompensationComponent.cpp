@@ -465,6 +465,8 @@ void ULagCompensationComponent::ResetHitBoxes(ABlasterCharacter* HitCharacter, c
 
 void ULagCompensationComponent::DrawDebugHitBox(const TWeakObjectPtr<UPrimitiveComponent> HitComponent, const FColor& DrawColor) const
 {
+    if (!bDrawDebug) return;
+    
     if (!HitComponent.IsValid()) return;
 
     if (const UBoxComponent* Box = Cast<UBoxComponent>(HitComponent))
