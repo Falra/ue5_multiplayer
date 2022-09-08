@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "GameFramework/PlayerState.h"
 #include "BlasterPlayerState.generated.h"
 
@@ -37,5 +38,11 @@ private:
 
     UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Defeats")
     int32 Defeats = 0;
-    
+
+    UPROPERTY(Replicated)
+    ETeam Team = ETeam::ET_NoTeam;
+
+public:
+    FORCEINLINE ETeam GetTeam() const { return Team; }
+    FORCEINLINE void SetTeam(ETeam TeamToSet) { Team = TeamToSet; }
 };

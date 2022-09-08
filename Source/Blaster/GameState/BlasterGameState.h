@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "BlasterGameState.generated.h"
-
 /**
  * 
  */
@@ -16,12 +15,33 @@ class BLASTER_API ABlasterGameState : public AGameState
 
 public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-    
-    UPROPERTY(Replicated)
-    TArray<class ABlasterPlayerState*> TopScoringPlayers;
+    void UpdateTopScore(class ABlasterPlayerState* ScorePlayer);
 
-    void UpdateTopScore(ABlasterPlayerState* ScorePlayer);
+    UPROPERTY(Replicated)
+    TArray<ABlasterPlayerState*> TopScoringPlayers;
+
+#pragma region Teams
+
+    UPROPERTY()
+    TArray<ABlasterPlayerState*> RedTeam;
     
+    UPROPERTY()
+    TArray<ABlasterPlayerState*> BlueTeam;
+
+    UPROPERTY(ReplicatedUsing = "OnRep_RedTeamScore")
+    float RedTeamScore = 0.0f;
+
+    UPROPERTY(ReplicatedUsing = "OnRep_BlueTeamScore")
+    float BlueTeamScore = 0.0f;
+
+    UFUNCTION()
+    void OnRep_RedTeamScore();
+
+    UFUNCTION()
+    void OnRep_BlueTeamScore();
+
+#pragma endregion 
+
 private:
     float TopScore = 0.0f;
 };
