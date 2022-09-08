@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blaster/BlasterTypes/CombatState.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
 #include "Components/TimelineComponent.h"
@@ -113,7 +114,8 @@ public:
     
     UFUNCTION(Server, Reliable)
     void ServerLeaveGame();
-    
+
+    void SetTeamColor(ETeam Team);
 protected:
     virtual void BeginPlay() override;
     void RotateInPlace(float DeltaTime);
@@ -311,6 +313,25 @@ private:
 
     UPROPERTY()
     class UNiagaraComponent* CrownComponent;
+
+#pragma region TeamMaterials
+
+    UPROPERTY(EditAnywhere, Category = "Teams")
+    UMaterialInstance* RedDissolveMaterialInstance;
+
+    UPROPERTY(EditAnywhere, Category = "Teams")
+    UMaterialInstance* BlueDissolveMaterialInstance;
+
+    UPROPERTY(EditAnywhere, Category = "Teams")
+    UMaterialInstance* RedMaterialInstance;
+
+    UPROPERTY(EditAnywhere, Category = "Teams")
+    UMaterialInstance* BlueMaterialInstance;
+
+    UPROPERTY(EditAnywhere, Category = "Teams")
+    UMaterialInstance* DefaultMaterialInstance;
+
+#pragma endregion 
     
 public:
     void SetOverlappingWeapon(AWeapon* Weapon);

@@ -931,3 +931,8 @@ void ABlasterCharacter::PollInit()
         }
     }
 }
+
+void ABlasterCharacter::SetTeamColor(ETeam Team)
+{
+    
+}
