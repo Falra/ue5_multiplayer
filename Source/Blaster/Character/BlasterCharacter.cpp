@@ -934,5 +934,19 @@ void ABlasterCharacter::PollInit()
 
 void ABlasterCharacter::SetTeamColor(ETeam Team)
 {
-    
+    switch (Team)
+    {
+        case ETeam::ET_NoTeam:
+            GetMesh()->SetMaterial(0, DefaultMaterialInstance);
+            DissolveMaterialInstance = BlueDissolveMaterialInstance;
+            break;
+        case ETeam::ET_RedTeam:
+            GetMesh()->SetMaterial(0, RedMaterialInstance);
+            DissolveMaterialInstance = RedDissolveMaterialInstance;
+            break;
+        case ETeam::ET_BlueTeam:
+            GetMesh()->SetMaterial(0, BlueMaterialInstance);
+            DissolveMaterialInstance = BlueDissolveMaterialInstance;
+            break;
+    }
 }
