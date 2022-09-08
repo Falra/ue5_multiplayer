@@ -4,6 +4,7 @@
 #include "TeamGameMode.h"
 
 #include "Blaster/GameState/BlasterGameState.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 
 ATeamGameMode::ATeamGameMode()
@@ -63,6 +64,29 @@ float ATeamGameMode::CalculateDamage(AController* Attacker, AController* Victim,
     
     
     return Super::CalculateDamage(Attacker, Victim, BaseDamage);
+}
+
+void ATeamGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, ABlasterPlayerController* VictimController,
+    ABlasterPlayerController* AttackerController)
+{
+    Super::PlayerEliminated(EliminatedCharacter, VictimController, AttackerController);
+
+    if (!AttackerController) return;
+    
+    ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
+    if (!BlasterGameState) return;
+
+    ABlasterPlayerState* AttackerPlayerState = AttackerController->GetPlayerState<ABlasterPlayerState>();
+    if (!AttackerPlayerState) return;
+
+    if (AttackerPlayerState->GetTeam() == ETeam::ET_BlueTeam)
+    {
+        BlasterGameState->BlueTeamScores();
+    }
+    else if (AttackerPlayerState->GetTeam() == ETeam::ET_RedTeam)
+    {
+        BlasterGameState->RedTeamScores();
+    }
 }
 
 

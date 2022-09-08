@@ -22,7 +22,8 @@ class BLASTER_API ABlasterGameMode : public AGameMode
 public:
     ABlasterGameMode();
     virtual void Tick(float DeltaSeconds) override;
-    virtual void PlayerEliminated(class ABlasterCharacter* EliminatedCharacter, class ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController);
+    virtual void PlayerEliminated(class ABlasterCharacter* EliminatedCharacter, class ABlasterPlayerController* VictimController,
+        ABlasterPlayerController* AttackerController);
     virtual void RequestRespawn(ACharacter* EliminatedCharacter, AController* EliminatedController);
     void PlayerLeftGame(class ABlasterPlayerState* PlayerLeaving);
     virtual float CalculateDamage(AController* Attacker, AController* Victim, float BaseDamage);
