@@ -42,3 +42,13 @@ void ABlasterGameState::OnRep_BlueTeamScore()
 {
     
 }
+
+void ABlasterGameState::RedTeamScores()
+{
+    ++RedTeamScore;
+}
+
+void ABlasterGameState::BlueTeamScores()
+{
+    ++BlueTeamScore;
+}

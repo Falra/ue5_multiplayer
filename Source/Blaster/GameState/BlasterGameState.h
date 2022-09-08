@@ -40,6 +40,10 @@ public:
     UFUNCTION()
     void OnRep_BlueTeamScore();
 
+    void RedTeamScores();
+
+    void BlueTeamScores();
+
 #pragma endregion 
 
 private:
