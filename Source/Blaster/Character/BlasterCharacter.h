@@ -299,6 +299,9 @@ private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterPlayerState* BlasterPlayerState;
 
+    UPROPERTY(VisibleAnywhere)
+    class ABlasterGameMode* BlasterGameMode;
+
     UPROPERTY(EditDefaultsOnly, Category = "Elimination")
     bool bDestroyWeaponOnDeath = false;
 

@@ -155,7 +155,7 @@ void ABlasterCharacter::SpawnDefaultWeapon()
 {
     UWorld* World = GetWorld();
     if (!World || bEliminated || !DefaultWeaponClass) return;
-    const ABlasterGameMode* BlasterGameMode = Cast<ABlasterGameMode>(World->GetAuthGameMode());
+    BlasterGameMode = !BlasterGameMode ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
     if (!BlasterGameMode) return;
     if (AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass))
     {
@@ -664,7 +664,11 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
     AActor* DamageCauser)
 {
     if (bEliminated) return;
-
+    BlasterGameMode = !BlasterGameMode ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
+    if (BlasterGameMode)
+    {
+        Damage = BlasterGameMode->CalculateDamage(InstigatedBy, Controller, Damage);
+    }
     
     const float DamageToShield = FMath::Min(Damage, Shield);
     const float DamageToHealth = Damage - DamageToShield;
@@ -677,7 +681,7 @@ void ABlasterCharacter::OnReceiveDamage(AActor* DamagedActor, float Damage, cons
 
     if (Health == 0.0f)
     {
-        if (auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+        if (BlasterGameMode)
         {
             const auto InstigatorController = Cast<ABlasterPlayerController>(InstigatedBy);
             BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, InstigatorController);
@@ -760,7 +764,8 @@ void ABlasterCharacter::DropOrDestroyWeapon(AWeapon* Weapon)
 
 void ABlasterCharacter::ServerLeaveGame_Implementation()
 {
-    if (const auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+    BlasterGameMode = !BlasterGameMode ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
+    if (BlasterGameMode)
     {
         BlasterGameMode->PlayerLeftGame(BlasterPlayerState);
     }
@@ -808,8 +813,9 @@ void ABlasterCharacter::EliminationTimerFinished()
         if (IsLocallyControlled()) OnLeftGame.Broadcast();
         return;
     }
-    
-    if (const auto BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+
+    BlasterGameMode = !BlasterGameMode ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
+    if (BlasterGameMode)
     {
         BlasterGameMode->RequestRespawn(this, Controller);
     }

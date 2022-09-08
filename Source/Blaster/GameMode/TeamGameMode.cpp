@@ -47,6 +47,20 @@ void ATeamGameMode::HandleMatchHasStarted()
     }
 }
 
+float ATeamGameMode::CalculateDamage(AController* Attacker, AController* Victim, float BaseDamage)
+{
+    const ABlasterPlayerState* AttackerPlayerState = Attacker->GetPlayerState<ABlasterPlayerState>();
+    const ABlasterPlayerState* VictimPlayerState = Victim->GetPlayerState<ABlasterPlayerState>();
+    if (!AttackerPlayerState || !VictimPlayerState) return Super::CalculateDamage(Attacker, Victim, BaseDamage);
+    if (AttackerPlayerState == VictimPlayerState) return BaseDamage;
+
+    if (AttackerPlayerState->GetTeam() == VictimPlayerState->GetTeam()) return 0.0f;
+    
+    
+    return Super::CalculateDamage(Attacker, Victim, BaseDamage);
+}
+
+
 void ATeamGameMode::AddPlayerToTeam(ABlasterGameState* BlasterGameState, ABlasterPlayerState* BlasterPlayerState)
 {
     if (BlasterPlayerState->GetTeam() == ETeam::ET_NoTeam)
