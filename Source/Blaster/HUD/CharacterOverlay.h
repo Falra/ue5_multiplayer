@@ -66,4 +66,7 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* RedTeamScore;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SpacerTeamScore;
 };

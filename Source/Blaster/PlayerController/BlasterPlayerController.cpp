@@ -408,6 +408,50 @@ void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
     BlasterHUD->CharacterOverlay->GrenadesAmount->SetText(FText::FromString(GrenadesText));
 }
 
+void ABlasterPlayerController::HideTeamScores()
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+
+    BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText());
+    BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText());
+    BlasterHUD->CharacterOverlay->SpacerTeamScore->SetText(FText());
+}
+
+void ABlasterPlayerController::InitTeamScores()
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+
+    BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString("0"));
+    BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString("0"));
+    BlasterHUD->CharacterOverlay->SpacerTeamScore->SetText(FText::FromString("|"));
+}
+
+void ABlasterPlayerController::SetHUDRedTeamScore(int32 Score)
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+    const FString ScoreText = FString::Printf(TEXT("%d"), Score);
+    BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(ScoreText));
+}
+
+void ABlasterPlayerController::SetHUDBlueTeamScore(int32 Score)
+{
+    if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)
+    {
+        return;
+    }
+    const FString ScoreText = FString::Printf(TEXT("%d"), Score);
+    BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(ScoreText));
+}
+
 void ABlasterPlayerController::HighPingWarning()
 {
     if (!IsHUDValid() || !BlasterHUD->CharacterOverlay)

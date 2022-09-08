@@ -28,6 +28,11 @@ public:
     void SetHUDMatchCountdown(float CountdownTime);
     void SetHUDAnnouncementCountdown(float CountdownTime);
     void SetHUDGrenades(int32 Grenades);
+    void HideTeamScores();
+    void InitTeamScores();
+    void SetHUDRedTeamScore(int32 Score);
+    void SetHUDBlueTeamScore(int32 Score);
+    
     UFUNCTION(NetMulticast, Unreliable)
     void MulticastShowDefeatedAnimation();
     virtual void Tick(float DeltaSeconds) override;
