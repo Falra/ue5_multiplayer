@@ -857,6 +857,7 @@ void ABlasterCharacter::StopMovementAndCollision()
     }
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion
