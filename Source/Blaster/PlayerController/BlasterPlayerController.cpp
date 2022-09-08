@@ -35,6 +35,7 @@ void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ABlasterPlayerController, MatchState);
+    DOREPLIFETIME(ABlasterPlayerController, bShowTeamScore);
 }
 
 void ABlasterPlayerController::CheckPingSpeed()
@@ -73,6 +74,11 @@ void ABlasterPlayerController::ShowReturnToMainMenu()
 
     bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
     bReturnToMainMenuOpen ? ReturnToMainMenuWidget->MenuSetup() : ReturnToMainMenuWidget->MenuTearDown();
+}
+
+void ABlasterPlayerController::OnRep_ShowTeamScore()
+{
+    bShowTeamScore ? InitTeamScores() : HideTeamScores();
 }
 
 void ABlasterPlayerController::ServerReportPingStatus_Implementation(bool bHighPing)
@@ -565,13 +571,22 @@ void ABlasterPlayerController::HandleStateChange(bool bTeamsMatch)
 
 void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 {
+    if (HasAuthority())
+    {
+        bShowTeamScore = bTeamsMatch;
+    }
+    
     if (!IsHUDValid()) return;
     BlasterHUD->AddCharacterOverlay();
     if (BlasterHUD->AnnouncementWidget)
     {
         BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Hidden);
     }
-    bTeamsMatch ? InitTeamScores() : HideTeamScores();
+
+    if (HasAuthority())
+    {
+        bTeamsMatch ? InitTeamScores() : HideTeamScores();
+    }
 }
 
 void ABlasterPlayerController::HandleCooldown()

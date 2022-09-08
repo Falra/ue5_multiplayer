@@ -87,6 +87,11 @@ protected:
 
     UFUNCTION(Client, Reliable)
     void ClientEliminationAnnouncement(APlayerState* Attacker, APlayerState* Victim);
+
+    UPROPERTY(ReplicatedUsing = "OnRep_ShowTeamScore")
+    bool bShowTeamScore = false;
+    UFUNCTION()
+    void OnRep_ShowTeamScore();
 private:
     UPROPERTY(VisibleAnywhere)
     class ABlasterHUD* BlasterHUD;
