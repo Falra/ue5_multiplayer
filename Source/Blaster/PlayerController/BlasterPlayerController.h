@@ -38,8 +38,8 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     virtual float GetServerTime();
     virtual void ReceivedPlayer() override;
-    void HandleStateChange();
-    void OnMatchStateSet(FName State);
+    void HandleStateChange(bool bTeamsMatch = false);
+    void OnMatchStateSet(FName State, bool bTeamsMatch = false);
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     void CheckPingSpeed();
@@ -119,7 +119,7 @@ private:
 
     UFUNCTION()
     void OnRep_MatchState();
-    void HandleMatchHasStarted();
+    void HandleMatchHasStarted(bool bTeamsMatch = false);
     void HandleCooldown();
 
     float HUDHealth;

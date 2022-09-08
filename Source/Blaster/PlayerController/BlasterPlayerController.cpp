@@ -540,10 +540,10 @@ void ABlasterPlayerController::ClientReportServerTime_Implementation(float TimeO
     ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
 }
 
-void ABlasterPlayerController::OnMatchStateSet(FName State)
+void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 {
     MatchState = State;
-    HandleStateChange();
+    HandleStateChange(bTeamsMatch);
 }
 
 void ABlasterPlayerController::OnRep_MatchState()
@@ -551,11 +551,11 @@ void ABlasterPlayerController::OnRep_MatchState()
     HandleStateChange();
 }
 
-void ABlasterPlayerController::HandleStateChange()
+void ABlasterPlayerController::HandleStateChange(bool bTeamsMatch)
 {
     if (MatchState == MatchState::InProgress)
     {
-        HandleMatchHasStarted();
+        HandleMatchHasStarted(bTeamsMatch);
     }
     else if (MatchState == MatchState::Cooldown)
     {
@@ -563,7 +563,7 @@ void ABlasterPlayerController::HandleStateChange()
     }
 }
 
-void ABlasterPlayerController::HandleMatchHasStarted()
+void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 {
     if (!IsHUDValid()) return;
     BlasterHUD->AddCharacterOverlay();
@@ -571,6 +571,7 @@ void ABlasterPlayerController::HandleMatchHasStarted()
     {
         BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Hidden);
     }
+    bTeamsMatch ? InitTeamScores() : HideTeamScores();
 }
 
 void ABlasterPlayerController::HandleCooldown()
