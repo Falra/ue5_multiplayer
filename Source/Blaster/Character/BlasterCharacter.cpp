@@ -923,6 +923,8 @@ void ABlasterCharacter::PollInit()
         {
             BlasterPlayerState->AddToScore(0.0f);
             BlasterPlayerState->AddToDefeats(0);
+            SetTeamColor(BlasterPlayerState->GetTeam());
+            
             ABlasterGameState* GameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
             if (GameState && GameState->TopScoringPlayers.Contains(BlasterPlayerState))
             {
