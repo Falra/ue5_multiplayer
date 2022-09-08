@@ -4,6 +4,7 @@
 #include "BlasterPlayerController.h"
 
 #include "Blaster/BlasterComponents/CombatComponent.h"
+#include "Blaster/BlasterTypes/Announcement.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/GameState/BlasterGameState.h"
@@ -600,7 +601,7 @@ void ABlasterPlayerController::HandleCooldown()
     if (BlasterHUD->AnnouncementWidget)
     {
         BlasterHUD->AnnouncementWidget->SetVisibility(ESlateVisibility::Visible);
-        const FString AnnouncementText = TEXT("New Match starts in:");
+        const FString AnnouncementText = Announcement::NewMatchStartsIn;
         BlasterHUD->AnnouncementWidget->AnnouncementText->SetText(FText::FromString(AnnouncementText));
 
         FString InfoTextString;
@@ -612,11 +613,11 @@ void ABlasterPlayerController::HandleCooldown()
             const TArray<ABlasterPlayerState*> TopScoringPlayers = BlasterGameState->TopScoringPlayers;
             if (TopScoringPlayers.Num() == 0)
             {
-                InfoTextString = FString("There is no winner :(");
+                InfoTextString = Announcement::ThereIsNoWinner;
             }
             else if (TopScoringPlayers.Num() == 1 && TopScoringPlayers[0] == ThisPlayerState)
             {
-                InfoTextString = FString("You are the winner !!!");
+                InfoTextString = Announcement::YouAreTheWinner;
             }
             else if (TopScoringPlayers.Num() == 1)
             {
@@ -624,7 +625,7 @@ void ABlasterPlayerController::HandleCooldown()
             }
             else // More than one winner
             {
-                InfoTextString = FString("Winners are:\n");
+                InfoTextString = Announcement::WinnersAre;
                 for (const auto Winner : TopScoringPlayers)
                 {
                     InfoTextString.Append(FString::Printf(TEXT("%s\n"), *Winner->GetPlayerName()));

@@ -76,7 +76,7 @@ void ATeamGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, ABl
     ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
     if (!BlasterGameState) return;
 
-    ABlasterPlayerState* AttackerPlayerState = AttackerController->GetPlayerState<ABlasterPlayerState>();
+    const ABlasterPlayerState* AttackerPlayerState = AttackerController->GetPlayerState<ABlasterPlayerState>();
     if (!AttackerPlayerState) return;
 
     if (AttackerPlayerState->GetTeam() == ETeam::ET_BlueTeam)
