@@ -65,3 +65,22 @@ void ABlasterPlayerState::CheckSetController()
     if (!Character) return;
     Controller = !Controller ? Cast<ABlasterPlayerController>(Character->GetController()) : Controller;
 }
+
+void ABlasterPlayerState::SetTeam(ETeam TeamToSet)
+{
+    Team = TeamToSet;
+    CheckSetController();
+    if (Character)
+    {
+        Character->SetTeamColor(Team);
+    }
+}
+
+void ABlasterPlayerState::OnRep_Team()
+{
+    CheckSetController();
+    if (Character)
+    {
+        Character->SetTeamColor(Team);
+    }
+}
