@@ -887,7 +887,7 @@ void ABlasterCharacter::MulticastGainTheLead_Implementation()
 
     if (!CrownComponent)
     {
-        CrownComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(CrownSystem, GetCapsuleComponent(), FName(),
+        CrownComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(CrownSystem, GetMesh(), FName(),
        GetActorLocation() + FVector(0.0f, 0.0f, 110.0f), GetActorRotation(), EAttachLocation::KeepWorldPosition, false);
     }
     
