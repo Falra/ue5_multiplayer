@@ -242,6 +242,8 @@ private:
     UPROPERTY(EditAnywhere)
     int32 MaxGrenades = 4;
 
+    bool bHoldingTheFlag = false;
+    
 public:
     FORCEINLINE int32 GetGrenades() const { return Grenades; }
     FORCEINLINE AWeapon* GetEquippedWeapon() const { return EquippedWeapon; }

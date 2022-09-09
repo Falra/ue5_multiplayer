@@ -594,6 +594,11 @@ bool ABlasterCharacter::IsLocallyReloading() const
     return CombatComponent && CombatComponent->bLocallyReloading;
 }
 
+bool ABlasterCharacter::IsHoldingTheFlag() const
+{
+    return CombatComponent && CombatComponent->bHoldingTheFlag; 
+}
+
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
 {
     if (!CombatComponent || !FireWeaponMontage || !CombatComponent->EquippedWeapon) return;
