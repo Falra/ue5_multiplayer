@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "WeaponTypes.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "GameFramework/Actor.h"
 #include "PacketHandlers/StatelessConnectHandlerComponent.h"
 #include "Weapon.generated.h"
@@ -150,6 +151,9 @@ private:
 
     UPROPERTY(EditAnywhere)
     EWeaponType WeaponType;
+
+    UPROPERTY(EditAnywhere)
+    ETeam Team;
     
 public:
 

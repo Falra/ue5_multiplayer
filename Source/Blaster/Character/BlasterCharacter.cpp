@@ -623,6 +623,15 @@ bool ABlasterCharacter::IsHoldingTheFlag() const
     return CombatComponent && CombatComponent->bHoldingTheFlag; 
 }
 
+ETeam ABlasterCharacter::GetTeam() const
+{
+    if (BlasterPlayerState)
+    {
+        return BlasterPlayerState->GetTeam();
+    }
+    return ETeam::ET_NoTeam;
+}
+
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
 {
     if (!CombatComponent || !FireWeaponMontage || !CombatComponent->EquippedWeapon) return;
