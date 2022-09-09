@@ -32,6 +32,7 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     TurningInPlace = BlasterCharacter->GetTurningInPlace();
     bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
     bEliminated = BlasterCharacter->IsEliminated();
+    bHoldingTheFlag = BlasterCharacter->IsHoldingTheFlag();
     bUseFABRIK = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied;
     const bool bFABRIKOverride = BlasterCharacter->IsLocallyControlled() &&
                            BlasterCharacter->GetCombatState() != ECombatState::ECS_ThrowingGrenade &&
