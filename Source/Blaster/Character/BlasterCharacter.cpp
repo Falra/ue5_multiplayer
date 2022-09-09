@@ -807,6 +807,7 @@ void ABlasterCharacter::Eliminate(bool bPlayerLeftGame)
     {
         DropOrDestroyWeapon(CombatComponent->EquippedWeapon);
         DropOrDestroyWeapon(CombatComponent->SecondaryWeapon);
+        DropOrDestroyWeapon(CombatComponent->TheFlag);
     }
 }
 

@@ -129,6 +129,9 @@ private:
     UPROPERTY(ReplicatedUsing = "OnRep_SecondaryWeapon")
     AWeapon* SecondaryWeapon;
 
+    UPROPERTY()
+    AWeapon* TheFlag;
+    
     UPROPERTY(ReplicatedUsing = "OnRep_Aiming")
     bool bIsAiming = false;
 
