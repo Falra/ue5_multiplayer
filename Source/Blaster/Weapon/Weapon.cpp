@@ -84,7 +84,7 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 {
     if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
     {
-        if (WeaponType == EWeaponType::EWT_Flag && Team != BlasterCharacter->GetTeam()) return;
+        if (WeaponType == EWeaponType::EWT_Flag && Team == BlasterCharacter->GetTeam()) return;
         
         if (BlasterCharacter->IsHoldingTheFlag()) return;
 
