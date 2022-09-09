@@ -33,7 +33,11 @@ void AFlag::ResetFlag()
     if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetOwner()))
     {
         BlasterCharacter->SetHoldingTheFlag(false);
+        BlasterCharacter->SetOverlappingWeapon(nullptr);
+        BlasterCharacter->UnCrouch();
     }
+
+    if (!HasAuthority()) return;
     
     const FDetachmentTransformRules TransformRules(EDetachmentRule::KeepWorld, true);
     FlagMesh->DetachFromComponent(TransformRules);
@@ -42,6 +46,7 @@ void AFlag::ResetFlag()
     BlasterOwnerController = nullptr;
 
     SetActorTransform(InitialTransform);
+    SetWeaponState(EWeaponState::EWS_Initial);
 }
 
 void AFlag::BeginPlay()

@@ -136,6 +136,10 @@ void AWeapon::OnSetWeaponState()
         case EWeaponState::EWS_Dropped:
             OnDropped();
             break;
+        case EWeaponState::EWS_Initial:
+            AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+            break;
     }
 }
 

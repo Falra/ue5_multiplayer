@@ -27,11 +27,12 @@ void AFlagZone::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
     AFlag* OverlappedFlag = Cast<AFlag>(OtherActor);
     if (!OverlappedFlag || OverlappedFlag->GetTeam() == Team) return;
-    // Got enemies flag
-    
-    ACaptureTheFlagGameMode* FlagGameMode = GetWorld()->GetAuthGameMode<ACaptureTheFlagGameMode>();
-    if (!FlagGameMode) return;
 
-    FlagGameMode->FlagCaptured(OverlappedFlag, this);
+    // Got enemies flag
+    if (ACaptureTheFlagGameMode* FlagGameMode = GetWorld()->GetAuthGameMode<ACaptureTheFlagGameMode>())
+    {
+        FlagGameMode->FlagCaptured(OverlappedFlag, this);
+    }
+    
     OverlappedFlag->ResetFlag();
 }

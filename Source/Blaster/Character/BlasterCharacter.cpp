@@ -635,6 +635,11 @@ ETeam ABlasterCharacter::GetTeam() const
 
 void ABlasterCharacter::SetHoldingTheFlag(bool bHolding)
 {
+    if (!bHolding)
+    {
+        GetCharacterMovement()->bOrientRotationToMovement = false;
+        bUseControllerRotationYaw = true;
+    }
     if (CombatComponent)
     {
         CombatComponent->bHoldingTheFlag = bHolding;
