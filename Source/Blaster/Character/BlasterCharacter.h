@@ -145,6 +145,8 @@ protected:
     void OnReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
     void StopMovementAndCollision();
     void SpawnEliminationBot();
+    void SetSpawnPoint();
+    void OnPlayerStateInitialized();
     
     void PollInit();
     

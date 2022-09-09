@@ -11,6 +11,7 @@
 #include "Blaster/GameMode/BlasterGameMode.h"
 #include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
+#include "Blaster/PlayerStart/TeamPlayerStart.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/Weapon/Weapon.h"
 #include "Camera/CameraComponent.h"
@@ -966,9 +967,7 @@ void ABlasterCharacter::PollInit()
         BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
         if (BlasterPlayerState)
         {
-            BlasterPlayerState->AddToScore(0.0f);
-            BlasterPlayerState->AddToDefeats(0);
-            SetTeamColor(BlasterPlayerState->GetTeam());
+            OnPlayerStateInitialized();
             
             ABlasterGameState* GameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
             if (GameState && GameState->TopScoringPlayers.Contains(BlasterPlayerState))
@@ -977,6 +976,14 @@ void ABlasterCharacter::PollInit()
             }
         }
     }
+}
+
+void ABlasterCharacter::OnPlayerStateInitialized()
+{
+    BlasterPlayerState->AddToScore(0.0f);
+    BlasterPlayerState->AddToDefeats(0);
+    SetTeamColor(BlasterPlayerState->GetTeam());
+    SetSpawnPoint();
 }
 
 void ABlasterCharacter::SetTeamColor(ETeam Team)
@@ -995,5 +1002,26 @@ void ABlasterCharacter::SetTeamColor(ETeam Team)
             GetMesh()->SetMaterial(0, BlueMaterialInstance);
             DissolveMaterialInstance = BlueDissolveMaterialInstance;
             break;
+    }
+}
+
+void ABlasterCharacter::SetSpawnPoint()
+{
+    if (HasAuthority() && BlasterPlayerState->GetTeam() != ETeam::ET_NoTeam)
+    {
+        TArray<AActor*> PlayerStarts; 
+        UGameplayStatics::GetAllActorsOfClass(this, ATeamPlayerStart::StaticClass(), PlayerStarts);
+        if (PlayerStarts.Num() == 0) return;
+        TArray<ATeamPlayerStart*> TeamPlayerStarts;
+        for (const auto Start : PlayerStarts)
+        {
+            ATeamPlayerStart* TeamPlayerStart = Cast<ATeamPlayerStart>(Start);
+            if (!TeamPlayerStart || TeamPlayerStart->Team != BlasterPlayerState->GetTeam()) continue;
+            TeamPlayerStarts.Add(TeamPlayerStart);
+        }
+        if (TeamPlayerStarts.Num() == 0) return;
+        const int32 Selection = FMath::RandRange(0, TeamPlayerStarts.Num() - 1);
+        const ATeamPlayerStart* TeamPlayerStart = TeamPlayerStarts[Selection];
+        SetActorLocationAndRotation(TeamPlayerStart->GetActorLocation(), TeamPlayerStart->GetActorRotation());
     }
 }
