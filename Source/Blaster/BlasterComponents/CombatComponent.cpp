@@ -853,6 +853,14 @@ void UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount)
     }
 }
 
+void UCombatComponent::OnRep_HoldingTheFlag()
+{
+    if (bHoldingTheFlag && Character && Character->IsLocallyControlled())
+    {
+        Character->Crouch();
+    }
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);

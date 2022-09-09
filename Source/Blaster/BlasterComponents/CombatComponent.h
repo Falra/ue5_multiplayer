@@ -243,8 +243,11 @@ private:
     UPROPERTY(EditAnywhere)
     int32 MaxGrenades = 4;
 
-    UPROPERTY(Replicated)
+    UPROPERTY(ReplicatedUsing = "OnRep_HoldingTheFlag")
     bool bHoldingTheFlag = false;
+
+    UFUNCTION()
+    void OnRep_HoldingTheFlag();
     
 public:
     FORCEINLINE int32 GetGrenades() const { return Grenades; }
