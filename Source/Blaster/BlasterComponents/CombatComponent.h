@@ -89,6 +89,7 @@ protected:
     void DropEquippedWeapon();
     void AttachActorToRightHand(AActor* ActorToAttach);
     void AttachActorToLeftHand(AActor* ActorToAttach);
+    void AttachFlagToLeftHand(AActor* ActorToAttach);
     void AttachActorToBackpack(AActor* ActorToAttach);
     void PlayEquipEffects(AWeapon* WeaponToEquip) const;
     void SetWeaponStateAndAttach();
@@ -242,6 +243,7 @@ private:
     UPROPERTY(EditAnywhere)
     int32 MaxGrenades = 4;
 
+    UPROPERTY(Replicated)
     bool bHoldingTheFlag = false;
     
 public:

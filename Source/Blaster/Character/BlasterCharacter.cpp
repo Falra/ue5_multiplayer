@@ -166,6 +166,13 @@ void ABlasterCharacter::SpawnDefaultWeapon()
 
 void ABlasterCharacter::RotateInPlace(float DeltaTime)
 {
+    if (IsHoldingTheFlag())
+    {
+        bUseControllerRotationYaw = false;
+        GetCharacterMovement()->bOrientRotationToMovement = true;
+        TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+        return;
+    }
     if (bDisableGameplay)
     {
         bUseControllerRotationYaw = false;

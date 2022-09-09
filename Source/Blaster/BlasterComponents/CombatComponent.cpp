@@ -242,17 +242,26 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 {
     if (!Character || !WeaponToEquip || CombatState != ECombatState::ECS_Unoccupied) return;
 
-    if (EquippedWeapon && !SecondaryWeapon)
+    if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flag)
     {
-        EquipSecondaryWeapon(WeaponToEquip);
+        Character->Crouch();
+        bHoldingTheFlag = true;
+        AttachFlagToLeftHand(WeaponToEquip);
     }
     else
     {
-        EquipPrimaryWeapon(WeaponToEquip);
-    }
+        if (EquippedWeapon && !SecondaryWeapon)
+        {
+            EquipSecondaryWeapon(WeaponToEquip);
+        }
+        else
+        {
+            EquipPrimaryWeapon(WeaponToEquip);
+        }
     
-    Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-    Character->bUseControllerRotationYaw = true;
+        Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+        Character->bUseControllerRotationYaw = true;
+    }
 
 }
 
@@ -304,6 +313,16 @@ void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
                                   || EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun;
     const FName InSocketName = bUsePistolSocket ? FName("PistolSocket") : FName("LeftHandSocket");
     if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(InSocketName))
+    {
+        WeaponSocket->AttachActor(ActorToAttach, Character->GetMesh());
+    }
+}
+
+void UCombatComponent::AttachFlagToLeftHand(AActor* ActorToAttach)
+{
+    if (!Character || !ActorToAttach) return;
+
+    if (const auto WeaponSocket = Character->GetMesh()->GetSocketByName(FName("FlagSocket")))
     {
         WeaponSocket->AttachActor(ActorToAttach, Character->GetMesh());
     }
@@ -841,4 +860,5 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
     DOREPLIFETIME(UCombatComponent, CombatState);
     DOREPLIFETIME_CONDITION(UCombatComponent, Grenades, COND_OwnerOnly);
+    DOREPLIFETIME(UCombatComponent, bHoldingTheFlag);
 }
